@@ -1,0 +1,24 @@
+# plugin data
+name: GameManager
+description: This Plugin adds an api for managing multiple (mini-)games on one server.
+
+# build data
+main: de.c4vxl.gamemanager.GameManager
+version: 1.0-RV-B1                  # 1.0, release, b1
+api-version: 1.14                   # plugin supports 1.14+
+
+# author
+authors: [ c4vxl ]
+website: https://gma.c4vxl.de/
+
+commands:
+  gamemanager:
+    aliases: [ gma, gamemanagementapi ]
+    description: Allows you to interact directly with the gamemanagement api
+    permission: c4vxl.gamemanager.perms.cmd.gamemanager
+    permission-message: §c§lI am sorry! §r§cBut it seems like you are not allowed to perform this action!
+    usage: /gamemanager <options>
+
+
+libraries:
+  - org.jetbrains.kotlin:kotlin-stdlib:2.0.0
