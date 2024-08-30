@@ -5,8 +5,8 @@ import de.c4vxl.gamemanager.gamemanagementapi.team.TeamManager
 import de.c4vxl.gamemanager.gamemanagementapi.world.WorldManager
 
 class Game(
-    val teamSize: Int,
     val teamAmount: Int,
+    val teamSize: Int,
     val id: GameID = GameID.generateRandom(),
     val players: MutableList<GMAPlayer> = mutableListOf()
 ) {
@@ -24,6 +24,9 @@ class Game(
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
     val isStarting: Boolean get() = gameState == GameState.STARTING
     val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
+
+    // game size as a string
+    val gameSize: String = "${teamAmount}x${teamSize}"
 
     fun join(player: GMAPlayer): Boolean {
         if (!player.canJoin(this)) return false
