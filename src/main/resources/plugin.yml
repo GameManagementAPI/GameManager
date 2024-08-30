@@ -14,3 +14,5 @@ website: https://gma.c4vxl.de/
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:2.0.0
+  - dev.jorel:commandapi-bukkit-kotlin:9.1.0
+  - dev.jorel:commandapi-bukkit-shade:9.1.0
