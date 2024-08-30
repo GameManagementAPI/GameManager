@@ -1,23 +1,13 @@
 package de.c4vxl.gamemanager.plugin.commands
 
-import org.bukkit.Bukkit
-import org.bukkit.command.PluginCommand
-import org.bukkit.plugin.Plugin
+import dev.jorel.commandapi.kotlindsl.commandTree
 
-class APICommand(plugin: Plugin) {
+object APICommand {
     init {
-        Bukkit.getPluginCommand("gamemanager")?.let { pluginCommand: PluginCommand ->
-            pluginCommand.setExecutor { sender, _, _, args ->
-                sender.sendMessage("hey!")
-
-                return@setExecutor false
-            }
-
-            pluginCommand.setTabCompleter { sender, _, _, args ->
-                return@setTabCompleter mutableListOf<String?>().apply {
-
-                }
-            }
+        commandTree("gamemanagementapi") {
+            withFullDescription("Allows you to interact directly with the gamemanagement api")
+            withPermission("c4vxl.gamemanager.perms.cmd.gamemanager")
+            withUsage("/gamemanager <options>")
         }
     }
 }

@@ -11,14 +11,6 @@ api-version: 1.14                   # plugin supports 1.14+
 authors: [ c4vxl ]
 website: https://gma.c4vxl.de/
 
-commands:
-  gamemanager:
-    aliases: [ gma, gamemanagementapi ]
-    description: Allows you to interact directly with the gamemanagement api
-    permission: c4vxl.gamemanager.perms.cmd.gamemanager
-    permission-message: §c§lI am sorry! §r§cBut it seems like you are not allowed to perform this action!
-    usage: /gamemanager <options>
-
 
 libraries:
   - org.jetbrains.kotlin:kotlin-stdlib:2.0.0
