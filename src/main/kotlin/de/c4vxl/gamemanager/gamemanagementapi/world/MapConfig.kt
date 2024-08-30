@@ -21,8 +21,8 @@ class MapConfig(private val worldManager: WorldManager) {
                 it.getOrNull(0) ?: return null,
                 it.getOrNull(1) ?: return null,
                 it.getOrNull(2) ?: return null,
-                it.getOrNull(3)?.toFloat() ?: return null,
-                it.getOrNull(4)?.toFloat() ?: return null,
+                it.getOrNull(3)?.toFloat() ?: 90F,
+                it.getOrNull(4)?.toFloat() ?: -3F,
             )
         }
     }
