@@ -41,7 +41,8 @@ class Game(
     fun quit(player: GMAPlayer): Boolean {
         if (!players.contains(player)) return false
 
-        // TODO: quit game
+        players.remove(player)
+        player.game = null
 
         return true
     }
