@@ -5,7 +5,7 @@ import de.c4vxl.gamemanager.gamemanagementapi.team.TeamManager
 import de.c4vxl.gamemanager.gamemanagementapi.world.WorldManager
 
 class Game(
-    val playerAmount: Int,
+    val teamSize: Int,
     val teamAmount: Int,
     val id: GameID = GameID.generateRandom(),
     val players: MutableList<GMAPlayer> = mutableListOf()
@@ -15,7 +15,7 @@ class Game(
     val teamManager: TeamManager = TeamManager(this)
 
     // player functions
-    val maxPlayer: Int get() = playerAmount * teamAmount
+    val maxPlayer: Int get() = teamSize * teamAmount
     val isFull: Boolean get() = players.size >= maxPlayer
 
     // functions to keep track of current state of the game
@@ -50,7 +50,16 @@ class Game(
     fun start(): Boolean {
         if (!isQueuing) return false
 
-        // TODO: start the game
+        gameState = GameState.STARTING
+
+        players.forEach { player ->
+            if (!player.isInTeam)
+                teamManager.joinRandom(player) // join random team if player is in none
+
+            // TODO: implement actual game start
+        }
+
+        gameState = GameState.RUNNING
 
         return true
     }
@@ -58,7 +67,11 @@ class Game(
     fun stop(): Boolean {
         if (!isRunning) return false
 
+        gameState = GameState.STOPPING
+
         // TODO: stop the game
+
+        gameState = GameState.STOPPED
 
         return true
     }

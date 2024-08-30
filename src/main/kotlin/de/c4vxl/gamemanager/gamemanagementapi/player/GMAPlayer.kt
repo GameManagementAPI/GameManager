@@ -1,6 +1,7 @@
 package de.c4vxl.gamemanager.gamemanagementapi.player
 
 import de.c4vxl.gamemanager.gamemanagementapi.game.Game
+import de.c4vxl.gamemanager.gamemanagementapi.team.Team
 import org.bukkit.OfflinePlayer
 
 class GMAPlayer private constructor(val bukkitPlayer: OfflinePlayer) {
@@ -19,6 +20,10 @@ class GMAPlayer private constructor(val bukkitPlayer: OfflinePlayer) {
     // keeping track of games
     val isInGame: Boolean get() = game != null
     var game: Game? = null
+
+    // keep track of team
+    val isInTeam: Boolean get() = team != null
+    val team: Team? get() = game?.teamManager?.getTeam(this)
 
     /**
      * Makes a player join a game by executing game.join(this)
