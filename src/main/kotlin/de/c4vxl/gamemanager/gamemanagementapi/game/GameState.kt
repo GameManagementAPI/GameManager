@@ -5,5 +5,6 @@ enum class GameState {
     STARTING,
     RUNNING,
     STOPPING,
-    STOPPED
+    STOPPED,
+    KILLED
 }

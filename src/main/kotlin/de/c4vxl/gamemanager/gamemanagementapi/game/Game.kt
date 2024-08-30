@@ -20,8 +20,9 @@ class Game(
 
     // functions to keep track of current state of the game
     var gameState: GameState = GameState.QUEUEING
-    val isRunning: Boolean get() = mutableListOf(GameState.RUNNING, GameState.STARTING, GameState.STOPPING).contains(gameState)
+    val isRunning: Boolean get() = mutableListOf(GameState.RUNNING, GameState.STOPPING).contains(gameState)
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
+    val isStarting: Boolean get() = gameState == GameState.STARTING
     val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
 
     fun join(player: GMAPlayer): Boolean {
@@ -56,7 +57,15 @@ class Game(
             if (!player.isInTeam)
                 teamManager.joinRandom(player) // join random team if player is in none
 
-            // TODO: implement actual game start
+            // load map
+            worldManager.loadMap()
+
+            // teleport players to spawn
+            teamManager.teams.forEach { team ->
+                worldManager.mapConfig.getTeamSpawn(team.id)?.let { spawn ->
+                    team.players.forEach { it.bukkitPlayer.teleport(spawn) }
+                } ?: team.players.forEach { it.quitGame() }
+            }
         }
 
         gameState = GameState.RUNNING
@@ -64,12 +73,19 @@ class Game(
         return true
     }
 
+    fun forceStop(): Boolean {
+        gameState = GameState.RUNNING
+        return stop().also {
+            gameState = GameState.KILLED
+        }
+    }
+
     fun stop(): Boolean {
         if (!isRunning) return false
 
         gameState = GameState.STOPPING
 
-        // TODO: stop the game
+        worldManager.removeWorld()
 
         gameState = GameState.STOPPED
 

@@ -2,17 +2,17 @@ package de.c4vxl.gamemanager.gamemanagementapi.player
 
 import de.c4vxl.gamemanager.gamemanagementapi.game.Game
 import de.c4vxl.gamemanager.gamemanagementapi.team.Team
-import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 
-class GMAPlayer private constructor(val bukkitPlayer: OfflinePlayer) {
+class GMAPlayer private constructor(val bukkitPlayer: Player) {
     companion object {
-        private val playerInstances = mutableMapOf<OfflinePlayer, GMAPlayer>()
+        private val playerInstances = mutableMapOf<Player, GMAPlayer>()
 
-        fun fromBukkit(player: OfflinePlayer): GMAPlayer {
+        fun fromBukkit(player: Player): GMAPlayer {
             return playerInstances.getOrPut(player) { GMAPlayer(player) }
         }
 
-        val OfflinePlayer.asGamePlayer: GMAPlayer get() = fromBukkit(this)
+        val Player.asGamePlayer: GMAPlayer get() = fromBukkit(this)
     }
 
     val isOnline: Boolean get() = bukkitPlayer.isOnline

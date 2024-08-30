@@ -9,7 +9,7 @@ class TeamManager(val game: Game) {
 
     init {
         // init teams list
-        for (i in 1..game.teamAmount) teams.add(Team(this))
+        for (i in 0..<game.teamAmount) teams.add(Team(this, i))
     }
 
     // join/quit mechanics

@@ -2,7 +2,7 @@ package de.c4vxl.gamemanager.gamemanagementapi.team
 
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
 
-class Team(val manager: TeamManager, val players: MutableList<GMAPlayer> = mutableListOf()) {
+class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPlayer> = mutableListOf()) {
     val maxSize: Int = manager.game.teamSize
     val isFull: Boolean get() = players.size >= maxSize
 
