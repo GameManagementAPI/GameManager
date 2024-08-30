@@ -1,14 +1,8 @@
 package de.c4vxl.gamemanager
 
-import com.mojang.brigadier.context.CommandContext
 import de.c4vxl.gamemanager.plugin.commands.APICommand
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
-import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager
-import io.papermc.paper.plugin.lifecycle.event.handler.LifecycleEventHandler
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents
-import net.minecraft.commands.CommandSourceStack
-import net.minecraft.commands.Commands
 import org.bukkit.plugin.java.JavaPlugin
 
 
