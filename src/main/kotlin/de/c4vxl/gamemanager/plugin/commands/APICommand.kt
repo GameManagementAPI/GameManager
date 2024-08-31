@@ -29,14 +29,56 @@ object APICommand {
 
         /**
          * Subcommands:
-         * /gamemanagementapi
+         * - /gamemanagementapi help - Show an overview of all commands
+         * - /gamemanagementapi games list - List all registered games
+         * - /gamemanagementapi games create <size> - Create and register a new game
+         * - /gamemanagementapi games start <game_id> - Start a game
+         * - /gamemanagementapi games stop <game_id> - Stop a running game
+         * - /gamemanagementapi games info <game_id> - Get information about a game
+         * - /gamemanagementapi games listplayers <game_id> - List players in a game
+         * - /gamemanagementapi games join <game_id> - Join a game
+         * - /gamemanagementapi player <playername> getgame - Get the game a player is in
+         * - /gamemanagementapi player <playername> makequit - Force a player to quit their game
+         * - /gamemanagementapi player <playername> sendto <game_id> - Send a player to a game
+         * - /gamemanagementapi player <playername> jump - Join the same game as another player
          */
-
         commandTree("gamemanagementapi") {
             withFullDescription("Allows you to interact directly with the gamemanagement api")
             withPermission("c4vxl.gamemanager.perms.cmd.gamemanager")
             withUsage("/gamemanager <options>")
             withAliases("gma", "gamemanagementapi")
+
+            literalArgument("help") {
+                anyExecutor { sender, _ ->
+                    val helpMessage = Component.text("Game Management API Commands Overview:").color(NamedTextColor.GREEN)
+                        .appendNewline().append(Component.text(" - /gamemanagementapi help - Show this overview").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi help")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games list - List all registered games").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games list")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games create <size> - Create and register a new game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games create ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games start <game_id> - Start a game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games start ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games stop <game_id> - Stop a running game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games stop ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games info <game_id> - Get information about a game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games info ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games listplayers <game_id> - List players in a game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games listplayers ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi games join <game_id> - Join a game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi games join ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> getgame - Get the game a player is in").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> getgame")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> makequit - Force a player to quit their game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> makequit")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> sendto <game_id> - Send a player to a game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> sendto ")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> jump - Join the same game as another player").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> jump")))
+
+                    sender.sendMessage(prefix.append(helpMessage))
+                }
+            }
 
             literalArgument("games") {
                 // games list
@@ -93,15 +135,6 @@ object APICommand {
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But this game does not exist!").color(NamedTextColor.WHITE)))
                                 return@anyExecutor
                             }
-
-
-                            // TODO: uncomment this after testing
-//                            if (game.players.size < game.teamSize + 1) {
-//                                sender.sendMessage(prefix.append(sorry).append(Component.text("But there must be at least ").color(NamedTextColor.WHITE))
-//                                    .append(Component.text(game.teamSize + 1).color(NamedTextColor.GRAY))
-//                                    .append(Component.text(" players in this game in order to start it!").color(NamedTextColor.WHITE)))
-//                                return@anyExecutor
-//                            }
 
                             game.start()
                             sender.sendMessage(prefix.append(Component.text("The game has been started successfully!").color(NamedTextColor.GREEN)))
