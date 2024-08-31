@@ -18,7 +18,7 @@ class WorldManager(val game: Game) {
             }.list()?.toMutableList() ?: mutableListOf()
 
             // force-stop if no maps are available
-            if (availableMaps.isEmpty()) {
+            if (list.isEmpty()) {
                 Bukkit.getLogger().warning("GameManager cannot find any maps for ${game.gameSize}! Stopping game...")
                 game.forceStop()
             }
