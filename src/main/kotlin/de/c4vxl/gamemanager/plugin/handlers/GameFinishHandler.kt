@@ -57,13 +57,15 @@ class GameFinishHandler(val plugin: Plugin): Listener {
 
     @EventHandler
     fun onWin(event: GamePlayerWinEvent) {
+        if (event.player.bukkitPlayer.world.name != event.player.game?.id?.asString) return
         event.player.bukkitPlayer.sendActionBar(Component.text("Congratulations! You ").color(NamedTextColor.WHITE).append(
             Component.text("WON!").color(NamedTextColor.GREEN)))
     }
 
     @EventHandler
     fun onLoose(event: GamePlayerLooseEvent) {
+        if (event.player.bukkitPlayer.world.name != event.player.game?.id?.asString) return
         event.player.bukkitPlayer.sendActionBar(Component.text("It is a shame! You ").color(NamedTextColor.WHITE).append(
-            Component.text("Lost!").color(NamedTextColor.GREEN)))
+            Component.text("Lost!").color(NamedTextColor.RED)))
     }
 }

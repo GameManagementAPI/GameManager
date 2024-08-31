@@ -1,6 +1,5 @@
 package de.c4vxl.gamemanager.gamemanagementapi.team
 
-import de.c4vxl.gamemanager.gamemanagementapi.event.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamJoinEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamQuitEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GameTeamMessageBroadcastEvent

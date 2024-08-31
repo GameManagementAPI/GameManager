@@ -1,6 +1,8 @@
 package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.plugin.commands.APICommand
+import de.c4vxl.gamemanager.plugin.commands.JoinCommand
+import de.c4vxl.gamemanager.plugin.commands.QuitCommand
 import de.c4vxl.gamemanager.plugin.commands.StartCommand
 import de.c4vxl.gamemanager.plugin.handlers.*
 import dev.jorel.commandapi.CommandAPI
@@ -28,6 +30,8 @@ class GameManager : JavaPlugin() {
         CommandAPI.onEnable()
         APICommand
         StartCommand
+        JoinCommand
+        QuitCommand
 
         // register listeners
         PlayerRespawnHandler(this)
