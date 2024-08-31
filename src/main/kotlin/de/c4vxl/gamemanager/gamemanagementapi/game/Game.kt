@@ -53,14 +53,14 @@ class Game(
         if (!isRunning) return
         if (deadPlayers.contains(player)) return
 
+        // add to dead player list
+        deadPlayers.add(player)
+
         // call event
         GamePlayerEliminateEvent(player, this).let {
             it.callEvent()
-            if (it.isCancelled) return // stop if event has been canceled
+            if (it.isCancelled) deadPlayers.remove(player) // stop if event has been canceled
         }
-
-        // add to dead player list
-        deadPlayers.add(player)
     }
 
     fun revivePlayer(player: GMAPlayer) {
