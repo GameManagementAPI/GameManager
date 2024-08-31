@@ -41,6 +41,8 @@ object APICommand {
          * - /gamemanagementapi player <playername> makequit - Force a player to quit their game
          * - /gamemanagementapi player <playername> sendto <game_id> - Send a player to a game
          * - /gamemanagementapi player <playername> jump - Join the same game as another player
+         * - /gamemanagementapi player <playername> eliminate - eliminates a player from the game
+         * - /gamemanagementapi player <playername> revive - revives a player from being eliminated
          */
         commandTree("gamemanagementapi") {
             withFullDescription("Allows you to interact directly with the gamemanagement api")
@@ -75,6 +77,10 @@ object APICommand {
                             .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> sendto ")))
                         .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> jump - Join the same game as another player").color(NamedTextColor.WHITE)
                             .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> jump")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> eliminate - eliminates a player from the game").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> eliminate")))
+                        .appendNewline().append(Component.text(" - /gamemanagementapi player <playername> revive - revives a player from being eliminated").color(NamedTextColor.WHITE)
+                            .clickEvent(ClickEvent.suggestCommand("/gamemanagementapi player <playername> revive")))
 
                     sender.sendMessage(prefix.append(helpMessage))
                 }
@@ -259,7 +265,7 @@ object APICommand {
                                 return@anyExecutor
                             }
 
-                            player.sendMessage(prefix.append(Component.text("${player.name} currently plays in ${game.id.asString}")
+                            sender.sendMessage(prefix.append(Component.text("${player.name} currently plays in ${game.id.asString}")
                                 .hoverEvent(HoverEvent.showText(Component.text("Click to copy game id")))
                                 .clickEvent(ClickEvent.copyToClipboard(game.id.asString))
                                 .color(NamedTextColor.GREEN)))
@@ -278,7 +284,7 @@ object APICommand {
                             }
 
                             if (player.asGamePlayer.quitGame())
-                                player.sendMessage(prefix.append(Component.text("Successfully removed ${player.name} from the game!").color(NamedTextColor.GREEN)))
+                                sender.sendMessage(prefix.append(Component.text("Successfully removed ${player.name} from the game!").color(NamedTextColor.GREEN)))
                             else
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But ${player.name} does currently not play any game!").color(NamedTextColor.WHITE)))
                         }
@@ -312,9 +318,9 @@ object APICommand {
 
                                 player.asGamePlayer.quitGame()
                                 if (player.asGamePlayer.joinGame(game))
-                                    player.sendMessage(prefix.append(Component.text("Successfully moved ${player.name} to ${game.id.asString}").color(NamedTextColor.WHITE)))
+                                    sender.sendMessage(prefix.append(Component.text("Successfully moved ${player.name} to ${game.id.asString}").color(NamedTextColor.WHITE)))
                                 else
-                                    player.sendMessage(prefix.append(sorry).append(Component.text("But ${player.name} cannot join into this game!").color(NamedTextColor.WHITE)))
+                                    sender.sendMessage(prefix.append(sorry).append(Component.text("But ${player.name} cannot join into this game!").color(NamedTextColor.WHITE)))
                             }
                         }
                     }
@@ -344,9 +350,69 @@ object APICommand {
                             // jump to game
                             sender.asGamePlayer.quitGame()
                             if (sender.asGamePlayer.joinGame(game))
-                                player.sendMessage(prefix.append(Component.text("Joining game...").color(NamedTextColor.GREEN)))
+                                sender.sendMessage(prefix.append(Component.text("Joining game...").color(NamedTextColor.GREEN)))
                             else
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot join ${game.id.asString}!").color(NamedTextColor.WHITE)))
+                        }
+                    }
+
+                    // player eliminate
+                    // eliminates a player from the game
+                    literalArgument("eliminate") {
+                        anyExecutor { sender, args ->
+                            val player: Player? = Bukkit.getPlayer(args.get("playername").toString())
+                            val game: Game? = player?.asGamePlayer?.game
+
+                            if (player == null) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("But this player is not online right now!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            if (game == null) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("${player.name} is not a player in any game!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            if (game.deadPlayers.contains(player.asGamePlayer)) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("${player.name} is not alive!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            // kill
+                            if (player.asGamePlayer.kill() == Unit)
+                                sender.sendMessage(prefix.append(Component.text("${player.name} has been eliminated!").color(NamedTextColor.GREEN)))
+                            else
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot eliminate ${player.name}!").color(NamedTextColor.WHITE)))
+                        }
+                    }
+
+                    // player revive
+                    // revive a player to the game
+                    literalArgument("revive") {
+                        anyExecutor { sender, args ->
+                            val player: Player? = Bukkit.getPlayer(args.get("playername").toString())
+                            val game: Game? = player?.asGamePlayer?.game
+
+                            if (player == null) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("But this player is not online right now!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            if (game == null) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("${player.name} is not a player in any game!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            if (!game.deadPlayers.contains(player.asGamePlayer)) {
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("${player.name} is not dead!").color(NamedTextColor.WHITE)))
+                                return@anyExecutor
+                            }
+
+                            // revive
+                            if (player.asGamePlayer.revive() == Unit)
+                                sender.sendMessage(prefix.append(Component.text("${player.name} has been revived!").color(NamedTextColor.GREEN)))
+                            else
+                                sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot revive ${player.name}!").color(NamedTextColor.WHITE)))
                         }
                     }
                 }

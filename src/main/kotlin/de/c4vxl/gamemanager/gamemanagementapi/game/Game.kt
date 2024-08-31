@@ -121,19 +121,20 @@ class Game(
 
         gameState = GameState.STARTING
 
+        // join random team if player is in none
         players.forEach { player ->
             if (!player.isInTeam)
-                teamManager.joinRandom(player) // join random team if player is in none
+                teamManager.joinRandom(player)
+        }
 
-            // load map
-            worldManager.loadMap()
+        // load map
+        worldManager.loadMap()
 
-            // teleport players to spawn
-            teamManager.teams.forEach { team ->
-                worldManager.mapConfig.getTeamSpawn(team.id)?.let { spawn ->
-                    team.players.forEach { it.bukkitPlayer.teleport(spawn) }
-                } ?: team.players.forEach { it.quitGame() }
-            }
+        // teleport players to spawn
+        teamManager.teams.forEach { team ->
+            worldManager.mapConfig.getTeamSpawn(team.id)?.let { spawn ->
+                team.players.forEach { it.bukkitPlayer.teleport(spawn) }
+            } ?: team.players.forEach { it.quitGame() }
         }
 
         gameState = GameState.RUNNING
