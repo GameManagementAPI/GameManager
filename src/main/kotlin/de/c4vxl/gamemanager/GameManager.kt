@@ -1,9 +1,6 @@
 package de.c4vxl.gamemanager
 
-import de.c4vxl.gamemanager.plugin.commands.APICommand
-import de.c4vxl.gamemanager.plugin.commands.JoinCommand
-import de.c4vxl.gamemanager.plugin.commands.QuitCommand
-import de.c4vxl.gamemanager.plugin.commands.StartCommand
+import de.c4vxl.gamemanager.plugin.commands.*
 import de.c4vxl.gamemanager.plugin.handlers.*
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
@@ -32,6 +29,7 @@ class GameManager : JavaPlugin() {
         StartCommand
         JoinCommand
         QuitCommand
+        ForcemapCommand
 
         // register listeners
         PlayerRespawnHandler(this)

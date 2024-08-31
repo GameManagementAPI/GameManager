@@ -5,6 +5,7 @@ import de.c4vxl.gamemanager.gamemanagementapi.event.GameWorldMapForceEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GameWorldUnloadEvent
 import de.c4vxl.gamemanager.gamemanagementapi.game.Game
 import org.bukkit.Bukkit
+import org.bukkit.GameRule
 import org.bukkit.World
 import org.bukkit.WorldCreator
 import java.io.File
@@ -50,6 +51,14 @@ class WorldManager(val game: Game) {
         mapFolder.copyRecursively(File(Bukkit.getWorldContainer(), game.id.asString), true)
 
         val world: World = Bukkit.createWorld(WorldCreator(game.id.asString)) ?: return false
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+        world.setGameRule(GameRule.DO_WEATHER_CYCLE, false)
+        world.setGameRule(GameRule.DO_MOB_LOOT, false)
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
+        world.setGameRule(GameRule.DO_FIRE_TICK, false)
+        world.setGameRule(GameRule.DO_TRADER_SPAWNING, false)
+        world.setGameRule(GameRule.DO_VINES_SPREAD, false)
+        world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
 
         mapConfig = MapConfig(mapFolder, world)
 
@@ -63,7 +72,7 @@ class WorldManager(val game: Game) {
     fun removeWorld(): Boolean {
         // call event
         GameWorldUnloadEvent(game).callEvent()
-
-        return Bukkit.unloadWorld(game.id.asString, false) && world?.worldFolder?.deleteRecursively() == true
+        val folder = world?.worldFolder
+        return Bukkit.unloadWorld(game.id.asString, false) && folder?.deleteRecursively() == true
     }
 }

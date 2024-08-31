@@ -19,7 +19,12 @@ class GameFinishHandler(val plugin: Plugin): Listener {
     fun onPlayerElimination(event: GamePlayerEliminateEvent) {
         if (!event.game.isRunning) return
         if (event.game.aliveTeams.size > 1) return
-        val winnerTeam = event.game.aliveTeams.getOrNull(0) ?: return
+        val winnerTeam = event.game.aliveTeams.getOrNull(0)
+
+        if (winnerTeam == null) {
+            event.game.stop()
+            return
+        }
 
         // call win event
         winnerTeam.players.forEach { GamePlayerWinEvent(event.player, event.game).callEvent() }
