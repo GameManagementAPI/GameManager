@@ -7,7 +7,7 @@ class GameID(val asString: String) {
         fun generateRandom(): GameID {
             val randomBytes = ByteArray(10)
             SecureRandom().nextBytes(randomBytes)
-            return GameID(randomBytes.toString())
+            return GameID(randomBytes.toString().substring(4))
         }
 
         fun fromString(string: String): GameID {
