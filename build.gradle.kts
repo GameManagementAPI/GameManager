@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.20.1-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.23")
     implementation("dev.jorel", "commandapi-bukkit-shade", "9.5.3")
     implementation("dev.jorel", "commandapi-bukkit-kotlin", "9.5.3")
