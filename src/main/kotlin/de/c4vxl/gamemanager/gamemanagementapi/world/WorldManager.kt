@@ -34,16 +34,16 @@ class WorldManager(val game: Game) {
 
     fun loadMap(mapName: String? = forcemap): Boolean {
         if (!game.isStarting && !game.isQueuing && world == null) return false
-
         if (!availableMaps.contains(mapName)) return loadRandomMap() // load random map if selected cannot be found
 
         val mapFolder = File("$mapsContainerPath/${game.gameSize}/$mapName/")
         mapFolder.copyRecursively(File(Bukkit.getWorldContainer(), game.id.asString), true)
 
-        return (WorldCreator(game.id.asString)
-            .createWorld() != null).also {
-                mapConfig = MapConfig(this)
-            }
+        val world: World = Bukkit.createWorld(WorldCreator(game.id.asString)) ?: return false
+
+        mapConfig = MapConfig(mapFolder, world)
+
+        return true
     }
 
     fun loadRandomMap(): Boolean = availableMaps.randomOrNull()?.let { loadMap(it) } ?: false
