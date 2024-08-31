@@ -25,6 +25,7 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
     val isInTeam: Boolean get() = team != null
     val team: Team? get() = game?.teamManager?.getTeam(this)
 
+    // game connection logic
     /**
      * Makes a player join a game by executing game.join(this)
      *  won't proceed if player is already in a game
@@ -44,4 +45,23 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
      *  @return Boolean
       */
     fun canJoin(game: Game): Boolean = !game.isFull && game.isQueuing && !game.players.contains(this) && !isInGame
+
+
+    // kill/revive logic
+    /**
+     * Shortcut to eliminate a player in his game
+     *  ==> will execute game.eliminatePlayer
+     */
+    fun kill() = game?.eliminatePlayer(this)
+
+    /**
+     * Shortcut to revive an eliminated player in his game
+     *  ==> will execute game.eliminatePlayer
+     */
+    fun revive() = game?.revivePlayer(this)
+
+    /**
+     * Check if a player is marked as eliminated in his game
+     */
+    val isEliminated: Boolean get() = game?.deadPlayers?.contains(this) == true
 }

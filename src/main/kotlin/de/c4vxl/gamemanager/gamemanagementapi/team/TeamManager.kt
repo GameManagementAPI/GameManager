@@ -15,6 +15,7 @@ class TeamManager(val game: Game) {
     // join/quit mechanics
     fun join(player: GMAPlayer, team: Team): Boolean {
         if (!joinableTeams.contains(team)) return false
+
         return team.join(player)
     }
     fun joinRandom(player: GMAPlayer): Boolean = joinableTeams.randomOrNull()?.let { t -> join(player, t) } ?: false

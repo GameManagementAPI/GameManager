@@ -1,5 +1,8 @@
 package de.c4vxl.gamemanager.gamemanagementapi.world
 
+import de.c4vxl.gamemanager.gamemanagementapi.event.GameWorldLoadEvent
+import de.c4vxl.gamemanager.gamemanagementapi.event.GameWorldMapForceEvent
+import de.c4vxl.gamemanager.gamemanagementapi.event.GameWorldUnloadEvent
 import de.c4vxl.gamemanager.gamemanagementapi.game.Game
 import org.bukkit.Bukkit
 import org.bukkit.World
@@ -28,6 +31,13 @@ class WorldManager(val game: Game) {
 
     // using random if null
     var forcemap: String? = null
+        set(value) {
+            // run through GameWorldMapForceEvent event
+            GameWorldMapForceEvent(game, value).let {
+                it.callEvent()
+                field = it.forceTo
+            }
+        }
 
     val world: World? get() = Bukkit.getWorld(game.id.asString)
     lateinit var mapConfig: MapConfig
@@ -43,10 +53,17 @@ class WorldManager(val game: Game) {
 
         mapConfig = MapConfig(mapFolder, world)
 
+        GameWorldLoadEvent(game, world, mapConfig).callEvent()
+
         return true
     }
 
     fun loadRandomMap(): Boolean = availableMaps.randomOrNull()?.let { loadMap(it) } ?: false
 
-    fun removeWorld(): Boolean = Bukkit.unloadWorld(game.id.asString, false) && world?.worldFolder?.deleteRecursively() == true
+    fun removeWorld(): Boolean {
+        // call event
+        GameWorldUnloadEvent(game).callEvent()
+
+        return Bukkit.unloadWorld(game.id.asString, false) && world?.worldFolder?.deleteRecursively() == true
+    }
 }

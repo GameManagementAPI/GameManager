@@ -1,5 +1,7 @@
 package de.c4vxl.gamemanager.gamemanagementapi.team
 
+import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamJoinEvent
+import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamQuitEvent
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
 
 class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPlayer> = mutableListOf()) {
@@ -13,6 +15,9 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
     fun join(player: GMAPlayer): Boolean {
         if (!manager.game.players.contains(player) || player.isInTeam) return false
 
+        // call event
+        GamePlayerTeamJoinEvent(player, manager.game, this).callEvent()
+
         players.add(player)
 
         return true
@@ -23,6 +28,9 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
       */
     fun quit(player: GMAPlayer): Boolean {
         if (!players.contains(player)) return false
+
+        // call event
+        GamePlayerTeamQuitEvent(player, manager.game, this).callEvent()
 
         players.remove(player)
 
