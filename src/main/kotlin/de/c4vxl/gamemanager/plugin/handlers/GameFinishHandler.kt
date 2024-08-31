@@ -1,7 +1,9 @@
 package de.c4vxl.gamemanager.plugin.handlers
 
 import de.c4vxl.gamemanager.GameManager
+import de.c4vxl.gamemanager.gamemanagementapi.GameManagementAPI
 import de.c4vxl.gamemanager.gamemanagementapi.event.*
+import de.c4vxl.gamemanager.plugin.commands.PrivateGameCommand
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
 import net.kyori.adventure.text.format.TextDecoration
@@ -72,5 +74,14 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         if (event.player.bukkitPlayer.world.name != event.player.game?.id?.asString) return
         event.player.bukkitPlayer.sendActionBar(Component.text("It is a shame! You ").color(NamedTextColor.WHITE).append(
             Component.text("Lost!").color(NamedTextColor.RED)))
+    }
+
+    @EventHandler
+    fun onGameStop(event: GameStopEvent) {
+        // remove all invites if game was private and had any
+        if (event.game.isPrivate) PrivateGameCommand.invites.remove(event.game.id.asString)
+
+        // unregister game
+        GameManagementAPI.unregisterGame(event.game)
     }
 }

@@ -95,7 +95,7 @@ object APICommand {
                             .append(Component.text("Currently registered games:")))
                             .also {
                                 GameManagementAPI.games.forEach { game ->
-                                    sender.sendMessage(Component.text("- ${game.id.asString} | ${game.gameSize} | ")
+                                    sender.sendMessage(Component.text("- ${game.id.asString} | ${game.gameSize} | isPrivate: ${game.isPrivate} | ")
                                         .append(getGameStateComponent(game))
                                         .hoverEvent(HoverEvent.showText(Component.text("Click to copy game id")))
                                         .clickEvent(ClickEvent.copyToClipboard(game.id.asString)))
@@ -186,7 +186,7 @@ object APICommand {
                                             .hoverEvent(HoverEvent.showText(Component.text("Click to copy game id")))
                                             .clickEvent(ClickEvent.copyToClipboard(gameID.asString))))
                                     .appendNewline()
-                                .append(Component.text("${game.gameSize} | ${game.players.size}/${game.maxPlayer} Players | ").append(getGameStateComponent(game))))
+                                .append(Component.text("${game.gameSize} | ${game.players.size}/${game.maxPlayer} Players | isPrivate: ${game.isPrivate} | ").append(getGameStateComponent(game))))
                         }
                     }
                 }

@@ -30,6 +30,7 @@ class GameManager : JavaPlugin() {
         JoinCommand
         QuitCommand
         ForcemapCommand
+        PrivateGameCommand
 
         // register listeners
         PlayerRespawnHandler(this)

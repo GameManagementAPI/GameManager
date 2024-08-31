@@ -11,8 +11,11 @@ class Game(
     val teamAmount: Int,
     val teamSize: Int,
     val id: GameID = GameID.generateRandom(),
-    val players: MutableList<GMAPlayer> = mutableListOf()
+    val players: MutableList<GMAPlayer> = mutableListOf(),
+    val owner: GMAPlayer? = null
 ) {
+    val isPrivate: Boolean = owner != null
+
     // game size as a string
     val gameSize: String = "${teamAmount}x${teamSize}"
 
@@ -108,6 +111,9 @@ class Game(
         players.remove(player)
         player.game = null
 
+        // stop game if no players are there
+        if (players.isEmpty()) stop()
+
         return true
     }
 
@@ -154,7 +160,7 @@ class Game(
     }
 
     fun stop(): Boolean {
-        if (!isRunning) return false
+        if (!isRunning && !isQueuing) return false
 
         // call event
         val event = GameStopEvent(this)

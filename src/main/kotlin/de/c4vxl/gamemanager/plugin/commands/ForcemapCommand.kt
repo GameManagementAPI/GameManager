@@ -47,6 +47,13 @@ object ForcemapCommand {
                         return@playerExecutor
                     }
 
+                    if (game.isPrivate && game.owner != player.asGamePlayer) {
+                        player.sendMessage(prefix.append(
+                            Component.text("You cannot use this command in a private game of another player!").color(
+                                NamedTextColor.RED)))
+                        return@playerExecutor
+                    }
+
                     val map: String = args.get("map").toString()
 
                     if (game.worldManager.forcemap != null) {
