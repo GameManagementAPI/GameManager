@@ -48,5 +48,5 @@ class WorldManager(val game: Game) {
 
     fun loadRandomMap(): Boolean = availableMaps.randomOrNull()?.let { loadMap(it) } ?: false
 
-    fun removeWorld(): Boolean = world?.worldFolder?.deleteRecursively() == true && Bukkit.unloadWorld(game.id.asString, false)
+    fun removeWorld(): Boolean = Bukkit.unloadWorld(game.id.asString, false) && world?.worldFolder?.deleteRecursively() == true
 }
