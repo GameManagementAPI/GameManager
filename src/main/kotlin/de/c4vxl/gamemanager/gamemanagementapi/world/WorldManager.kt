@@ -37,10 +37,10 @@ class WorldManager(val game: Game) {
         val mapFolder = File("$mapsContainerPath/${game.gameSize}/$mapName/")
         mapFolder.copyRecursively(Bukkit.getWorldContainer())
 
-        mapConfig = MapConfig(this)
-
-        return WorldCreator(game.id.asString)
-            .createWorld() != null
+        return (WorldCreator(game.id.asString)
+            .createWorld() != null).also {
+                mapConfig = MapConfig(this)
+            }
     }
 
     fun loadRandomMap(): Boolean = availableMaps.randomOrNull()?.let { loadMap(it) } ?: false
