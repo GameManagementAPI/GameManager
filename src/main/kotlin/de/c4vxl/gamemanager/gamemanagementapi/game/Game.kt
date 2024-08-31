@@ -174,4 +174,14 @@ class Game(
 
         return true
     }
+
+    // broadcasting to all players
+    fun broadcast(message: Component) {
+        GameMessageBroadcastEvent(this, message).let {
+            it.callEvent()
+            if (it.isCancelled) return // stop if event has been canceled
+        }
+
+        players.forEach { it.bukkitPlayer.sendMessage(message) }
+    }
 }
