@@ -12,7 +12,7 @@ object StartCommand {
     init {
         val prefix: Component = GameManager.prefix
 
-        commandTree("gamemanagementapi") {
+        commandTree("start") {
             withFullDescription("Allows you to start a game as soon as enough players are found to fill at least two teams!")
             withPermission("c4vxl.gamemanager.perms.cmd.start")
             withUsage("/start")
@@ -26,7 +26,7 @@ object StartCommand {
                     return@playerExecutor
                 }
 
-                if (game.isQueuing) {
+                if (!game.isQueuing) {
                     player.sendMessage(prefix.append(Component.text("The game cannot be running!").color(
                         NamedTextColor.RED)))
                     return@playerExecutor

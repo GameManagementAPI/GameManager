@@ -6,6 +6,9 @@ import org.bukkit.event.HandlerList
 open class GameEvent: Event() {
     companion object {
         private val HANDLER_LIST: HandlerList = HandlerList()
+
+        @JvmStatic
+        fun getHandlerList(): HandlerList = HANDLER_LIST
     }
 
     var isCancelled: Boolean = false
