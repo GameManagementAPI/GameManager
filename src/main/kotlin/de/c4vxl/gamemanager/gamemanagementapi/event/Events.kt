@@ -29,6 +29,7 @@ data class GamePlayerTeamJoinEvent(val player: GMAPlayer, val game: Game, val te
 data class GamePlayerTeamQuitEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
 data class GameTeamWinEvent(val game: Game, val team: Team): GameEvent()
 data class GameTeamLooseEvent(val game: Game, val team: Team): GameEvent()
+data class GameTeamMessageBroadcastEvent(val game: Game, val team: Team, val message: Component): GameEvent()
 
 // world based events
 data class GameWorldMapForceEvent(val game: Game, var forceTo: String?): GameEvent()

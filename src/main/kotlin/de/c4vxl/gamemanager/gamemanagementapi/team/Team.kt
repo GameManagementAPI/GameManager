@@ -1,8 +1,11 @@
 package de.c4vxl.gamemanager.gamemanagementapi.team
 
+import de.c4vxl.gamemanager.gamemanagementapi.event.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamJoinEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamQuitEvent
+import de.c4vxl.gamemanager.gamemanagementapi.event.GameTeamMessageBroadcastEvent
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
+import net.kyori.adventure.text.Component
 
 class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPlayer> = mutableListOf()) {
     val maxSize: Int = manager.game.teamSize
@@ -35,5 +38,15 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
         players.remove(player)
 
         return true
+    }
+
+    // broadcasting to all members
+    fun broadcast(message: Component) {
+        GameTeamMessageBroadcastEvent(this.manager.game, this, message).let {
+            it.callEvent()
+            if (it.isCancelled) return // stop if event has been canceled
+        }
+
+        players.forEach { it.bukkitPlayer.sendMessage(message) }
     }
 }
