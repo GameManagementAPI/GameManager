@@ -11,17 +11,20 @@ class WorldManager(val game: Game) {
         val mapsContainerPath: String = "gamemanager_maps/"
     }
 
-    val availableMaps: MutableList<String> = File(mapsContainerPath, game.gameSize).apply {
-        if (!this.isDirectory) this.mkdirs()
-    }.list()?.toMutableList() ?: mutableListOf()
+    val availableMaps: MutableList<String>
+        get() {
+            val list = File(mapsContainerPath, game.gameSize).apply {
+                if (!this.isDirectory) this.mkdirs()
+            }.list()?.toMutableList() ?: mutableListOf()
 
-    init {
-        // force-stop if no maps are available
-        if (availableMaps.isEmpty()) {
-            Bukkit.getLogger().warning("GameManager cannot find any maps for ${game.gameSize}! Stopping game...")
-            game.forceStop()
+            // force-stop if no maps are available
+            if (availableMaps.isEmpty()) {
+                Bukkit.getLogger().warning("GameManager cannot find any maps for ${game.gameSize}! Stopping game...")
+                game.forceStop()
+            }
+
+            return list
         }
-    }
 
     // using random if null
     var forcemap: String? = null
@@ -35,7 +38,7 @@ class WorldManager(val game: Game) {
         if (!availableMaps.contains(mapName)) return loadRandomMap() // load random map if selected cannot be found
 
         val mapFolder = File("$mapsContainerPath/${game.gameSize}/$mapName/")
-        mapFolder.copyRecursively(Bukkit.getWorldContainer())
+        mapFolder.copyRecursively(File(Bukkit.getWorldContainer(), game.id.asString), true)
 
         return (WorldCreator(game.id.asString)
             .createWorld() != null).also {

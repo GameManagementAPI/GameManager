@@ -11,7 +11,7 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
      * @return Boolean
       */
     fun join(player: GMAPlayer): Boolean {
-        if (!manager.game.players.contains(player) || !player.isInTeam) return false
+        if (!manager.game.players.contains(player) || player.isInTeam) return false
 
         players.add(player)
 
