@@ -1,6 +1,7 @@
 package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.plugin.commands.APICommand
+import de.c4vxl.gamemanager.plugin.commands.StartCommand
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import net.kyori.adventure.text.Component
@@ -22,6 +23,7 @@ class GameManager : JavaPlugin() {
     override fun onEnable() {
         CommandAPI.onEnable()
         APICommand
+        StartCommand
 
         logger.info("[+] $name has been enabled! \n  -> using version ${pluginMeta.version}")
     }
