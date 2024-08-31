@@ -9,7 +9,6 @@ import net.kyori.adventure.text.Component
 import org.bukkit.World
 
 // game-handling based events
-data class GamePostStopEvent(val game: Game, val winnerTeam: Team, val looserTeams: MutableList<Team>): GameEvent()
 data class GameStopEvent(val game: Game, var kickPlayers: Boolean = true): GameEvent()
 data class GameStartEvent(val game: Game): GameEvent()
 data class GameForceStopEvent(val game: Game): GameEvent()
@@ -28,7 +27,6 @@ data class GamePlayerLooseEvent(val player: GMAPlayer, val game: Game): GameEven
 data class GamePlayerTeamJoinEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
 data class GamePlayerTeamQuitEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
 data class GameTeamWinEvent(val game: Game, val team: Team): GameEvent()
-data class GameTeamLooseEvent(val game: Game, val team: Team): GameEvent()
 data class GameTeamMessageBroadcastEvent(val game: Game, val team: Team, val message: Component): GameEvent()
 
 // world based events

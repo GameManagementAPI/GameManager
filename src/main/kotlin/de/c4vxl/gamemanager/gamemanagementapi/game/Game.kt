@@ -104,6 +104,7 @@ class Game(
         // call event
         GamePlayerQuitEvent(player, this).callEvent()
 
+        player.kill()
         players.remove(player)
         player.game = null
 

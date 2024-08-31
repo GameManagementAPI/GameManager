@@ -20,20 +20,15 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         if (!event.game.isRunning) return
         if (event.game.aliveTeams.size > 1) return
         val winnerTeam = event.game.aliveTeams.getOrNull(0) ?: return
-        val looserTeams = event.game.teamManager.teams.filter { it != winnerTeam }.toMutableList()
 
         // call win event
         winnerTeam.players.forEach { GamePlayerWinEvent(event.player, event.game).callEvent() }
         GameTeamWinEvent(event.game, winnerTeam).callEvent()
 
         // call loose event
-        looserTeams.forEach { t ->
-            t.players.forEach { GamePlayerLooseEvent(it, event.game).callEvent() }
-            GameTeamLooseEvent(event.game, t).callEvent()
+        event.game.deadPlayers.forEach {
+            GamePlayerLooseEvent(it, event.game).callEvent()
         }
-
-        // call post-stop event
-        GamePostStopEvent(event.game, winnerTeam, looserTeams).callEvent()
 
         // stop game in
         event.game.broadcast(GameManager.prefix.append(Component.text("This server will stop in ").append(
@@ -61,17 +56,14 @@ class GameFinishHandler(val plugin: Plugin): Listener {
     }
 
     @EventHandler
-    fun onPostGameStop(event: GamePostStopEvent) {
-        event.winnerTeam.players.forEach {
-            it.bukkitPlayer.sendActionBar(Component.text("Congratulations! You ").color(NamedTextColor.WHITE).append(
-                Component.text("WON!").color(NamedTextColor.GREEN)))
-        }
+    fun onWin(event: GamePlayerWinEvent) {
+        event.player.bukkitPlayer.sendActionBar(Component.text("Congratulations! You ").color(NamedTextColor.WHITE).append(
+            Component.text("WON!").color(NamedTextColor.GREEN)))
+    }
 
-        event.looserTeams.forEach { team ->
-            team.players.forEach {
-                it.bukkitPlayer.sendActionBar(Component.text("It is a shame! You ").color(NamedTextColor.WHITE).append(
-                    Component.text("Lost!").color(NamedTextColor.GREEN)))
-            }
-        }
+    @EventHandler
+    fun onLoose(event: GamePlayerLooseEvent) {
+        event.player.bukkitPlayer.sendActionBar(Component.text("It is a shame! You ").color(NamedTextColor.WHITE).append(
+            Component.text("Lost!").color(NamedTextColor.GREEN)))
     }
 }

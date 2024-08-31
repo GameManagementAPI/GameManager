@@ -2,10 +2,7 @@ package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.plugin.commands.APICommand
 import de.c4vxl.gamemanager.plugin.commands.StartCommand
-import de.c4vxl.gamemanager.plugin.handlers.GameFinishHandler
-import de.c4vxl.gamemanager.plugin.handlers.PlayerRespawnHandler
-import de.c4vxl.gamemanager.plugin.handlers.PlayerVisibilityHandler
-import de.c4vxl.gamemanager.plugin.handlers.QueueHandler
+import de.c4vxl.gamemanager.plugin.handlers.*
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import net.kyori.adventure.text.Component
@@ -37,6 +34,7 @@ class GameManager : JavaPlugin() {
         PlayerVisibilityHandler(this)
         GameFinishHandler(this)
         QueueHandler(this)
+        PlayerConnectionHandler(this)
 
         logger.info("[+] $name has been enabled! \n  -> using version ${pluginMeta.version}")
     }
