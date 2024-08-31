@@ -10,6 +10,9 @@ class Game(
     val id: GameID = GameID.generateRandom(),
     val players: MutableList<GMAPlayer> = mutableListOf()
 ) {
+    // game size as a string
+    val gameSize: String = "${teamAmount}x${teamSize}"
+
     // classes for management
     val worldManager: WorldManager = WorldManager(this)
     val teamManager: TeamManager = TeamManager(this)
@@ -24,9 +27,6 @@ class Game(
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
     val isStarting: Boolean get() = gameState == GameState.STARTING
     val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
-
-    // game size as a string
-    val gameSize: String = "${teamAmount}x${teamSize}"
 
     fun join(player: GMAPlayer): Boolean {
         if (!player.canJoin(this)) return false
