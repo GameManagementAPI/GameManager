@@ -219,9 +219,8 @@ class Game(
 
         gameState = GameState.STOPPING
 
-        // kick specs
-        spectators.forEach { it.quitGame() }
-        players.forEach { it.quitGame() }
+        // quit players
+        players.apply { addAll(spectators) }.distinct().forEach { it.quitGame() }
 
         // kick players so map can be unloaded
         // if an event listener sets kickPlayers to false, we just assume the external plugin takes care of removing the players so the world can be unloaded
