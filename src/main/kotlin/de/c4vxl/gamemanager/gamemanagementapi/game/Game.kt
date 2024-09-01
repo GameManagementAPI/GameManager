@@ -6,6 +6,7 @@ import de.c4vxl.gamemanager.gamemanagementapi.team.Team
 import de.c4vxl.gamemanager.gamemanagementapi.team.TeamManager
 import de.c4vxl.gamemanager.gamemanagementapi.world.WorldManager
 import net.kyori.adventure.text.Component
+import org.bukkit.GameMode
 
 class Game(
     val teamAmount: Int,
@@ -15,6 +16,8 @@ class Game(
     val owner: GMAPlayer? = null
 ) {
     val isPrivate: Boolean = owner != null
+
+    val spectators: MutableList<GMAPlayer> = mutableListOf()
 
     // game size as a string
     val gameSize: String = "${teamAmount}x${teamSize}"
@@ -50,6 +53,23 @@ class Game(
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
     val isStarting: Boolean get() = gameState == GameState.STARTING
     val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
+
+    fun spectate(player: GMAPlayer): Boolean {
+        if (!isRunning) return false // player can only spec if game is running
+
+        if (player.game != null) return false
+
+        // return if player is already spectator
+        if (player.isSpectating) return false
+
+        if (spectators.add(player)) player.game = this
+        player.bukkitPlayer.teleport(worldManager.mapConfig.getTeamSpawn(-1) ?: worldManager.world?.spawnLocation ?: return true)
+        player.bukkitPlayer.gameMode = GameMode.SPECTATOR // set to spectator gamemode
+
+        GameSpectateStartEvent(player, this).callEvent()
+
+        return true
+    }
 
     fun eliminatePlayer(player: GMAPlayer) {
         if (!players.contains(player)) return
@@ -102,6 +122,18 @@ class Game(
     }
 
     fun quit(player: GMAPlayer): Boolean {
+        // handle spectators
+        if (spectators.contains(player)) {
+            spectators.remove(player)
+            player.game = null
+
+            // call quit event
+            if (!players.contains(player)) GamePlayerQuitEvent(player, this).callEvent()
+            GameSpectateStopEvent(player, this).callEvent()
+
+            return true
+        }
+
         if (!players.contains(player)) return false
 
         // call event
@@ -191,5 +223,6 @@ class Game(
         }
 
         players.forEach { it.bukkitPlayer.sendMessage(message) }
+        spectators.forEach { it.bukkitPlayer.sendMessage(message) }
     }
 }

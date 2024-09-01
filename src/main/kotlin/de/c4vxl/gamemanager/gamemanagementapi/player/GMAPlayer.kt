@@ -20,10 +20,17 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
     // keeping track of games
     val isInGame: Boolean get() = game != null
     var game: Game? = null
+    val isSpectating: Boolean get() = game?.spectators?.contains(this) == true
 
     // keep track of team
     val isInTeam: Boolean get() = team != null
     val team: Team? get() = game?.teamManager?.getTeam(this)
+
+    /**
+     * Start spectating a game
+     *  ==> executes game.spectate
+     */
+    fun spectate(game: Game): Boolean = game.spectate(this)
 
     // game connection logic
     /**

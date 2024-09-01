@@ -10,6 +10,10 @@ class QueueHandler(plugin: Plugin) {
     init {
         Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, Runnable {
             Bukkit.getOnlinePlayers().forEach { player ->
+                Bukkit.getScheduler().callSyncMethod(plugin) {
+                    PlayerVisibilityHandler.handleVisibility(player.asGamePlayer)
+                }
+
                 val game = player.asGamePlayer.game ?: return@forEach
                 if (!game.isQueuing) return@forEach
 
@@ -17,6 +21,6 @@ class QueueHandler(plugin: Plugin) {
                     .color(NamedTextColor.WHITE)
                     .append(Component.text(" (${game.players.size}/${game.maxPlayer})")))
             }
-        }, 0, 0)
+        }, 10, 10)
     }
 }

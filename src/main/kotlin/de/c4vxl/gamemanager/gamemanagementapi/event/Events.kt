@@ -33,3 +33,7 @@ data class GameTeamMessageBroadcastEvent(val game: Game, val team: Team, val mes
 data class GameWorldMapForceEvent(val game: Game, var forceTo: String?): GameEvent()
 data class GameWorldLoadEvent(val game: Game, val world: World, val config: MapConfig): GameEvent()
 data class GameWorldUnloadEvent(val game: Game): GameEvent()
+
+// spectator based events
+data class GameSpectateStartEvent(val player: GMAPlayer, val game: Game): GameEvent()
+data class GameSpectateStopEvent(val player: GMAPlayer, val game: Game): GameEvent()

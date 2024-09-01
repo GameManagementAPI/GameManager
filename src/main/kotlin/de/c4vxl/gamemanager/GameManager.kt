@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager
 
+import de.c4vxl.gamemanager.gamemanagementapi.GameManagementAPI
 import de.c4vxl.gamemanager.plugin.commands.*
 import de.c4vxl.gamemanager.plugin.handlers.*
 import dev.jorel.commandapi.CommandAPI
@@ -31,6 +32,7 @@ class GameManager : JavaPlugin() {
         QuitCommand
         ForcemapCommand
         PrivateGameCommand
+        SpectateCommand
 
         // register listeners
         PlayerRespawnHandler(this)
@@ -44,6 +46,16 @@ class GameManager : JavaPlugin() {
 
     override fun onDisable() {
         CommandAPI.onDisable()
+
+        // stop and unregister all games
+        GameManagementAPI.games.takeIf { it.isNotEmpty() }?.let {
+            logger.warning("Game manager detected registered games! Unregistering them now...")
+
+            it.forEach { game ->
+                game.forceStop()
+                GameManagementAPI.unregisterGame(game)
+            }
+        }
 
         logger.info("[-] $name has been disabled!")
     }
