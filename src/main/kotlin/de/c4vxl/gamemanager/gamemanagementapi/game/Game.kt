@@ -56,8 +56,7 @@ class Game(
 
     fun spectate(player: GMAPlayer): Boolean {
         if (!isRunning) return false // player can only spec if game is running
-
-        if (player.game != null) return false
+        if (player.game != null && player.game != this) return false
 
         // return if player is already spectator
         if (player.isSpectating) return false
@@ -83,6 +82,7 @@ class Game(
         GamePlayerEliminateEvent(player, this).let {
             it.callEvent()
             if (it.isCancelled) deadPlayers.remove(player) // stop if event has been canceled
+            else player.spectate(this)
         }
     }
 
@@ -97,8 +97,17 @@ class Game(
             if (it.isCancelled) return // stop if event has been canceled
         }
 
+        spectators.remove(player)
+
+        // Call spectate stop event
+        GameSpectateStopEvent(player, this).callEvent()
+
         // remove from dead player list
         deadPlayers.remove(player)
+
+        // kill player to respawn at team-spawn
+        player.bukkitPlayer.gameMode = GameMode.SURVIVAL
+        player.bukkitPlayer.health = 0.0
     }
 
     fun join(player: GMAPlayer): Boolean {
@@ -122,31 +131,38 @@ class Game(
     }
 
     fun quit(player: GMAPlayer): Boolean {
-        // handle spectators
-        if (spectators.contains(player)) {
+        val isSpectator = spectators.contains(player)
+        val isPlayer = players.contains(player)
+
+        if (isSpectator) {
             spectators.remove(player)
             player.game = null
 
-            // call quit event
-            if (!players.contains(player)) GamePlayerQuitEvent(player, this).callEvent()
+            // Call spectate stop event
             GameSpectateStopEvent(player, this).callEvent()
+
+            // Call quit event if the player was not in players list
+            if (!isPlayer) {
+                GamePlayerQuitEvent(player, this).callEvent()
+                return true
+            }
+        }
+
+        if (isPlayer) {
+            // Call quit event
+            GamePlayerQuitEvent(player, this).callEvent()
+
+            player.kill()
+            players.remove(player)
+            player.game = null
+
+            // Stop game if no players are left
+            if (players.isEmpty()) stop()
 
             return true
         }
 
-        if (!players.contains(player)) return false
-
-        // call event
-        GamePlayerQuitEvent(player, this).callEvent()
-
-        player.kill()
-        players.remove(player)
-        player.game = null
-
-        // stop game if no players are there
-        if (players.isEmpty()) stop()
-
-        return true
+        return false
     }
 
     fun start(): Boolean {
@@ -226,7 +242,6 @@ class Game(
             if (it.isCancelled) return // stop if event has been canceled
         }
 
-        players.forEach { it.bukkitPlayer.sendMessage(message) }
-        spectators.forEach { it.bukkitPlayer.sendMessage(message) }
+        players.apply { addAll(spectators) }.distinct().forEach { it.bukkitPlayer.sendMessage(message) }
     }
 }

@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handlers
 
+import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerRespawnEvent
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer.Companion.asGamePlayer
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -21,7 +22,9 @@ class PlayerRespawnHandler(plugin: Plugin): Listener {
         val team = player.team ?: return
         val spawnLocation: Location = game.worldManager.mapConfig.getTeamSpawn(team.id) ?: game.worldManager.world?.spawnLocation ?: return
 
-        event.respawnLocation = spawnLocation
+        val cevent = GamePlayerRespawnEvent(player, game, spawnLocation)
+        cevent.callEvent()
+        event.respawnLocation = cevent.respawnLocation
     }
 
     @EventHandler

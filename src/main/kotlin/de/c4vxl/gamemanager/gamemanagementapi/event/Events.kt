@@ -6,6 +6,7 @@ import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
 import de.c4vxl.gamemanager.gamemanagementapi.team.Team
 import de.c4vxl.gamemanager.gamemanagementapi.world.MapConfig
 import net.kyori.adventure.text.Component
+import org.bukkit.Location
 import org.bukkit.World
 
 // game-handling based events
@@ -22,6 +23,7 @@ data class GamePlayerEliminateEvent(val player: GMAPlayer, val game: Game): Game
 data class GamePlayerReviveEvent(val player: GMAPlayer, val game: Game): GameEvent()
 data class GamePlayerWinEvent(val player: GMAPlayer, val game: Game): GameEvent()
 data class GamePlayerLooseEvent(val player: GMAPlayer, val game: Game): GameEvent()
+data class GamePlayerRespawnEvent(val player: GMAPlayer, val game: Game, var respawnLocation: Location): GameEvent()
 
 // team based events
 data class GamePlayerTeamJoinEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
