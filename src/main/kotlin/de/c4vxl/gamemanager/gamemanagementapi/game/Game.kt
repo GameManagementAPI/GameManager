@@ -34,10 +34,10 @@ class Game(
     val deadPlayers: MutableList<GMAPlayer> = mutableListOf()
 
     // list of all alive players
-    val alivePlayer: MutableList<GMAPlayer> get() = players.filter { !deadPlayers.contains(it) }.toMutableList()
+    val alivePlayers: MutableList<GMAPlayer> get() = players.filter { !deadPlayers.contains(it) }.toMutableList()
 
     // list of all alive teams
-    val aliveTeams: MutableList<Team> get() = alivePlayer.mapNotNull { it.team }.distinct().toMutableList()
+    val aliveTeams: MutableList<Team> get() = alivePlayers.mapNotNull { it.team }.distinct().toMutableList()
 
     // functions to keep track of current state of the game
     var gameState: GameState = GameState.QUEUEING
@@ -202,6 +202,10 @@ class Game(
         }
 
         gameState = GameState.STOPPING
+
+        // kick specs
+        spectators.forEach { it.quitGame() }
+        players.forEach { it.quitGame() }
 
         // kick players so map can be unloaded
         // if an event listener sets kickPlayers to false, we just assume the external plugin takes care of removing the players so the world can be unloaded
