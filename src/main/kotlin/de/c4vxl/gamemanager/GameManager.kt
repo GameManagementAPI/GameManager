@@ -34,12 +34,13 @@ class GameManager : JavaPlugin() {
         PrivateGameCommand
         SpectateCommand
 
-        // register listeners
+        // register handlers
         PlayerRespawnHandler(this)
         PlayerVisibilityHandler(this)
         GameFinishHandler(this)
         QueueHandler(this)
         PlayerConnectionHandler(this)
+        PlayerPrefixHandler(this)
 
         logger.info("[+] $name has been enabled! \n  -> using version ${pluginMeta.version}")
     }
