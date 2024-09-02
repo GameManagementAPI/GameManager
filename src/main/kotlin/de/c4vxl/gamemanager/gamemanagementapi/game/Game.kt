@@ -82,10 +82,10 @@ class Game(
         return false
     }
 
-    fun eliminatePlayer(player: GMAPlayer) {
-        if (!players.contains(player)) return
-        if (!isRunning) return
-        if (deadPlayers.contains(player)) return
+    fun eliminatePlayer(player: GMAPlayer): Boolean {
+        if (!players.contains(player)) return false
+        if (!isRunning) return false
+        if (deadPlayers.contains(player)) return false
 
         // add to dead player list
         deadPlayers.add(player)
@@ -93,20 +93,25 @@ class Game(
         // call event
         GamePlayerEliminateEvent(player, this).let {
             it.callEvent()
-            if (it.isCancelled) deadPlayers.remove(player) // stop if event has been canceled
+            if (it.isCancelled) {
+                deadPlayers.remove(player) // stop if event has been canceled
+                return false
+            }
             else player.spectate(this)
         }
+
+        return true
     }
 
-    fun revivePlayer(player: GMAPlayer) {
-        if (!players.contains(player)) return
-        if (!isRunning) return
-        if (!deadPlayers.contains(player)) return
+    fun revivePlayer(player: GMAPlayer): Boolean {
+        if (!players.contains(player)) return false
+        if (!isRunning) return false
+        if (!deadPlayers.contains(player)) return false
 
         // call event
         GamePlayerReviveEvent(player, this).let {
             it.callEvent()
-            if (it.isCancelled) return // stop if event has been canceled
+            if (it.isCancelled) return false // stop if event has been canceled
         }
 
         spectators.remove(player)
@@ -120,6 +125,8 @@ class Game(
         // kill player to respawn at team-spawn
         player.bukkitPlayer.gameMode = GameMode.SURVIVAL
         player.bukkitPlayer.health = 0.0
+
+        return true
     }
 
     fun join(player: GMAPlayer): Boolean {

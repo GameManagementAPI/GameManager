@@ -59,13 +59,13 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
      * Shortcut to eliminate a player in his game
      *  ==> will execute game.eliminatePlayer
      */
-    fun kill() = game?.eliminatePlayer(this)
+    fun kill(): Boolean = game?.eliminatePlayer(this) == true
 
     /**
      * Shortcut to revive an eliminated player in his game
      *  ==> will execute game.eliminatePlayer
      */
-    fun revive() = game?.revivePlayer(this)
+    fun revive(): Boolean = game?.revivePlayer(this) == true
 
     /**
      * Check if a player is marked as eliminated in his game
