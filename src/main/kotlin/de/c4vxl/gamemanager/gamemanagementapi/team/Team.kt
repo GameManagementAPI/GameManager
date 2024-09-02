@@ -4,11 +4,19 @@ import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamJoinEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GamePlayerTeamQuitEvent
 import de.c4vxl.gamemanager.gamemanagementapi.event.GameTeamMessageBroadcastEvent
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
+import de.c4vxl.gamemanager.gamemanagementapi.world.WorldManager
 import net.kyori.adventure.text.Component
+import org.bukkit.configuration.file.YamlConfiguration
+import java.io.File
 
 class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPlayer> = mutableListOf()) {
     val maxSize: Int = manager.game.teamSize
     val isFull: Boolean get() = players.size >= maxSize
+
+    val name: String get() {
+        val config = YamlConfiguration.loadConfiguration(File(WorldManager.mapsContainerPath, "teams.yml"))
+        return config.getString("$id.name") ?: "#$id"
+    }
 
     /**
      * Makes a player join this team if he is in this game

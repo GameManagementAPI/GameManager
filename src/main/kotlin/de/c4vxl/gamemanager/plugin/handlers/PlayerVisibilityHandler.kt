@@ -64,7 +64,7 @@ class PlayerVisibilityHandler(val plugin: Plugin): Listener {
         val prefix = if (!isInGame) ""
         else if (event.player.asGamePlayer.isSpectating) "[Spectators] "
         else if (game!!.isQueuing) "[Queue] "
-        else if (game.isRunning && isAtAll) "[@all: ${game.worldManager.mapConfig.getTeamName(event.player.asGamePlayer.team?.id ?: -1)}] "
+        else if (game.isRunning && isAtAll) "[@all:${event.player.asGamePlayer.team?.let {" " + it.name} ?: ""}] "
         else "[@team] "
 
         val finalMessage: Component = LegacyComponentSerializer.legacySection().deserialize(prefix)

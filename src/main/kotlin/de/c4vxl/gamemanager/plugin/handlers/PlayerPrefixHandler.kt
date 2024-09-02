@@ -28,7 +28,7 @@ class PlayerPrefixHandler(plugin: Plugin) : Listener {
             val team: Team = "gamemanager_${event.game.id.asString}_${gameTeam.id}".let { sb.getTeam(it) ?: sb.registerNewTeam(it) }
 
             team.prefix(
-                LegacyComponentSerializer.legacySection().deserialize(event.game.worldManager.mapConfig.getTeamName(gameTeam.id))
+                LegacyComponentSerializer.legacySection().deserialize(gameTeam.name)
                     .append(Component.text(" | ").color(NamedTextColor.GRAY)))
 
             gameTeam.players.forEach { team.addPlayer(it.bukkitPlayer) }

@@ -12,7 +12,7 @@ import java.io.File
 
 class WorldManager(val game: Game) {
     companion object {
-        val mapsContainerPath: String = "gamemanager_maps/"
+        val mapsContainerPath: String = "gamemanager/"
     }
 
     val availableMaps: MutableList<String>

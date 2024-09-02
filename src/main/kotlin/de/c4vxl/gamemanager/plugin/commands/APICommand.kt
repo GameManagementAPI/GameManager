@@ -213,7 +213,7 @@ object APICommand {
 
                             sender.sendMessage(prefix.append(Component.text("Players of ${game.id.asString}"))).also {
                                 game.players.forEach { player ->
-                                    sender.sendMessage(Component.text("- ${player.bukkitPlayer.name} (Team: ${player.team?.id?.let { game.worldManager.mapConfig.getTeamName(it) } ?: "None"})"))
+                                    sender.sendMessage(Component.text("- ${player.bukkitPlayer.name} (Team: ${player.team?.let { it.name } ?: "None"})"))
                                 }
                             }
                         }

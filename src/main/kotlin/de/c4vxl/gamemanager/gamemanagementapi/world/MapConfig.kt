@@ -22,9 +22,5 @@ class MapConfig(private val mapFolder: File, val world: World) {
         }
     }
 
-    fun getTeamName(teamID: Int): String {
-        return config.getString("team.$teamID.name") ?: "#$teamID"
-    }
-
     val mapBuilder: String? get() = config.getString("map.builder")
 }
