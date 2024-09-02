@@ -30,7 +30,7 @@ class GameFinishHandler(val plugin: Plugin): Listener {
 
         // call win event
         winnerTeam.players.forEach { GamePlayerWinEvent(it, event.game).callEvent() }
-        GameTeamWinEvent(event.game, winnerTeam).callEvent()
+        GameFinishEvent(event.game, winnerTeam).callEvent()
 
         // call loose event
         event.game.deadPlayers.forEach {

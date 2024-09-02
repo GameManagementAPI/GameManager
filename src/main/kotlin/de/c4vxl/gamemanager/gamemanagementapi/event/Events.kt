@@ -15,6 +15,7 @@ data class GameStartEvent(val game: Game): GameEvent()
 data class GameForceStopEvent(val game: Game): GameEvent()
 data class GameStateChangeEvent(val game: Game, val oldState: GameState, val newState: GameState): GameEvent()
 data class GameMessageBroadcastEvent(val game: Game, val message: Component): GameEvent()
+data class GameFinishEvent(val game: Game, val winnerTeam: Team): GameEvent()
 
 // game-player based events
 data class GamePlayerQuitEvent(val player: GMAPlayer, val game: Game): GameEvent()
@@ -28,7 +29,6 @@ data class GamePlayerRespawnEvent(val player: GMAPlayer, val game: Game, var res
 // team based events
 data class GamePlayerTeamJoinEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
 data class GamePlayerTeamQuitEvent(val player: GMAPlayer, val game: Game, val team: Team): GameEvent()
-data class GameTeamWinEvent(val game: Game, val team: Team): GameEvent()
 data class GameTeamMessageBroadcastEvent(val game: Game, val team: Team, val message: Component): GameEvent()
 
 // world based events
