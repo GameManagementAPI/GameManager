@@ -42,18 +42,16 @@ class PlayerPrefixHandler(plugin: Plugin) : Listener {
 
         // get scoreboard team
         val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
-        val sbTeam: Team = sb.getTeam("gamemanager_${event.game.id.asString}_${team.id}") ?: return
+        val sbTeams: List<Team> = sb.teams.filter { it.name.startsWith("gamemanager_${event.game.id.asString}_") }
 
         // remove player from sb team
-        sbTeam.removePlayer(event.player.bukkitPlayer)
+        sbTeams.forEach { it.removePlayer(event.player.bukkitPlayer) }
     }
 
     @EventHandler
     fun onGameStop(event: GameStopEvent) {
-        event.game.teamManager.teams.forEach {
-            val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
-            val sbTeam: Team = sb.getTeam("gamemanager_${event.game.id.asString}_${it.id}") ?: return@forEach
-            sbTeam.unregister()
-        }
+        val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+        val sbTeams: List<Team> = sb.teams.filter { it.name.startsWith("gamemanager_${event.game.id.asString}_") }
+        sbTeams.forEach { it.unregister() }
     }
 }
