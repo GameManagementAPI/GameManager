@@ -3,6 +3,7 @@ package de.c4vxl.gamemanager.plugin.handlers
 import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gamemanagementapi.GameManagementAPI
 import de.c4vxl.gamemanager.gamemanagementapi.event.*
+import de.c4vxl.gamemanager.gamemanagementapi.game.GameState
 import de.c4vxl.gamemanager.plugin.commands.PrivateGameCommand
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
@@ -22,6 +23,11 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         if (!event.game.isRunning) return
         if (event.game.aliveTeams.size > 1) return
         val winnerTeam = event.game.aliveTeams.getOrNull(0)
+
+        // change GameState to stopping
+        // the eliminatePlayer function will exit if the game is not in a running state
+        // this ensures that the below code will not be executed multiple times in a game
+        event.game.gameState = GameState.STOPPING
 
         if (winnerTeam == null) {
             event.game.stop()

@@ -10,7 +10,7 @@ object GameManagementAPI {
     val games: MutableList<Game> = mutableListOf()
     private val gameIDs: MutableList<GameID> get() = games.map { it.id }.toMutableList()
 
-    val possibleGames: MutableList<String> = File(WorldManager.mapsContainerPath).list()?.toMutableList() ?: mutableListOf()
+    val possibleGames: MutableList<String> = File(WorldManager.mapsContainerPath).listFiles { file -> file.isDirectory }?.map { it.name }?.toMutableList() ?: mutableListOf()
 
     fun getGames(teamAmount: Int, teamSize: Int): List<Game> = games.filter { it.teamAmount == teamAmount && it.teamSize == teamSize && !it.isPrivate }
 

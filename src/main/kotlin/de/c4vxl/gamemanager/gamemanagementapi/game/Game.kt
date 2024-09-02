@@ -131,6 +131,7 @@ class Game(
 
     fun join(player: GMAPlayer): Boolean {
         if (!player.canJoin(this)) return false
+        if (worldManager.availableMaps.isEmpty()) return false
 
         // call event
         GamePlayerJoinEvent(player, this).let {
@@ -178,6 +179,9 @@ class Game(
                 GamePlayerEliminateEvent(player, this).callEvent()
             }
 
+            // quit team
+            teamManager.quit(player)
+
             // Stop game if no players are left
             if (players.isEmpty()) stop()
 
@@ -189,6 +193,7 @@ class Game(
 
     fun start(): Boolean {
         if (!isQueuing) return false
+        if (worldManager.availableMaps.isEmpty()) return false
 
         // call event
         GameStartEvent(this).let {

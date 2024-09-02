@@ -16,19 +16,7 @@ class WorldManager(val game: Game) {
     }
 
     val availableMaps: MutableList<String>
-        get() {
-            val list = File(mapsContainerPath, game.gameSize).apply {
-                if (!this.isDirectory) this.mkdirs()
-            }.list()?.toMutableList() ?: mutableListOf()
-
-            // force-stop if no maps are available
-            if (list.isEmpty()) {
-                Bukkit.getLogger().warning("GameManager cannot find any maps for ${game.gameSize}! Stopping game...")
-                game.forceStop()
-            }
-
-            return list
-        }
+        get() = File(mapsContainerPath, game.gameSize).listFiles { file -> file.isDirectory }?.map { it.name }?.toMutableList() ?: mutableListOf()
 
     // using random if null
     var forcemap: String? = null
@@ -44,6 +32,12 @@ class WorldManager(val game: Game) {
     lateinit var mapConfig: MapConfig
 
     fun loadMap(mapName: String? = forcemap): Boolean {
+        // force-stop if no maps are available
+        if (availableMaps.isEmpty()) {
+            Bukkit.getLogger().warning("GameManager cannot find any maps for ${game.gameSize}! Stopping game...")
+            game.forceStop()
+        }
+
         if (!game.isStarting && !game.isQueuing && world == null) return false
         if (!availableMaps.contains(mapName)) return loadRandomMap() // load random map if selected cannot be found
 
