@@ -152,9 +152,10 @@ class Game(
             // Call quit event
             GamePlayerQuitEvent(player, this).callEvent()
 
-            player.kill()
             players.remove(player)
             player.game = null
+            deadPlayers.add(player)
+            GamePlayerEliminateEvent(player, this).callEvent()
 
             // Stop game if no players are left
             if (players.isEmpty()) stop()
@@ -188,7 +189,19 @@ class Game(
         // teleport players to spawn
         teamManager.teams.forEach { team ->
             worldManager.mapConfig.getTeamSpawn(team.id)?.let { spawn ->
-                team.players.forEach { it.bukkitPlayer.teleport(spawn) }
+                team.players.forEach {
+                    it.bukkitPlayer.teleport(spawn)
+                    it.bukkitPlayer.isFlying = false
+                    it.bukkitPlayer.exp = 0F
+                    it.bukkitPlayer.totalExperience = 0
+                    it.bukkitPlayer.level = 0
+                    it.bukkitPlayer.inventory.clear()
+                    it.bukkitPlayer.activePotionEffects.clear()
+                    it.bukkitPlayer.fireTicks = 0
+                    it.bukkitPlayer.resetMaxHealth()
+                    it.bukkitPlayer.health = it.bukkitPlayer.maxHealth
+                    it.bukkitPlayer.gameMode = GameMode.SURVIVAL
+                }
             } ?: team.players.forEach { it.quitGame() }
         }
 
