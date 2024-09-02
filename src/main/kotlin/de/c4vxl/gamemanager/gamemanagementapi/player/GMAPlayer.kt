@@ -63,7 +63,7 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
 
     /**
      * Shortcut to revive an eliminated player in his game
-     *  ==> will execute game.eliminatePlayer
+     *  ==> will execute game.revivePlayer
      */
     fun revive(): Boolean = game?.revivePlayer(this) == true
 
