@@ -379,7 +379,7 @@ object APICommand {
                             }
 
                             // kill
-                            if (player.asGamePlayer.kill() == Unit)
+                            if (player.asGamePlayer.kill())
                                 sender.sendMessage(prefix.append(Component.text("${player.name} has been eliminated!").color(NamedTextColor.GREEN)))
                             else
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot eliminate ${player.name}!").color(NamedTextColor.WHITE)))
@@ -409,7 +409,7 @@ object APICommand {
                             }
 
                             // revive
-                            if (player.asGamePlayer.revive() == Unit)
+                            if (player.asGamePlayer.revive())
                                 sender.sendMessage(prefix.append(Component.text("${player.name} has been revived!").color(NamedTextColor.GREEN)))
                             else
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot revive ${player.name}!").color(NamedTextColor.WHITE)))
