@@ -61,13 +61,25 @@ class Game(
         // return if player is already spectator
         if (player.isSpectating) return false
 
-        if (spectators.add(player)) player.game = this
-        player.bukkitPlayer.teleport(worldManager.mapConfig.getTeamSpawn(-1) ?: worldManager.world?.spawnLocation ?: return true)
-        player.bukkitPlayer.gameMode = GameMode.SPECTATOR // set to spectator gamemode
+        // make quit his game
+        player.quitGame()
 
-        GameSpectateStartEvent(player, this).callEvent()
+        if (spectators.add(player)) {
+            player.game = this
 
-        return true
+            // teleport player
+            player.bukkitPlayer.teleport(worldManager.mapConfig.getTeamSpawn(-1) ?: worldManager.world?.spawnLocation ?: return true)
+
+            // set to spectator gamemode
+            player.bukkitPlayer.gameMode = GameMode.SPECTATOR
+
+            // call event
+            GameSpectateStartEvent(player, this).callEvent()
+
+            return true
+        }
+
+        return false
     }
 
     fun eliminatePlayer(player: GMAPlayer) {
@@ -154,8 +166,10 @@ class Game(
 
             players.remove(player)
             player.game = null
-            deadPlayers.add(player)
-            GamePlayerEliminateEvent(player, this).callEvent()
+            if (!deadPlayers.contains(player)) {
+                deadPlayers.add(player)
+                GamePlayerEliminateEvent(player, this).callEvent()
+            }
 
             // Stop game if no players are left
             if (players.isEmpty()) stop()

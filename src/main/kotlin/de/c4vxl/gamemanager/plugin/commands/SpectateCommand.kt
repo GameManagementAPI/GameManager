@@ -28,11 +28,12 @@ object SpectateCommand {
 
             literalArgument("player") {
                 argument(StringArgument("playername").replaceSuggestions(ArgumentSuggestions.strings { sender ->
-                    return@strings Bukkit.getOnlinePlayers().filter { it.asGamePlayer.game?.isRunning == true }.map { it.name }.filter { it != sender.sender.name }
+                    Bukkit.getOnlinePlayers().filter { it.asGamePlayer.game?.isRunning == true }.map { it.name }.filter { it != sender.sender.name }
                         .toTypedArray()
                 })) {
                     playerExecutor { player, args ->
-                        val target: Player? = Bukkit.getPlayer(args.get("playername").toString())
+                        val playerName = args.get("playername").toString()
+                        val target: Player? = Bukkit.getOnlinePlayers().firstOrNull { it.name.equals(playerName, ignoreCase = true) }
                         val game: Game? = target?.asGamePlayer?.game
 
                         if (target == null) {
@@ -57,7 +58,7 @@ object SpectateCommand {
                             return@playerExecutor
                         }
 
-                        player.performCommand("spectate game ${game.id.asString}")
+                        player.asGamePlayer.spectate(game)
                     }
                 }
             }
