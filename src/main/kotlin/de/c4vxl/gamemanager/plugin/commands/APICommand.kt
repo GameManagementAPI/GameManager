@@ -378,8 +378,8 @@ object APICommand {
                                 return@anyExecutor
                             }
 
-                            // kill
-                            if (player.asGamePlayer.kill())
+                            // eliminate
+                            if (player.asGamePlayer.eliminate())
                                 sender.sendMessage(prefix.append(Component.text("${player.name} has been eliminated!").color(NamedTextColor.GREEN)))
                             else
                                 sender.sendMessage(prefix.append(sorry).append(Component.text("But you cannot eliminate ${player.name}!").color(NamedTextColor.WHITE)))

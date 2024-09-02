@@ -54,12 +54,12 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
     fun canJoin(game: Game): Boolean = !game.isFull && game.isQueuing && !game.players.contains(this) && !isInGame
 
 
-    // kill/revive logic
+    // eliminate/revive logic
     /**
      * Shortcut to eliminate a player in his game
      *  ==> will execute game.eliminatePlayer
      */
-    fun kill(): Boolean = game?.eliminatePlayer(this) == true
+    fun eliminate(): Boolean = game?.eliminatePlayer(this) == true
 
     /**
      * Shortcut to revive an eliminated player in his game
