@@ -51,7 +51,6 @@ class WorldManager(val game: Game) {
         world.setGameRule(GameRule.DO_MOB_SPAWNING, false)
         world.setGameRule(GameRule.DO_FIRE_TICK, false)
         world.setGameRule(GameRule.DO_TRADER_SPAWNING, false)
-        world.setGameRule(GameRule.DO_VINES_SPREAD, false)
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
 
         mapConfig = MapConfig(mapFolder, world)

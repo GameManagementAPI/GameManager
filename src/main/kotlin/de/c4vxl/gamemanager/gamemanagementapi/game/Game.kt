@@ -222,7 +222,7 @@ class Game(
                     it.bukkitPlayer.totalExperience = 0
                     it.bukkitPlayer.level = 0
                     it.bukkitPlayer.inventory.clear()
-                    it.bukkitPlayer.activePotionEffects.clear()
+                    it.bukkitPlayer.activePotionEffects.forEach { p -> it.bukkitPlayer.removePotionEffect(p.type) }
                     it.bukkitPlayer.fireTicks = 0
                     it.bukkitPlayer.resetMaxHealth()
                     it.bukkitPlayer.health = it.bukkitPlayer.maxHealth
