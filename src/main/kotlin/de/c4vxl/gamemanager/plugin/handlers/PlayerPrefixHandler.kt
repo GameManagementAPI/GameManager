@@ -27,6 +27,9 @@ class PlayerPrefixHandler(plugin: Plugin) : Listener {
             val sb: Scoreboard = Bukkit.getScoreboardManager().mainScoreboard
             val team: Team = "gamemanager_${event.game.id.asString}_${gameTeam.id}".let { sb.getTeam(it) ?: sb.registerNewTeam(it) }
 
+            // disable friendly fire
+            team.setAllowFriendlyFire(false)
+
             team.prefix(
                 LegacyComponentSerializer.legacySection().deserialize(gameTeam.name)
                     .append(Component.text(" | ").color(NamedTextColor.GRAY)))
