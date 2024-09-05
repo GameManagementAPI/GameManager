@@ -34,12 +34,14 @@ class GameFinishHandler(val plugin: Plugin): Listener {
             return
         }
 
+        val winnerPlayers = winnerTeam.players.apply { addAll(winnerTeam.quitPlayers) }.distinct()
+
         // call win event
-        winnerTeam.players.forEach { GamePlayerWinEvent(it, event.game).callEvent() }
+        winnerPlayers.forEach { GamePlayerWinEvent(it, event.game).callEvent() }
         GameFinishEvent(event.game, winnerTeam).callEvent()
 
         // call loose event
-        event.game.deadPlayers.forEach {
+        event.game.deadPlayers.filter { !winnerPlayers.contains(it) }.forEach {
             GamePlayerLooseEvent(it, event.game).callEvent()
         }
 

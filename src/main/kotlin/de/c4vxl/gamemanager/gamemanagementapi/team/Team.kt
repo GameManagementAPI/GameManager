@@ -11,6 +11,7 @@ import java.io.File
 
 class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPlayer> = mutableListOf()) {
     val maxSize: Int = manager.game.teamSize
+    val quitPlayers: MutableList<GMAPlayer> = mutableListOf()
     val isFull: Boolean get() = players.size >= maxSize
 
     val name: String get() {
@@ -43,6 +44,7 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
         GamePlayerTeamQuitEvent(player, manager.game, this).callEvent()
 
         players.remove(player)
+        quitPlayers.add(player)
 
         return true
     }
