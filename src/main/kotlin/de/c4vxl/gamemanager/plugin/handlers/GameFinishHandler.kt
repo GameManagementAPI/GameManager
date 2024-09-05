@@ -37,7 +37,16 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         val winnerPlayers = winnerTeam.players.apply { addAll(winnerTeam.quitPlayers) }.distinct()
 
         // call win event
-        winnerPlayers.forEach { GamePlayerWinEvent(it, event.game).callEvent() }
+        winnerPlayers.forEach {
+            // add player to dead players so the .quit function (being called in .spectate) won't trigger the GamePlayerEliminate Event again!
+            event.game.deadPlayers.add(it)
+
+            // make player spectate the game
+            it.spectate(event.game)
+
+            // trigger event
+            GamePlayerWinEvent(it, event.game).callEvent()
+        }
         GameFinishEvent(event.game, winnerTeam).callEvent()
 
         // call loose event
