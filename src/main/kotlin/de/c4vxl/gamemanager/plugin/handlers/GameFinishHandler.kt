@@ -29,6 +29,13 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         // this ensures that the below code will not be executed multiple times in a game
         event.game.gameState = GameState.STOPPING
 
+        // logging
+        plugin.logger.info("Game finish: ${event.game.id.asString}")
+        plugin.logger.info("Alive players: " + event.game.alivePlayers.map { it.bukkitPlayer.name })
+        plugin.logger.info("Alive teams: " + event.game.aliveTeams.map { "${it.id} (${it.players.map { it.bukkitPlayer.name } }})" })
+        plugin.logger.info("Winner team: " + "${winnerTeam?.id} (${winnerTeam?.players?.map { it.bukkitPlayer.name }})")
+        plugin.logger.info("Dead players: " + event.game.deadPlayers.map { it.bukkitPlayer.name })
+
         if (winnerTeam == null) {
             event.game.stop()
             return

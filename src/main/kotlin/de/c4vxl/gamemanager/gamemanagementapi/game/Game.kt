@@ -182,9 +182,6 @@ class Game(
             // quit team
             teamManager.quit(player)
 
-            // Stop game if no players are left
-            if (players.isEmpty()) stop()
-
             return true
         }
 
