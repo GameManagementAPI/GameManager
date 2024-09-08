@@ -52,7 +52,8 @@ class Game(
     val isRunning: Boolean get() = gameState == GameState.RUNNING
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
     val isStarting: Boolean get() = gameState == GameState.STARTING
-    val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
+    val isStopping: Boolean get() = gameState == GameState.STOPPING
+    val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.KILLED).contains(gameState)
 
     fun spectate(player: GMAPlayer): Boolean {
         worldManager.world ?: return false // return if the world has not been loaded
@@ -246,7 +247,7 @@ class Game(
     }
 
     fun stop(): Boolean {
-        if (!isRunning && !isQueuing) return false
+        if (!isRunning && !isQueuing && !isStopping) return false
 
         // call event
         val event = GameStopEvent(this)
