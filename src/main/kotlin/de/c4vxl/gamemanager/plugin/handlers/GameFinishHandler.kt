@@ -46,7 +46,7 @@ class GameFinishHandler(val plugin: Plugin): Listener {
         // call win event
         winnerPlayers.forEach {
             // add player to dead players so the .quit function (being called in .spectate) won't trigger the GamePlayerEliminate Event again!
-            event.game.deadPlayers.add(it)
+            if (!event.game.deadPlayers.contains(it)) event.game.deadPlayers.add(it)
 
             // make player spectate the game
             it.spectate(event.game)
@@ -78,6 +78,9 @@ class GameFinishHandler(val plugin: Plugin): Listener {
                             Component.text("1").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD))))
 
                         Bukkit.getScheduler().runTaskLater(plugin, Runnable {
+                            plugin.logger.info("Stopping game ${event.game.id.asString}")
+                            plugin.logger.info("Stopping with players: ${event.game.players.map { it.bukkitPlayer.name }}")
+                            plugin.logger.info("Stopping with spectators: ${event.game.spectators.map { it.bukkitPlayer.name }}")
                             event.game.stop()
                         }, 20)
                     }, 20)

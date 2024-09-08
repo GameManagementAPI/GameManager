@@ -49,22 +49,23 @@ class Game(
 
             field = value
         }
-    val isRunning: Boolean get() = mutableListOf(GameState.RUNNING, GameState.STOPPING).contains(gameState)
+    val isRunning: Boolean get() = gameState == GameState.RUNNING
     val isQueuing: Boolean get() = gameState == GameState.QUEUEING
     val isStarting: Boolean get() = gameState == GameState.STARTING
     val isOver: Boolean get() = mutableListOf(GameState.STOPPED, GameState.STOPPING).contains(gameState)
 
     fun spectate(player: GMAPlayer): Boolean {
-        if (!isRunning) return false // player can only spec if game is running
+        worldManager.world ?: return false // return if the world has not been loaded
         if (player.game != null && player.game != this) return false
 
         // return if player is already spectator
         if (player.isSpectating) return false
 
-        // make quit his game
-        player.quitGame()
+        if (!spectators.contains(player)) {
+            // make quit his game
+            player.quitGame()
 
-        if (spectators.add(player)) {
+            spectators.add(player)
             player.game = this
 
             // teleport player
@@ -88,7 +89,7 @@ class Game(
         if (deadPlayers.contains(player)) return false
 
         // add to dead player list
-        deadPlayers.add(player)
+        if (!deadPlayers.contains(player)) deadPlayers.add(player)
 
         // call event
         GamePlayerEliminateEvent(player, this).let {
@@ -126,6 +127,9 @@ class Game(
         player.bukkitPlayer.gameMode = GameMode.SURVIVAL
         player.bukkitPlayer.health = 0.0
 
+        // add to players
+        if (!players.contains(player)) players.add(player)
+
         return true
     }
 
@@ -140,7 +144,7 @@ class Game(
         }
 
         // add player to list
-        players.add(player)
+        if (!players.contains(player)) players.add(player)
 
         // set player's game
         player.game = this
@@ -174,10 +178,8 @@ class Game(
 
             players.remove(player)
             player.game = null
-            if (!deadPlayers.contains(player)) {
-                deadPlayers.add(player)
-                GamePlayerEliminateEvent(player, this).callEvent()
-            }
+            if (!deadPlayers.contains(player)) deadPlayers.add(player)
+            GamePlayerEliminateEvent(player, this).callEvent()
 
             // quit team
             teamManager.quit(player)

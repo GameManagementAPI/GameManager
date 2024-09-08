@@ -29,7 +29,7 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
         // call event
         GamePlayerTeamJoinEvent(player, manager.game, this).callEvent()
 
-        players.add(player)
+        if (!players.contains(player)) players.add(player)
 
         return true
     }
@@ -44,7 +44,7 @@ class Team(val manager: TeamManager, val id: Int, val players: MutableList<GMAPl
         GamePlayerTeamQuitEvent(player, manager.game, this).callEvent()
 
         players.remove(player)
-        quitPlayers.add(player)
+        if (!quitPlayers.contains(player)) quitPlayers.add(player)
 
         return true
     }
