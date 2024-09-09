@@ -1,20 +1,22 @@
 package de.c4vxl.gamemanager.gamemanagementapi.game
 
-import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gamemanagementapi.event.*
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
 import de.c4vxl.gamemanager.gamemanagementapi.team.Team
 import de.c4vxl.gamemanager.gamemanagementapi.team.TeamManager
 import de.c4vxl.gamemanager.gamemanagementapi.world.WorldManager
 import net.kyori.adventure.text.Component
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
+import org.bukkit.scoreboard.Scoreboard
 
 class Game(
     val teamAmount: Int,
     val teamSize: Int,
     val id: GameID = GameID.generateRandom(),
     val players: MutableList<GMAPlayer> = mutableListOf(),
-    val owner: GMAPlayer? = null
+    val owner: GMAPlayer? = null,
+    val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
 ) {
     val isPrivate: Boolean = owner != null
 
