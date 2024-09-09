@@ -276,11 +276,12 @@ class Game(
 
     // broadcasting to all players
     fun broadcast(message: Component) {
-        GameMessageBroadcastEvent(this, message).let {
+        val audience = players.apply { addAll(spectators) }.distinct().filter { it.game == this }.toMutableList()
+        GameMessageBroadcastEvent(this, message, audience).let {
             it.callEvent()
             if (it.isCancelled) return // stop if event has been canceled
         }
 
-        players.apply { addAll(spectators) }.distinct().forEach { it.bukkitPlayer.sendMessage(message) }
+        audience.forEach { it.bukkitPlayer.sendMessage(message) }
     }
 }

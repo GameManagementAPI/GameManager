@@ -14,7 +14,7 @@ data class GameStopEvent(val game: Game, var kickPlayers: Boolean = true): GameE
 data class GameStartEvent(val game: Game): GameEvent()
 data class GameForceStopEvent(val game: Game): GameEvent()
 data class GameStateChangeEvent(val game: Game, val oldState: GameState, val newState: GameState): GameEvent()
-data class GameMessageBroadcastEvent(val game: Game, val message: Component): GameEvent()
+data class GameMessageBroadcastEvent(val game: Game, val message: Component, val audience: MutableList<GMAPlayer>): GameEvent()
 data class GameFinishEvent(val game: Game, val winnerTeam: Team): GameEvent()
 
 // game-player based events
