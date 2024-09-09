@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.gamemanagementapi.game
 
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gamemanagementapi.event.*
 import de.c4vxl.gamemanager.gamemanagementapi.player.GMAPlayer
 import de.c4vxl.gamemanager.gamemanagementapi.team.Team
@@ -96,7 +97,7 @@ class Game(
         GamePlayerEliminateEvent(player, this).let {
             it.callEvent()
             if (it.isCancelled) {
-                deadPlayers.remove(player) // stop if event has been canceled
+                deadPlayers.removeAll { it == player } // stop if event has been canceled
                 return false
             }
             else player.spectate(this)
@@ -116,13 +117,13 @@ class Game(
             if (it.isCancelled) return false // stop if event has been canceled
         }
 
-        spectators.remove(player)
+        spectators.removeAll { it == player }
 
         // Call spectate stop event
         GameSpectateStopEvent(player, this).callEvent()
 
         // remove from dead player list
-        deadPlayers.remove(player)
+        deadPlayers.removeAll { it == player }
 
         // kill player to respawn at team-spawn
         player.bukkitPlayer.gameMode = GameMode.SURVIVAL
@@ -160,7 +161,7 @@ class Game(
         val isPlayer = players.contains(player)
 
         if (isSpectator) {
-            spectators.remove(player)
+            spectators.removeAll { it == player }
             player.game = null
 
             // Call spectate stop event
@@ -177,7 +178,7 @@ class Game(
             // Call quit event
             GamePlayerQuitEvent(player, this).callEvent()
 
-            players.remove(player)
+            players.removeAll { it == player }
             player.game = null
             if (!deadPlayers.contains(player)) deadPlayers.add(player)
             GamePlayerEliminateEvent(player, this).callEvent()
@@ -259,7 +260,7 @@ class Game(
         gameState = GameState.STOPPING
 
         // quit players
-        players.apply { addAll(spectators) }.distinct().forEach { it.quitGame() }
+        players.apply { addAll(spectators) }.distinct().filter { it.game == this }.forEach { it.quitGame() }
 
         // kick players so map can be unloaded
         // if an event listener sets kickPlayers to false, we just assume the external plugin takes care of removing the players so the world can be unloaded

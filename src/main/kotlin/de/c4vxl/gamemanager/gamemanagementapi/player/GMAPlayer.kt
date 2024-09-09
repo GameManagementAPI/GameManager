@@ -15,6 +15,8 @@ class GMAPlayer private constructor(val bukkitPlayer: Player) {
         val Player.asGamePlayer: GMAPlayer get() = fromBukkit(this)
     }
 
+    override fun equals(other: Any?): Boolean = (other as? GMAPlayer)?.bukkitPlayer?.uniqueId == this.bukkitPlayer.uniqueId
+
     val isOnline: Boolean get() = bukkitPlayer.isOnline
 
     // keeping track of games
