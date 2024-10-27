@@ -90,6 +90,13 @@ class GameFinishHandler(val plugin: Plugin): Listener {
     }
 
     @EventHandler
+    fun onQuit(event: GamePlayerEliminateEvent) {
+        if (event.game.players.isNotEmpty()) return
+
+        event.game.stop()
+    }
+
+    @EventHandler
     fun onWin(event: GamePlayerWinEvent) {
         if (event.player.bukkitPlayer.world.name != event.player.game?.id?.asString) return
         event.player.bukkitPlayer.sendActionBar(Component.text("Congratulations! You ").color(NamedTextColor.WHITE).append(

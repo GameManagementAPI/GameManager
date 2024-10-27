@@ -107,7 +107,7 @@ object PrivateGameCommand {
                                     .decorate(TextDecoration.BOLD)
                             )
                             .append(
-                                Component.text("has invited you to his private game! ")
+                                Component.text("has invited you to his/her private game! ")
                                     .color(NamedTextColor.GREEN)
                             )
                             .append(
