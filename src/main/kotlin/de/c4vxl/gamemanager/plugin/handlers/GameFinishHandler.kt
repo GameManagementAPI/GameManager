@@ -91,6 +91,7 @@ class GameFinishHandler(val plugin: Plugin): Listener {
 
     @EventHandler
     fun onQuit(event: GamePlayerEliminateEvent) {
+        if (event.game.gameState != GameState.QUEUEING) return
         if (event.game.players.isNotEmpty()) return
 
         event.game.stop()
