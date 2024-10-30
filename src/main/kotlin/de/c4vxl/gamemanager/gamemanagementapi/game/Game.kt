@@ -153,8 +153,6 @@ class Game(
         // set player's game
         player.game = this
 
-        if (isFull) start() // start game if it is full
-
         return true
     }
 
