@@ -24,12 +24,17 @@ class WorldManager(val game: Game) {
             // run through GameWorldMapForceEvent event
             GameWorldMapForceEvent(game, value).let {
                 it.callEvent()
-                field = it.forceTo
+                if (!it.isCancelled) {
+                    field = it.forceTo
+                    mapName = field
+                }
             }
         }
 
     val world: World? get() = Bukkit.getWorld(game.id.asString)
     lateinit var mapConfig: MapConfig
+
+    var mapName: String? = null
 
     fun loadMap(mapName: String? = forcemap): Boolean {
         // force-stop if no maps are available
@@ -54,6 +59,7 @@ class WorldManager(val game: Game) {
         world.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true)
 
         mapConfig = MapConfig(mapFolder, world)
+        this.mapName = mapName
 
         GameWorldLoadEvent(game, world, mapConfig).callEvent()
 
