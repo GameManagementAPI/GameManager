@@ -7,6 +7,8 @@ import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIBukkitConfig
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.NamedTextColor
+import org.bukkit.event.HandlerList
+import org.bukkit.event.Listener
 import org.bukkit.plugin.java.JavaPlugin
 
 class GameManager : JavaPlugin() {
@@ -23,6 +25,13 @@ class GameManager : JavaPlugin() {
         CommandAPI.onLoad(CommandAPIBukkitConfig(this).silentLogs(true))
     }
 
+    lateinit var playerRespawnHandler: Listener
+    lateinit var playerVisibilityHandler: Listener
+    lateinit var gameFinishHandler: Listener
+    lateinit var queueHandler: Listener
+    lateinit var playerConnectionHandler: Listener
+    lateinit var playerPrefixHandler: Listener
+
     override fun onEnable() {
         // register commands
         CommandAPI.onEnable()
@@ -35,12 +44,12 @@ class GameManager : JavaPlugin() {
         SpectateCommand
 
         // register handlers
-        PlayerRespawnHandler(this)
-        PlayerVisibilityHandler(this)
-        GameFinishHandler(this)
-        QueueHandler(this)
-        PlayerConnectionHandler(this)
-        PlayerPrefixHandler(this)
+        playerRespawnHandler = PlayerRespawnHandler(this)
+        playerVisibilityHandler = PlayerVisibilityHandler(this)
+        gameFinishHandler = GameFinishHandler(this)
+        queueHandler = QueueHandler(this)
+        playerConnectionHandler = PlayerConnectionHandler(this)
+        playerPrefixHandler = PlayerPrefixHandler(this)
 
         logger.info("[+] $name has been enabled!")
     }
@@ -59,5 +68,9 @@ class GameManager : JavaPlugin() {
         }
 
         logger.info("[-] $name has been disabled!")
+    }
+
+    fun disableHandler(handler: Listener) {
+        HandlerList.unregisterAll(handler)
     }
 }
