@@ -18,19 +18,23 @@ class GameManager : JavaPlugin() {
             .append(Component.text("] ").color(NamedTextColor.GRAY))
 
         lateinit var instance: JavaPlugin
+
+        lateinit var playerRespawnHandler: Listener
+        lateinit var playerVisibilityHandler: Listener
+        lateinit var gameFinishHandler: Listener
+        lateinit var queueHandler: Listener
+        lateinit var playerConnectionHandler: Listener
+        lateinit var playerPrefixHandler: Listener
+
+        fun disableHandler(handler: Listener) {
+            HandlerList.unregisterAll(handler)
+        }
     }
 
     override fun onLoad() {
         instance = this
         CommandAPI.onLoad(CommandAPIBukkitConfig(this).silentLogs(true))
     }
-
-    lateinit var playerRespawnHandler: Listener
-    lateinit var playerVisibilityHandler: Listener
-    lateinit var gameFinishHandler: Listener
-    lateinit var queueHandler: Listener
-    lateinit var playerConnectionHandler: Listener
-    lateinit var playerPrefixHandler: Listener
 
     override fun onEnable() {
         // register commands
@@ -68,9 +72,5 @@ class GameManager : JavaPlugin() {
         }
 
         logger.info("[-] $name has been disabled!")
-    }
-
-    fun disableHandler(handler: Listener) {
-        HandlerList.unregisterAll(handler)
     }
 }
