@@ -186,7 +186,7 @@ object APICommand {
                                             .hoverEvent(HoverEvent.showText(Component.text("Click to copy game id")))
                                             .clickEvent(ClickEvent.copyToClipboard(gameID.asString))))
                                     .appendNewline()
-                                .append(Component.text("${game.gameSize} | ${game.players.size}/${game.maxPlayer} Players | isPrivate: ${game.isPrivate} | ").append(getGameStateComponent(game))))
+                                .append(Component.text("${game.gameSize} | ${game.players.size}/${game.maxPlayers} Players | isPrivate: ${game.isPrivate} | ").append(getGameStateComponent(game))))
                         }
                     }
                 }

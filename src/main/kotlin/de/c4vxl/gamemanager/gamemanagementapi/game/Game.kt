@@ -31,7 +31,7 @@ class Game(
 
     // player functions
     val maxPlayers: Int get() = teamSize * teamAmount
-    val isFull: Boolean get() = players.size >= maxPlayer
+    val isFull: Boolean get() = players.size >= maxPlayers
 
     // list of all eliminated players
     val deadPlayers: MutableList<GMAPlayer> = mutableListOf()
