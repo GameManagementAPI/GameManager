@@ -30,7 +30,7 @@ class Game(
     val teamManager: TeamManager = TeamManager(this)
 
     // player functions
-    val maxPlayer: Int get() = teamSize * teamAmount
+    val maxPlayers: Int get() = teamSize * teamAmount
     val isFull: Boolean get() = players.size >= maxPlayer
 
     // list of all eliminated players
@@ -141,17 +141,20 @@ class Game(
         if (!player.canJoin(this)) return false
         if (worldManager.availableMaps.isEmpty()) return false
 
-        // call event
-        GamePlayerJoinEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) return false // stop if event has been canceled
-        }
-
         // add player to list
         if (!players.contains(player)) players.add(player)
 
         // set player's game
         player.game = this
+
+        // call event
+        GamePlayerJoinEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) {
+                players.remove(player)
+                player.game = null
+            }
+        }
 
         return true
     }
