@@ -93,6 +93,8 @@ class QueueHandler(plugin: Plugin) : Listener {
             setCountdown(event.game, 10)
         else if (event.game.players.size >= event.game.teamSize * 2)
             setCountdown(event.game, (checkForPlayerStatus(event.game) * 60).toInt())
+
+        bars[event.game]?.addPlayer(event.player.bukkitPlayer)
     }
 
     @EventHandler
