@@ -231,6 +231,7 @@ class Game(
                     it.bukkitPlayer.resetMaxHealth()
                     it.bukkitPlayer.health = it.bukkitPlayer.maxHealth
                     it.bukkitPlayer.gameMode = GameMode.SURVIVAL
+                    it.bukkitPlayer.fallDistance = 0.0F
                 }
             } ?: team.players.forEach { it.quitGame() }
         }
