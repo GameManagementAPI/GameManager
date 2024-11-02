@@ -50,7 +50,7 @@ class QueueHandler(plugin: Plugin) : Listener {
         Bukkit.getScheduler().runTaskTimer(GameManager.instance, { task ->
             val c = countdowns[game] ?: Pair(0, 1)
 
-            if (c.first <= 0) {
+            if (c.first <= 0 || game.isRunning) {
                 bar.removeAll()
                 game.start()
                 task.cancel()
