@@ -50,7 +50,14 @@ class QueueHandler(plugin: Plugin) : Listener {
         Bukkit.getScheduler().runTaskTimer(GameManager.instance, { task ->
             val c = countdowns[game] ?: Pair(0, 1)
 
-            if (c.first <= 0 || game.isRunning) {
+            if (game.players.size < game.teamSize * 2) {
+                game.players.forEach { it.bukkitPlayer.sendActionBar(Component.text("Start has been cancelled!")) }
+                bar.removeAll()
+                task.cancel()
+                return@runTaskTimer
+            }
+
+            if (c.first <= 0 || game.isRunning ) {
                 bar.removeAll()
                 game.start()
                 task.cancel()
