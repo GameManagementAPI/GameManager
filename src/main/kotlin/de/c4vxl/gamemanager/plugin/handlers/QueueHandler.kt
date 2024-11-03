@@ -53,6 +53,8 @@ class QueueHandler(plugin: Plugin) : Listener {
             if (game.players.size < game.teamSize * 2) {
                 game.players.forEach { it.bukkitPlayer.sendActionBar(Component.text("Start has been cancelled!")) }
                 bar.removeAll()
+                bars.remove(game)
+                countdowns.remove(game)
                 task.cancel()
                 return@runTaskTimer
             }
