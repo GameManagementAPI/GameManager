@@ -9,6 +9,22 @@ class GameSize(
     val teamAmount: Int,
     val teamSize: Int
 ) {
+    companion object {
+        /**
+         * Constructs a GameSize-object from its string representation
+         */
+        fun fromString(string: String): GameSize? {
+            val parts = string.split("x")
+            val amount = parts.getOrNull(0)?.toIntOrNull() ?: return null
+            val size = parts.getOrNull(1)?.toIntOrNull() ?: return null
+
+            return GameSize(amount, size)
+        }
+    }
+
+    /**
+     * Converts size into string representation
+     */
     override fun toString(): String {
         return "${teamAmount}x$teamSize"
     }
