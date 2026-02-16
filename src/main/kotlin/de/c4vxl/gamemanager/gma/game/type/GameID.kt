@@ -19,7 +19,7 @@ class GameID(val asString: String) {
          * Constructs a game id from its bytes
          */
         fun fromBytes(bytes: ByteArray) =
-            GameID(bytes.toString())
+            GameID(String(bytes))
 
         /**
          * Returns a random game id
@@ -27,7 +27,7 @@ class GameID(val asString: String) {
         fun random(): GameID {
             val bytes = ByteArray(GAME_ID_LENGTH)
             SecureRandom().nextBytes(bytes)
-            return fromBytes(bytes)
+            return fromString(bytes.joinToString("") { "%02x".format(it) })
         }
     }
 
