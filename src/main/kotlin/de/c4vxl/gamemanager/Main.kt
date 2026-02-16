@@ -1,5 +1,8 @@
 package de.c4vxl.gamemanager
 
+import de.c4vxl.gamemanager.language.Language
+import de.c4vxl.gamemanager.plugin.commands.APICommand
+import de.c4vxl.gamemanager.utils.ResourceUtils
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
@@ -23,6 +26,13 @@ class Main : JavaPlugin() {
     override fun onEnable() {
         // Enable CommandAPI
         CommandAPI.onEnable()
+
+        // Load config
+        saveResource("config.yml", false)
+        reloadConfig()
+
+        // Load languages
+        Language.load()
 
         logger.info("[+] $name has been enabled!")
     }

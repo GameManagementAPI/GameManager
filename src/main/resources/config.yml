@@ -1,0 +1,10 @@
+language:
+  # The default language
+  # used for console and players that don't have a specific language specified
+  default: "english"
+
+  # Path to file that stores player-languages
+  db: "./languages.yml"
+
+  # Path to directory where language translations will be stored
+  translations-dir: "./gma-translations/"
