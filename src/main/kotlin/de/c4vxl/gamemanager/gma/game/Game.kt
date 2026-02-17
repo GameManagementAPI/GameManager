@@ -125,7 +125,7 @@ class Game(
      */
     fun quit(player: GMAPlayer): Boolean {
         // Player not in this game
-        if (this.players.contains(player))
+        if (!this.players.contains(player))
             return false
 
         // Quit team
