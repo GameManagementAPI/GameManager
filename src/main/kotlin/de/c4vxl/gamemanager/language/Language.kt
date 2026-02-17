@@ -77,7 +77,7 @@ class Language(
 
         /**
          * Loads pre-packed translations onto disk
-         * @param replace If set to 'true' existing translation files will be replaced
+         * @param replace If set to {@code true} existing translation files will be replaced
          */
         fun load(replace: Boolean = false) {
             val langs = ResourceUtils.readResource("langs").split("\n")

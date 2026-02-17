@@ -35,7 +35,7 @@ class GameSize(
     }
 
     /**
-     * Returns 'true' if game size matches the passed size
+     * Returns {@code true} if game size matches the passed size
      * @param teamAmount The amount of teams
      * @param teamSize The amount of players per team
      */

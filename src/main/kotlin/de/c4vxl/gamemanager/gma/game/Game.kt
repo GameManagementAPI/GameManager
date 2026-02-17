@@ -16,17 +16,17 @@ class Game(
     val players: MutableList<GMAPlayer> = mutableListOf()
 
     /**
-     * Returns 'true' when the game is in a queuing state
+     * Returns {@code true} when the game is in a queuing state
      */
     val isQueuing: Boolean get() = this.state == GameState.QUEUING
 
     /**
-     * Returns 'true' when the game is in a running state
+     * Returns {@code true} when the game is in a running state
      */
     val isRunning: Boolean get() = this.state == GameState.RUNNING
 
     /**
-     * Returns 'true' when the game has been stopped
+     * Returns {@code true} when the game has been stopped
      */
     val isStopped: Boolean get() = this.state == GameState.STOPPED
 
@@ -34,14 +34,22 @@ class Game(
      * Starts the game
      */
     fun start() {
+        this.state = GameState.STARTING
 
+        // TODO: Add game start logic
+
+        this.state = GameState.RUNNING
     }
 
     /**
      * Stops the game
      */
     fun stop() {
+        this.state = GameState.STOPPING
 
+        // TODO: Add game stop logic
+
+        this.state = GameState.STOPPED
     }
 
 
