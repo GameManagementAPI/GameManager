@@ -1,9 +1,11 @@
 package de.c4vxl.gamemanager.language
 
 import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.utils.ResourceUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
+import org.bukkit.command.CommandSender
 import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
@@ -33,7 +35,7 @@ class Language(
 
             // Load lookup table
             val translations = buildMap<String, String> {
-                config.getKeys(false).forEach {
+                config.getKeys(true).forEach {
                     put(it, config.getString(it) ?: it)
                 }
             }
@@ -91,6 +93,14 @@ class Language(
         }
 
         /**
+         * Returns the language of a command sender
+         */
+        val CommandSender.language: Language
+            get() =
+                (this as? Player)?.gma?.language
+                    ?: default
+
+        /**
          * Returns the language preference of a player
          * @param player The player to look for
          */
@@ -116,7 +126,16 @@ class Language(
      */
     fun get(key: String, vararg args: String): String {
         var value = translations.getOrDefault(key, key)
-        args.forEachIndexed { i, arg -> value = value.replace("$i", arg) }
+
+        // Handle references
+        value.replace(" ", "")
+            .split("}")
+            .filter { it.startsWith("\${") }
+            .map { it.removePrefix("\${") }
+            .forEach { value = value.replace("\${$it}", get(it)) }
+
+        // Handle arguments
+        args.forEachIndexed { i, arg -> value = value.replace("$$i", arg) }
 
         return value
     }
