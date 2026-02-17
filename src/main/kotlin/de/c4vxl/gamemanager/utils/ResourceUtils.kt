@@ -3,6 +3,8 @@ package de.c4vxl.gamemanager.utils
 import de.c4vxl.gamemanager.Main
 import java.nio.file.Files
 import java.nio.file.Path
+import kotlin.io.path.deleteIfExists
+import kotlin.io.path.exists
 import kotlin.io.path.name
 
 object ResourceUtils {
@@ -23,6 +25,9 @@ object ResourceUtils {
         destPath.parent?.toFile()?.mkdirs()
 
         if (replace) Files.deleteIfExists(destPath)
+
+        if (destPath.exists())
+            return
 
         ResourceUtils.javaClass.getResourceAsStream("/$path")
             ?.use { Files.copy(it, destPath) }
