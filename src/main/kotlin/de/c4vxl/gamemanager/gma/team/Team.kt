@@ -27,5 +27,5 @@ data class Team(
      * Returns the label of this team
      */
     // TODO: Implement custom team labels
-    val label: String get() = "#$id"
+    val label: String get() = "#${id + 1}"
 }
