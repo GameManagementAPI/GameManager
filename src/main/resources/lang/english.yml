@@ -41,7 +41,7 @@ command.api:
     "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
     "list-players.failure.empty": "${sorry} But this game doesn't seem to have any players!"
     "list-players.msg.title": "${prefix} <grey>Players of</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>'$0'</hover></click></white><grey>:</grey>"
-    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>$0</hover></click> (Team: $1)"
+    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>$0</hover></click> (<white>Team:</white> <gray>$1</gray>)"
 
     # ... join
     "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
@@ -73,16 +73,16 @@ command.api:
     "jump.failure.no_game": "${not-in-game}"
     "jump.failure.same_game": "${sorry} But you are already connected to the same game as <gray>$0</gray>!"
     "jump.failure.general": "${general-failure}"
-    "jump.success": "${prefix} <green>You have been connected to </green><white>$0s</white><green> game successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
+    "jump.success": "${prefix} <green>You have been connected to </green><white>$0s</white><green> game successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
 
     # ... eliminate
     "eliminate.failure.invalid_player": "${not-connected}"
     "eliminate.failure.no_game": "${not-in-game}"
     "eliminate.failure.already": "${sorry} But this player is already eliminated!"
-    "eliminate.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
+    "eliminate.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
 
     # ... revive
     "revive.failure.invalid_player": "${not-connected}"
     "revive.failure.no_game": "${not-in-game}"
     "revive.failure.already": "${sorry} But this player is not eliminated yet!"
-    "revive.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
+    "revive.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
