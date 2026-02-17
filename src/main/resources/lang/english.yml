@@ -125,3 +125,13 @@ command.quit:
 
   "failure.no_game": "${sorry} But you are not connected to a game!"
   "success": "${prefix} <green>Successfully disconnected you from the game!</green>"
+
+# /start command
+command.start:
+  desc: "Allows you to start a game as soon as enough players are found to fill at least two teams!"
+
+  "failure.no_game": "${sorry} But you must be connected to a game to run that command!"
+  "failure.already": "${sorry} But this game is already running!"
+  "failure.not_enough": "${sorry} But there must at least be <gray>$0</gray> players in this game to start it!"
+  "failure.general": "${general-failure}"
+  "success": "${prefix} <green>Starting game...</green>"

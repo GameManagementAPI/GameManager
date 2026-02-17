@@ -4,6 +4,7 @@ import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.APICommand
 import de.c4vxl.gamemanager.plugin.commands.JoinCommand
 import de.c4vxl.gamemanager.plugin.commands.QuitCommand
+import de.c4vxl.gamemanager.plugin.commands.StartCommand
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
@@ -35,6 +36,7 @@ class Main : JavaPlugin() {
         APICommand
         JoinCommand
         QuitCommand
+        StartCommand
 
         // Load config
         saveResource("config.yml", false)
