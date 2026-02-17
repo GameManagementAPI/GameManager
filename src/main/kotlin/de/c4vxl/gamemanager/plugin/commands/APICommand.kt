@@ -11,6 +11,8 @@ import de.c4vxl.gamemanager.plugin.enums.Permission
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.jorel.commandapi.kotlindsl.*
+import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 
 /**
  * Command for interacting with the API directly through the game
@@ -26,6 +28,7 @@ object APICommand {
             // games list
             literalArgument("list") {
                 anyExecutor { sender, _ ->
+                    // No games registered
                     if (GMA.registeredGames.isEmpty()) {
                         sender.sendMessage(sender.language.getCmp("command.api.games.list.failure.empty"))
                         return@anyExecutor
@@ -50,16 +53,19 @@ object APICommand {
                         val sizeString = args.get("size").toString()
                         val size = GameSize.fromString(sizeString)
 
+                        // Invalid size format
                         if (size == null) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.register.failure.invalid_format", sizeString))
                             return@anyExecutor
                         }
 
+                        // Game size not supported
                         if (!GMA.possibleGameSizes.contains(sizeString)) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.register.failure.invalid_size", sizeString))
                             return@anyExecutor
                         }
 
+                        // Create game
                         val game = GMA.createGame(size.teamAmount, size.teamSize)
                         sender.sendMessage(sender.language.getCmp("command.api.games.register.success", game.id.toString()))
                     }
@@ -75,6 +81,8 @@ object APICommand {
                         val id = GameID.fromString(args.get("id").toString())
                         val game: Game? = GMA.getGame(id)
 
+                        // Invalid game id
+                        // or game is already running or over
                         if (game == null || !game.isQueuing) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.start.failure.invalid_id"))
                             return@anyExecutor
@@ -95,6 +103,8 @@ object APICommand {
                         val id = GameID.fromString(args.get("id").toString())
                         val game: Game? = GMA.getGame(id)
 
+                        // Invalid game id
+                        // or game is already stopped
                         if (game == null || game.isStopped) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.stop.failure.invalid_id"))
                             return@anyExecutor
@@ -115,6 +125,7 @@ object APICommand {
                         val id = GameID.fromString(args.get("id").toString())
                         val game: Game? = GMA.getGame(id)
 
+                        // Invalid game id
                         if (game == null) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.info.failure.invalid_id"))
                             return@anyExecutor
@@ -146,11 +157,13 @@ object APICommand {
                         val id = GameID.fromString(args.get("id").toString())
                         val game: Game? = GMA.getGame(id)
 
+                        // Invalid game id
                         if (game == null) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.list-players.failure.invalid_id"))
                             return@anyExecutor
                         }
 
+                        // No players
                         if (game.players.isEmpty()) {
                             sender.sendMessage(sender.language.getCmp("command.api.games.list-players.failure.empty"))
                             return@anyExecutor
@@ -182,11 +195,13 @@ object APICommand {
                         val id = GameID.fromString(args.get("id").toString())
                         val game: Game? = GMA.getGame(id)
 
+                        // Invalid game id
                         if (game == null) {
                             player.sendMessage(player.language.getCmp("command.api.games.join.failure.invalid_id"))
                             return@playerExecutor
                         }
 
+                        // Player already in a game
                         if (player.gma.isInGame) {
                             player.sendMessage(player.language.getCmp("command.api.games.join.failure.in_game"))
                             return@playerExecutor
@@ -203,6 +218,195 @@ object APICommand {
             }
         }
 
-        // TODO: Add player management options
+        literalArgument("player") {
+            argument(StringArgument("player").replaceSuggestions(ArgumentSuggestions.strings {
+                Bukkit.getOnlinePlayers().map { it.name }.toTypedArray()
+            })) {
+                // player <name> game
+                literalArgument("game") {
+                    anyExecutor { sender, args ->
+                        val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                        val game: Game? = player?.gma?.game
+
+                        // Player not online
+                        if (player == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.game.failure.invalid_player"))
+                            return@anyExecutor
+                        }
+
+                        // Not connected to a game
+                        if (game == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.game.failure.no_game"))
+                            return@anyExecutor
+                        }
+
+                        sender.sendMessage(sender.language.getCmp("command.api.player.game.msg", player.name, game.id.asString))
+                    }
+                }
+
+                // player <name> quit
+                literalArgument("quit") {
+                    anyExecutor { sender, args ->
+                        val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                        val game: Game? = player?.gma?.game
+
+                        // Player not online
+                        if (player == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.quit.failure.invalid_player"))
+                            return@anyExecutor
+                        }
+
+                        // Not connected to a game
+                        if (game == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.quit.failure.no_game"))
+                            return@anyExecutor
+                        }
+
+                        // Quit the game
+                        val success = player.gma.quit()
+                        if (success)
+                            sender.sendMessage(sender.language.getCmp("command.api.player.quit.success", player.name, game.id.asString))
+                        else
+                            sender.sendMessage(sender.language.getCmp("command.api.player.quit.failure.general"))
+                    }
+                }
+
+                // player <name> send <id>
+                literalArgument("send") {
+                    argument(StringArgument("id").replaceSuggestions(ArgumentSuggestions.strings {
+                        GMA.registeredGames.filter { it.isQueuing }.map { it.id.asString }.toTypedArray()
+                    })) {
+                        anyExecutor { sender, args ->
+                            val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                            val id = GameID.fromString(args.get("id").toString())
+                            val game: Game? = GMA.getGame(id)
+
+                            // Invalid game id
+                            if (game == null) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.send.failure.invalid_id"))
+                                return@anyExecutor
+                            }
+
+                            // Player not online
+                            if (player == null) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.send.failure.invalid_player"))
+                                return@anyExecutor
+                            }
+
+                            // Player already in a game
+                            if (player.gma.game == game) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.send.failure.same_game"))
+                                return@anyExecutor
+                            }
+
+                            // Make player join game
+                            // using force to make the player quit his old game
+                            val success = player.gma.join(game, true)
+
+                            if (success)
+                                sender.sendMessage(sender.language.getCmp("command.api.player.send.success", player.name, game.id.asString))
+                            else
+                                sender.sendMessage(sender.language.getCmp("command.api.player.send.failure.general"))
+                        }
+                    }
+                }
+
+                // player <name> jump
+                literalArgument("jump") {
+                    playerExecutor { sender, args ->
+                        val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                        val game: Game? = player?.gma?.game
+
+                        // Player not online
+                        if (player == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.invalid_player"))
+                            return@playerExecutor
+                        }
+
+                        // Not connected to any game
+                        if (game == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.no_game"))
+                            return@playerExecutor
+                        }
+
+                        // Already in same game
+                        if (sender.gma.game == game) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.same_game", player.name))
+                            return@playerExecutor
+                        }
+
+                        // Make player join game
+                        // using force to make the sender quit his current game
+                        val success = sender.gma.join(game, true)
+                        if (success)
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.success", player.name, game.id.asString))
+                        else
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.general"))
+                    }
+                }
+
+                // player <name> eliminate
+                literalArgument("eliminate") {
+                    anyExecutor { sender, args ->
+                        val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                        val game: Game? = player?.gma?.game
+
+                        // Player not online
+                        if (player == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.failure.invalid_player"))
+                            return@anyExecutor
+                        }
+
+                        // Player not in game
+                        if (game == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.failure.no_game"))
+                            return@anyExecutor
+                        }
+
+                        // Player already eliminated
+                        // TODO: Implement check if player is eliminated
+                        if (false) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.failure.already"))
+                            return@anyExecutor
+                        }
+
+                        // TODO: implement elimination logic
+
+                        sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.success", player.name, game.id.asString))
+                    }
+                }
+
+                // player <name> revive
+                literalArgument("revive") {
+                    anyExecutor { sender, args ->
+                        val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                        val game: Game? = player?.gma?.game
+
+                        // Player not online
+                        if (player == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.revive.failure.invalid_player"))
+                            return@anyExecutor
+                        }
+
+                        // Player not in game
+                        if (game == null) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.revive.failure.no_game"))
+                            return@anyExecutor
+                        }
+
+                        // Player not eliminated
+                        // TODO: Implement check if player actually eliminated
+                        if (false) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.revive.failure.already"))
+                            return@anyExecutor
+                        }
+
+                        // TODO: implement elimination logic
+
+                        sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.success", player.name, game.id.asString))
+                    }
+                }
+            }
+        }
     }
 }

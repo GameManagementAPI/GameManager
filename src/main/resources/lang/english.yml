@@ -2,8 +2,11 @@
 "prefix": "<gray>[</gray><aqua>GameManager</aqua><gray>]</gray>"
 "prefix-followup": "<gray>[</gray><white>+</white><gray>]</gray>"
 "sorry": "${prefix} <red>I am sorry!</red>"
+"general-failure": "${sorry} But something has gone wrong!"
+"not-connected": "${sorry} But this player isn't connected to this server!"
+"not-in-game": "${sorry} But this player isn't connected to any game!"
 
-
+# /gamemanagementapi command
 command.api:
   "desc": ""
 
@@ -41,7 +44,45 @@ command.api:
     "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>'$0'</hover></click> (Team: $1)"
 
     # ... join
-    "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
     "join.failure.in_game": "${sorry} But you are already member of another game!"
-    "join.failure.general": "${sorry} But something has gone wrong!"
+    "join.failure.general": "${general-failure}"
     "join.success": "${prefix} <green>Successfully joined into </green><white>'$0'</white><green>.</green>"
+
+  player:
+    # ... game
+    "game.failure.invalid_player": "${not-connected}"
+    "game.failure.no_game": "${not-in-game}"
+    "game.msg": "<gray>${prefix}</gray> $0 is currently playing in <gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></gray>"
+
+    # ... quit
+    "quit.failure.invalid_player": "${not-connected}"
+    "quit.failure.no_game": "${not-in-game}"
+    "quit.failure.general": "${general-failure}"
+    "quit.success": "${prefix} <green>Successfully disconnected </green><white>'$0'</white><green> from </green><white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></white>"
+
+    # ... send
+    "send.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
+    "send.failure.invalid_player": "${not-connected}"
+    "send.failure.same_game": "${sorry} But this player is already connected to that game!"
+    "send.failure.general": "${general-failure}"
+    "send.success": "${prefix} <green>Successfully connected </green><white>'$0'</white><green> to </green><white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></white>"
+    
+    # ... jump
+    "jump.failure.invalid_player": "${not-connected}"
+    "jump.failure.no_game": "${not-in-game}"
+    "jump.failure.same_game": "${sorry} But you are already connected to the same game as <gray>$0</gray>!"
+    "jump.failure.general": "${general-failure}"
+    "jump.success": "${prefix} <green>You have been connected to </green><white>$0s</white><green> game successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
+
+    # ... eliminate
+    "eliminate.failure.invalid_player": "${not-connected}"
+    "eliminate.failure.no_game": "${not-in-game}"
+    "eliminate.failure.already": "${sorry} But this player is already eliminated!"
+    "eliminate.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
+
+    # ... revive
+    "revive.failure.invalid_player": "${not-connected}"
+    "revive.failure.no_game": "${not-in-game}"
+    "revive.failure.already": "${sorry} But this player is not eliminated yet!"
+    "revive.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></white>)"
