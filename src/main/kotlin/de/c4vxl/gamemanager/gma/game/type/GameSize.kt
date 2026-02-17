@@ -23,6 +23,11 @@ class GameSize(
     }
 
     /**
+     * The maximal amount of players a game of this size can contain
+     */
+    val maxPlayers: Int = teamAmount * teamSize
+
+    /**
      * Converts size into string representation
      */
     override fun toString(): String {
