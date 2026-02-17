@@ -12,6 +12,19 @@ object GMA {
     private val gameRegistry: MutableMap<GameID, Game> = mutableMapOf()
 
     /**
+     * A list of all registered games
+     */
+    val registeredGames
+        get() = gameRegistry.values.toList()
+
+    /**
+     * Returns a list for possible game sizes
+     */
+    // TODO: Return a list of possible games based on available maps
+    val possibleGameSizes: MutableList<String>
+        get() = mutableListOf("2x1", "2x2", "4x1")
+
+    /**
      * Get a game from registry by its id
      * @param id The id
      */
@@ -28,6 +41,14 @@ object GMA {
         gameRegistry.values.filter { it.state == state && it.size.equals(teamAmount, teamSize) }
 
     /**
+     * Returns a list of all games in registry of a certain size
+     * @param size The size of the game
+     * @param state The state of the game (Default: Queuing)
+     */
+    fun getGames(size: GameSize, state: GameState = GameState.QUEUING) =
+        getGames(size.teamAmount, size.teamSize, state)
+
+    /**
      * Finds a game in queuing state in registry or creates one if it doesn't exist
      * @param teamAmount The amount of teams
      * @param teamSize The size of a team
@@ -37,12 +58,27 @@ object GMA {
             ?: createGame(teamAmount, teamSize)
 
     /**
+     * Finds a game in queuing state in registry or creates one if it doesn't exist
+     * @param size The size of the game
+     */
+    fun getOrCreate(size: GameSize) =
+        getOrCreate(size.teamAmount, size.teamSize)
+
+
+    /**
      * Creates a game and registers it
      * @param teamAmount The amount of teams
      * @param teamSize The size of a team
      */
-    fun createGame(teamAmount: Int, teamSize: Int): Game {
-        return Game(GameSize(teamAmount, teamSize)).also {
+    fun createGame(teamAmount: Int, teamSize: Int) =
+        createGame(GameSize(teamAmount, teamSize))
+
+    /**
+     * Creates a game and registers it
+     * @param size The size of the game
+     */
+    fun createGame(size: GameSize): Game {
+        return Game(size).also {
             // Register game
             registerGame(it)
         }
