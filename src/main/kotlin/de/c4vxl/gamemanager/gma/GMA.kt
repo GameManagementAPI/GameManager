@@ -9,7 +9,7 @@ import de.c4vxl.gamemanager.gma.game.type.GameState
  * Central access point for creating, registering and handling games
  */
 object GMA {
-    private val gameRegistry: MutableMap<GameID, Game> = mutableMapOf()
+    private val gameRegistry: MutableMap<String, Game> = mutableMapOf()
 
     /**
      * A list of all registered games
@@ -29,7 +29,7 @@ object GMA {
      * @param id The id
      */
     fun getGame(id: GameID) =
-        gameRegistry[id]
+        gameRegistry[id.asString]
 
     /**
      * Returns a list of all games in registry of a certain size
@@ -87,11 +87,11 @@ object GMA {
     /**
      * Save a game to the registry
      * @param game The game to save
-     * @param force If set to 'true' an already existing game with the same id will be overwritten
+     * @param force If set to {@code true} an already existing game with the same id will be overwritten
      */
     fun registerGame(game: Game, force: Boolean = false) {
         // A game with the same id already exists
-        if (gameRegistry.containsKey(game.id)) {
+        if (gameRegistry.containsKey(game.id.asString)) {
             // force-flag disabled
             if (!force) return
 
@@ -100,13 +100,13 @@ object GMA {
         }
 
         // Save to registry
-        gameRegistry[game.id] = game
+        gameRegistry[game.id.asString] = game
     }
 
     /**
      * Unregisters a game
      * @param game The game to unregister
-     * @param stop If set to 'true' the game will be stopped before unregistering
+     * @param stop If set to {@code true} the game will be stopped before unregistering
      */
     fun unregisterGame(game: Game, stop: Boolean = true) {
         // Gracefully shutdown game
@@ -114,6 +114,6 @@ object GMA {
             game.stop()
 
         // Remove from registry
-        gameRegistry.remove(game.id)
+        gameRegistry.remove(game.id.asString)
     }
 }
