@@ -28,9 +28,11 @@ class Language(
          * Loads a language from a file
          * @param path The path to the language file
          */
-        fun fromFile(path: String): Language {
+        fun fromFile(path: String): Language? {
             // Read language file
             val file = File(path)
+            if (!file.isFile) return null
+
             val config = YamlConfiguration.loadConfiguration(file)
 
             // Load lookup table
@@ -57,7 +59,7 @@ class Language(
          * Get a language from its name
          * @param name The name of the language
          */
-        fun get(name: String): Language =
+        fun get(name: String): Language? =
             fromFile(translationsDirectory.resolve("$name.yml").toString())
 
         /**
@@ -73,7 +75,7 @@ class Language(
          * Default fallback-language
          */
         val default: Language
-            get() = get(Main.instance.config.getString("language.default") ?: "english")
+            get() = get(Main.instance.config.getString("language.default") ?: "english")!!
 
         /**
          * Loads pre-packed translations onto disk

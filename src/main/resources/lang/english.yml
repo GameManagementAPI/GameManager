@@ -145,3 +145,10 @@ command.forcemap:
   "failure.already": "${sorry} It looks like the map has already been forced to <gray>'$0'</gray>!"
   "failure.invalid_map": "${sorry} But it looks like this map doesn't exist!"
   "success": "${prefix} <green>Successfully set the map to </green><gray>'$0'</gray>"
+
+# /language command
+command.language:
+  desc: "Allows players to adjust their language preferences"
+
+  "failure.invalid_language": "${sorry} But this language does not seem to be supported!"
+  "success": "${prefix} <green>Successfully updated your language preference to </green><gray>'$0'</gray>"

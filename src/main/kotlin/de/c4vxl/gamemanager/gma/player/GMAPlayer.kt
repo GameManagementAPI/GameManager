@@ -43,7 +43,15 @@ class GMAPlayer(
      * Holds the preferred language of the player
      */
     var language: Language
-        get() = Language.get(Language.getPlayerLanguage(bukkitPlayer))
+        get() {
+            var language = Language.get(Language.getPlayerLanguage(bukkitPlayer))
+            if (language == null) {
+                this@GMAPlayer.language = Language.default
+                language = Language.default
+            }
+
+            return language
+        }
         set(value) = Language.setPlayerLanguage(bukkitPlayer, value.name)
 
     /**

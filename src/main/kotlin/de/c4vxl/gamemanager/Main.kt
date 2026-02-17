@@ -29,19 +29,20 @@ class Main : JavaPlugin() {
         // Enable CommandAPI
         CommandAPI.onEnable()
 
+        // Load languages
+        Language.load()
+
         // Register commands
         APICommand
         JoinCommand
         QuitCommand
         StartCommand
         ForcemapCommand
+        LanguageCommand
 
         // Load config
         saveResource("config.yml", false)
         reloadConfig()
-
-        // Load languages
-        Language.load()
 
         logger.info("[+] $name has been enabled!")
     }
