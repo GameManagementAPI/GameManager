@@ -125,18 +125,37 @@ class Language(
      * @param args Arguments to the translation
      */
     fun get(key: String, vararg args: String): String {
-        var value = translations.getOrDefault(key, key)
-
-        // Handle references
-        value.replace(" ", "")
-            .split("}")
-            .filter { it.startsWith("\${") }
-            .map { it.removePrefix("\${") }
-            .forEach { value = value.replace("\${$it}", get(it)) }
+        var value = resolveKey(key)
 
         // Handle arguments
-        args.forEachIndexed { i, arg -> value = value.replace("$$i", arg) }
+        args.forEachIndexed { i, arg ->
+            value = value.replace("$$i", arg)
+        }
 
+        return value
+    }
+
+    /**
+     * Looks up the translation of a key
+     * @param key The key to lookup
+     * @param visited A list of previously visited keys to prevent circular key-references
+     */
+    private fun resolveKey(key: String, visited: MutableSet<String> = mutableSetOf()): String {
+        // Key already visited
+        // This prevents circular references leading to stack overflows
+        if (!visited.add(key)) return key
+
+        var value = translations.getOrDefault(key, key)
+
+        // Resolve references
+        value = Regex("""\$\{([^}]+)}""").replace(value) {
+            resolveKey(
+                it.groupValues[1],
+                visited
+            )
+        }
+
+        visited.remove(key)
         return value
     }
 
