@@ -135,3 +135,13 @@ command.start:
   "failure.not_enough": "${sorry} But there must at least be <gray>$0</gray> players in this game to start it!"
   "failure.general": "${general-failure}"
   "success": "${prefix} <green>Starting game...</green>"
+
+# /forcemap command
+command.forcemap:
+  desc: "Allows you to set the map of the current game"
+
+  "failure.no_game": "${sorry} But you must be connected to a game to run that command!"
+  "failure.already_running": "${sorry} But this game is already running!"
+  "failure.already": "${sorry} It looks like the map has already been forced to <gray>'$0'</gray>!"
+  "failure.invalid_map": "${sorry} But it looks like this map doesn't exist!"
+  "success": "${prefix} <green>Successfully set the map to </green><gray>'$0'</gray>"

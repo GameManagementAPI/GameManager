@@ -59,6 +59,11 @@ class WorldManager(
     lateinit var map: Map
 
     /**
+     * If set to the name of a map that map will be loaded
+     */
+    var forcemap: String? = null
+
+    /**
      * Loads a random map
      * @return Returns {@code true} upon success
      */

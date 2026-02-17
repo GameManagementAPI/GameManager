@@ -76,7 +76,8 @@ class Game(
         }
 
         // Load map
-        this.worldManager.loadRandom()
+        this.worldManager.forcemap?.let { this.worldManager.load(it) } // If forcemap is set use it
+            ?: this.worldManager.loadRandom()                          // otherwise choose a random one
 
         // Prepare players
         this.teamManager.teams.values.forEach { team ->
@@ -103,9 +104,12 @@ class Game(
         if (!isRunning) return false
         this.state = GameState.STOPPING
 
+        // Remove all players from game
+        this.players.forEach { it.quit() }
+
         // Kick players to unload world properly
         // TODO: Add option for external plugins to take care of this (maybe send to lobby)
-        this.players.forEach { it.bukkitPlayer.kick() }
+        this.worldManager.map.world?.players?.forEach { it.kick() }
 
         // Delete world
         this.worldManager.map.unload()
