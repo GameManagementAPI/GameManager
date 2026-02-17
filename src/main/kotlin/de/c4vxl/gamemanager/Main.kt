@@ -27,6 +27,9 @@ class Main : JavaPlugin() {
         // Enable CommandAPI
         CommandAPI.onEnable()
 
+        // Register commands
+        APICommand
+
         // Load config
         saveResource("config.yml", false)
         reloadConfig()

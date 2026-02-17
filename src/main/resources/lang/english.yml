@@ -1,0 +1,47 @@
+# Global
+"prefix": "<gray>[</gray><aqua>GameManager</aqua><gray>]</gray>"
+"prefix-followup": "<gray>[</gray><white>+</white><gray>]</gray>"
+"sorry": "${prefix} <red>I am sorry!</red>"
+
+
+command.api:
+  "desc": ""
+
+  games:
+    # ... list
+    "list.failure.empty": "${sorry} But there are no games registered as of now."
+    "list.msg.title": "${prefix} Currently registered games:"
+    "list.msg.entry": "<grey>-</grey> <click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click> <gray>($1)</gray>"
+
+    # ... register
+    "register.failure.invalid_size": "${sorry} But this game size is not available."
+    "register.failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+    "register.success": "${prefix} <green>Successfully registered new game: </green><white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click></white>"
+
+    # ... start
+    "start.failure.invalid_id": "${sorry} But this game either doesn't exist or is already running!"
+    "start.success": "${prefix} <green>Successfully started </green><white>'$0'</white> <gray>($1)</gray>"
+
+    # ... stop
+    "stop.failure.invalid_id": "${sorry} But this game either doesn't exist or has already been stopped!"
+    "stop.success": "${prefix} <green>Successfully stopped </green><white>'$0'</white><green>.</green>"
+
+    # ... info
+    "info.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "info.l1": "${prefix} <white>Info about game</white> <grey>'$0'</grey><white>:</white>"
+    "info.l2": "${prefix-followup} <grey>Game ID:</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click></white>"
+    "info.l3": "${prefix-followup} <grey>Game State:</grey> $0"
+    "info.l4": "${prefix-followup} <grey>Size:</grey> <white>$0</white>"
+    "info.l5": "${prefix-followup} <white>$0</white>/<white>$1</white> Players"
+
+    # ... list-players
+    "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "list-players.failure.empty": "${sorry} But this game doesn't seem to have any players!"
+    "list-players.msg.title": "${prefix} <grey>Players of</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>'$0'</hover></click></white><grey>:</grey>"
+    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>'$0'</hover></click> (Team: $1)"
+
+    # ... join
+    "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "join.failure.in_game": "${sorry} But you are already member of another game!"
+    "join.failure.general": "${sorry} But something has gone wrong!"
+    "join.success": "${prefix} <green>Successfully joined into </green><white>'$0'</white><green>.</green>"
