@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.gma.world.type
 
+import de.c4vxl.gamemanager.gma.event.game.GameWorldUnloadEvent
 import de.c4vxl.gamemanager.gma.world.WorldManager
 import org.bukkit.Bukkit
 import org.bukkit.Location
@@ -39,6 +40,12 @@ data class Map(
      */
     fun unload(): Boolean {
         if (!isLoaded) return true
+
+        // Call unload event
+        GameWorldUnloadEvent(this.manager.game).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
 
         // Cache world directory
         val folder = world?.worldFolder

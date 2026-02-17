@@ -1,6 +1,9 @@
 package de.c4vxl.gamemanager.gma.world
 
 import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.gma.event.game.GameWorldForcemapEvent
+import de.c4vxl.gamemanager.gma.event.game.GameWorldLoadEvent
+import de.c4vxl.gamemanager.gma.event.game.GameWorldLoadedEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
@@ -62,6 +65,15 @@ class WorldManager(
      * If set to the name of a map that map will be loaded
      */
     var forcemap: String? = null
+        set(value) {
+            // Call event
+            GameWorldForcemapEvent(this.game, value).let {
+                it.callEvent()
+                if (it.isCancelled) return
+            }
+
+            field = value
+        }
 
     /**
      * Loads a random map
@@ -89,6 +101,12 @@ class WorldManager(
         )
             return false
 
+        // Call load event
+        GameWorldLoadEvent(this.game).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
+
         // Map not found
         // -> Load random one
         if (!availableMaps.contains(name))
@@ -115,6 +133,10 @@ class WorldManager(
 
         // Initialize map object
         this.map = Map(this, name, dest)
+
+        // Call loaded event
+        GameWorldLoadedEvent(this.game, this.map)
+            .callEvent()
 
         return true
     }

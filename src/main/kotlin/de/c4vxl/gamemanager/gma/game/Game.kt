@@ -1,5 +1,10 @@
 package de.c4vxl.gamemanager.gma.game
 
+import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
+import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
+import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
@@ -11,12 +16,10 @@ import de.c4vxl.gamemanager.gma.world.WorldManager
  * Core game object
  * @param size The size of the game
  * @param id A unique identifier for each game
- * @param state The initial game state (Recommended: Queuing)
  */
 class Game(
     val size: GameSize,
-    val id: GameID = GameID.random(),
-    var state: GameState = GameState.QUEUING
+    val id: GameID = GameID.random()
 ) {
     /**
      * Holds the information about the teams in this game
@@ -27,6 +30,20 @@ class Game(
      * Holds the world manager
      */
     val worldManager: WorldManager = WorldManager(this)
+
+    /**
+     * Holds the current state of the game
+     */
+    var state: GameState = GameState.QUEUING
+        set(value) {
+            // Call event
+            GameStateChangeEvent(this, state, value).let {
+                it.callEvent()
+                if (it.isCancelled) return
+            }
+
+            field = value
+        }
 
     /**
      * Holds a list of all players in the game
@@ -60,12 +77,23 @@ class Game(
     fun canJoin(player: GMAPlayer): Boolean =
         !isFull && isQueuing && !players.contains(player) && !player.isInGame
 
+    // TODO: Implement player elimination
+    // TODO: Implement player revive
+
+    // TODO: Handle player loose / win
+
     /**
      * Starts the game
      * @return Returns {@code true} upon success
      */
     fun start(): Boolean {
         if (!isQueuing) return false
+
+        // Call game start event
+        GameStartEvent(this).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
 
         this.state = GameState.STARTING
 
@@ -102,6 +130,13 @@ class Game(
      */
     fun stop(): Boolean {
         if (!isRunning) return false
+
+        // Call game stop event
+        GameStopEvent(this).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
+
         this.state = GameState.STOPPING
 
         // Remove all players from game
@@ -127,6 +162,12 @@ class Game(
     fun join(player: GMAPlayer, force: Boolean = false): Boolean {
         if (!canJoin(player)) return false
 
+        // Call join event
+        GamePlayerJoinEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
+
         // Player is already in a game
         // Quit if force-flag is passed, otherwise exit
         if (player.isInGame)
@@ -149,6 +190,12 @@ class Game(
         // Player not in this game
         if (!this.players.contains(player))
             return false
+
+        // Call quit event
+        GamePlayerQuitEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
 
         // Quit team
         this.teamManager.quit(player)

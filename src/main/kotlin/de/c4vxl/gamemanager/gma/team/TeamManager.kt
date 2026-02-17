@@ -1,5 +1,7 @@
 package de.c4vxl.gamemanager.gma.team
 
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
+import de.c4vxl.gamemanager.gma.event.team.GamePlayerTeamJoinEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 
@@ -67,6 +69,12 @@ class TeamManager(
         // Return if team is full
         if (team.isFull) return false
 
+        // Call join event
+        GamePlayerTeamJoinEvent(team, player, this.game).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
+
         // Quit old team if force flag is passed
         if (force)
             player.team?.manager?.quit(player)
@@ -85,6 +93,12 @@ class TeamManager(
         if (player.game != this.game) return false
 
         val team = player.team ?: return false
+
+        // Call quit event
+        GamePlayerQuitEvent(player, this.game).let {
+            it.callEvent()
+            if (it.isCancelled) return false
+        }
 
         // Remove player from team
         return team.players.remove(player)
