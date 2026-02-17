@@ -132,7 +132,7 @@ class Game(
         if (!isRunning) return false
 
         // Call game stop event
-        GameStopEvent(this).let {
+        val stopEvent = GameStopEvent(this).also {
             it.callEvent()
             if (it.isCancelled) return false
         }
@@ -143,8 +143,9 @@ class Game(
         this.players.forEach { it.quit() }
 
         // Kick players to unload world properly
-        // TODO: Add option for external plugins to take care of this (maybe send to lobby)
-        this.worldManager.map.world?.players?.forEach { it.kick() }
+        // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
+        if (stopEvent.kickPlayers)
+            this.worldManager.map.world?.players?.forEach { it.kick() }
 
         // Delete world
         this.worldManager.map.unload()
@@ -162,11 +163,7 @@ class Game(
     fun join(player: GMAPlayer, force: Boolean = false): Boolean {
         if (!canJoin(player)) return false
 
-        // Call join event
-        GamePlayerJoinEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) return false
-        }
+        val pastGame = player.game
 
         // Player is already in a game
         // Quit if force-flag is passed, otherwise exit
@@ -177,6 +174,16 @@ class Game(
         // Add player to this game
         players.add(player)
         player.game = this
+
+        // Call join event
+        GamePlayerJoinEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) {
+                players.remove(player)
+                player.game = pastGame
+                return false
+            }
+        }
 
         return true
     }
