@@ -13,7 +13,7 @@ command.api:
   games:
     # ... list
     "list.failure.empty": "${sorry} But there are no games registered as of now."
-    "list.msg.title": "${prefix} Currently registered games:"
+    "list.msg.title": "${prefix} Currently registered games <gray>($0)</gray>:"
     "list.msg.entry": "<grey>-</grey> <click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click> <gray>($1)</gray>"
 
     # ... register

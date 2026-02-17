@@ -36,7 +36,7 @@ object APICommand {
                     }
 
                     // Build list
-                    var component = sender.language.getCmp("command.api.games.list.msg.title")
+                    var component = sender.language.getCmp("command.api.games.list.msg.title", GMA.registeredGames.size.toString())
                     GMA.registeredGames.forEach {
                         component = component
                             .appendNewline()
@@ -522,9 +522,9 @@ object APICommand {
                             return@anyExecutor
                         }
 
-                        // TODO: implement elimination logic
+                        // TODO: implement revive logic
 
-                        sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.success", player.name, game.id.asString))
+                        sender.sendMessage(sender.language.getCmp("command.api.player.revive.success", player.name, game.id.asString))
                     }
                 }
             }
