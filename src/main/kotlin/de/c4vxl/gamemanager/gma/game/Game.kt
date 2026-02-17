@@ -5,6 +5,7 @@ import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.team.TeamManager
+import de.c4vxl.gamemanager.gma.world.WorldManager
 
 /**
  * Core game object
@@ -21,6 +22,11 @@ class Game(
      * Holds the information about the teams in this game
      */
     val teamManager: TeamManager = TeamManager(this)
+
+    /**
+     * Holds the world manager
+     */
+    val worldManager: WorldManager = WorldManager(this)
 
     /**
      * Holds a list of all players in the game
@@ -65,17 +71,24 @@ class Game(
 
         // Make players without a team join a random one
         this.players.forEach {
-            if (it.isInTeam)
+            if (!it.isInTeam)
                 this.teamManager.joinRandom(it)
         }
 
-        // TODO: Implement world loading
+        // Load map
+        this.worldManager.loadRandom()
 
+        // Prepare players
         this.teamManager.teams.values.forEach { team ->
-            // TODO: Teleport players to team spawn
+            this.worldManager.map.getSpawnLocation(team.id)?.let { spawn ->
+                team.players.forEach {
+                    // Teleport players
+                    it.bukkitPlayer.teleport(spawn)
 
-            // Reset players
-            team.players.forEach { it.reset() }
+                    // Reset players
+                    it.reset()
+                }
+            }
         }
 
         this.state = GameState.RUNNING
@@ -90,7 +103,12 @@ class Game(
         if (!isRunning) return false
         this.state = GameState.STOPPING
 
-        // TODO: Add game stop logic
+        // Kick players to unload world properly
+        // TODO: Add option for external plugins to take care of this (maybe send to lobby)
+        this.players.forEach { it.bukkitPlayer.kick() }
+
+        // Delete world
+        this.worldManager.map.unload()
 
         this.state = GameState.STOPPED
         return true

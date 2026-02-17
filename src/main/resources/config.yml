@@ -8,3 +8,9 @@ language:
 
   # Path to directory where language translations will be stored
   translations-dir: "./gma-translations/"
+
+maps:
+  world-prefix: "map-"
+
+  # Path to the directory containing the available maps
+  db: "./maps/"

@@ -4,6 +4,7 @@ import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
+import de.c4vxl.gamemanager.gma.world.WorldManager
 
 /**
  * Central access point for creating, registering and handling games
@@ -20,9 +21,8 @@ object GMA {
     /**
      * Returns a list for possible game sizes
      */
-    // TODO: Return a list of possible games based on available maps
-    val possibleGameSizes: MutableList<String>
-        get() = mutableListOf("2x1", "2x2", "4x1")
+    val possibleGameSizes: List<String>
+        get() = WorldManager.availableGameSizes.map { it.toString() }
 
     /**
      * Get a game from registry by its id
