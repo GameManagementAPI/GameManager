@@ -4,6 +4,7 @@ import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
+import de.c4vxl.gamemanager.gma.team.TeamManager
 
 /**
  * Core game object
@@ -16,6 +17,11 @@ class Game(
     val id: GameID = GameID.random(),
     var state: GameState = GameState.QUEUING
 ) {
+    /**
+     * Holds the information about the teams in this game
+     */
+    val teamManager: TeamManager = TeamManager(this)
+
     /**
      * Holds a list of all players in the game
      */
@@ -50,24 +56,44 @@ class Game(
 
     /**
      * Starts the game
+     * @return Returns {@code true} upon success
      */
-    fun start() {
+    fun start(): Boolean {
+        if (!isQueuing) return false
+
         this.state = GameState.STARTING
 
-        // TODO: Add game start logic
+        // Make players without a team join a random one
+        this.players.forEach {
+            if (it.isInTeam)
+                this.teamManager.joinRandom(it)
+        }
+
+        // TODO: Implement world loading
+
+        this.teamManager.teams.values.forEach { team ->
+            // TODO: Teleport players to team spawn
+
+            // Reset players
+            team.players.forEach { it.reset() }
+        }
 
         this.state = GameState.RUNNING
+        return true
     }
 
     /**
      * Stops the game
+     * @return Returns {@code true} upon success
      */
-    fun stop() {
+    fun stop(): Boolean {
+        if (!isRunning) return false
         this.state = GameState.STOPPING
 
         // TODO: Add game stop logic
 
         this.state = GameState.STOPPED
+        return true
     }
 
     /**
@@ -102,6 +128,9 @@ class Game(
         if (this.players.contains(player))
             return false
 
+        // Quit team
+        this.teamManager.quit(player)
+
         // Remove player from game
         players.remove(player)
         player.game = null
@@ -110,7 +139,7 @@ class Game(
     }
 
     override fun equals(other: Any?): Boolean {
-        return this.id == (other as? Game)?.id
+        return this.id.asString == (other as? Game)?.id?.asString
     }
 
     override fun hashCode(): Int {

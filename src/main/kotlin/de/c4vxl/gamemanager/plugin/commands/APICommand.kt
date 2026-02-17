@@ -177,7 +177,7 @@ object APICommand {
                                 .append(sender.language.getCmp(
                                     "command.api.games.list-players.msg.entry",
                                     it.bukkitPlayer.name,
-                                    // TODO: Display team here
+                                    it.team?.label ?: "/"
                                 ))
                         }
 
@@ -320,6 +320,11 @@ object APICommand {
                         // Player not online
                         if (player == null) {
                             sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.invalid_player"))
+                            return@playerExecutor
+                        }
+
+                        if (player.uniqueId == sender.uniqueId) {
+                            sender.sendMessage(sender.language.getCmp("command.api.player.jump.failure.self"))
                             return@playerExecutor
                         }
 

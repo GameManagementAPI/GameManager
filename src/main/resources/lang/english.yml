@@ -72,6 +72,7 @@ command.api:
     "jump.failure.invalid_player": "${not-connected}"
     "jump.failure.no_game": "${not-in-game}"
     "jump.failure.same_game": "${sorry} But you are already connected to the same game as <gray>$0</gray>!"
+    "jump.failure.self": "${sorry} But you cannot jump to yourself!"
     "jump.failure.general": "${general-failure}"
     "jump.success": "${prefix} <green>You have been connected to </green><white>$0s</white><green> game successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
 
