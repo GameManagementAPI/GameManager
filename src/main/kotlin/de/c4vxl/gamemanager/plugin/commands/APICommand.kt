@@ -5,6 +5,7 @@ import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
+import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.language.Language.Companion.language
 import de.c4vxl.gamemanager.plugin.enums.Permission
@@ -241,6 +242,121 @@ object APICommand {
                         }
 
                         sender.sendMessage(sender.language.getCmp("command.api.player.game.msg", player.name, game.id.asString))
+                    }
+                }
+
+                // player <name> team
+                literalArgument("team") {
+                    literalArgument("get") {
+                        anyExecutor { sender, args ->
+                            val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                            val game: Game? = player?.gma?.game
+
+                            // Player not online
+                            if (player == null) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.team.get.failure.invalid_player"))
+                                return@anyExecutor
+                            }
+
+                            // Not connected to a game
+                            if (game == null) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.team.get.failure.no_game"))
+                                return@anyExecutor
+                            }
+
+                            val team = player.gma.team
+                            if (team == null) {
+                                sender.sendMessage(sender.language.getCmp("command.api.player.team.get.failure.no_team"))
+                                return@anyExecutor
+                            }
+
+                            sender.sendMessage(sender.language.getCmp("command.api.player.team.get.msg", player.name, team.id.toString(), team.label))
+                        }
+                    }
+
+                    // player <name> team join <team>
+                    literalArgument("join") {
+                        argument(StringArgument("team").replaceSuggestions(ArgumentSuggestions.strings {
+                            (it.sender as? Player)?.gma
+                                ?.game
+                                ?.teamManager
+                                ?.teams?.values
+                                ?.map { team -> "t${team.id}" }
+                                ?.toTypedArray() ?: arrayOf()
+                        })) {
+                            playerExecutor { player, args ->
+                                val game: Game? = player.gma.game
+
+                                // Invalid game id
+                                if (game == null) {
+                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.no_game"))
+                                    return@playerExecutor
+                                }
+
+                                // Game is not in queuing state
+                                if (!game.isQueuing) {
+                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.already_running"))
+                                    return@playerExecutor
+                                }
+
+                                // Get team
+                                val teamName = args.get("team").toString()
+                                val teamId = teamName.removePrefix("t").toIntOrNull() ?: -1
+                                val team: Team? = game.teamManager.teams[teamId]
+
+                                // Team not found
+                                if (team == null) {
+                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.invalid_team", teamName))
+                                    return@playerExecutor
+                                }
+
+                                // Join team
+                                // Using force = true to make player quit old team
+                                val success = game.teamManager.join(player.gma, teamId, true)
+
+                                if (success)
+                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.success", team.label))
+                                else
+                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.general"))
+                            }
+                        }
+                    }
+
+                    // team quit
+                    literalArgument("quit") {
+                        playerExecutor { player, _ ->
+                            val game: Game? = player.gma.game
+
+                            // Invalid game id
+                            if (game == null) {
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.failure.no_game"))
+                                return@playerExecutor
+                            }
+
+                            // Game is not in queuing state
+                            if (!game.isQueuing) {
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.failure.already_running"))
+                                return@playerExecutor
+                            }
+
+                            // Get team
+                            val team: Team? = player.gma.team
+
+                            // Team not found
+                            if (team == null) {
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.failure.invalid_team"))
+                                return@playerExecutor
+                            }
+
+                            // Leave team
+                            // Using force = true to make player quit old team
+                            val success = game.teamManager.quit(player.gma)
+
+                            if (success)
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.success", team.label))
+                            else
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.failure.general"))
+                        }
                     }
                 }
 
