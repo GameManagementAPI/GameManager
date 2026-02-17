@@ -41,7 +41,7 @@ command.api:
     "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
     "list-players.failure.empty": "${sorry} But this game doesn't seem to have any players!"
     "list-players.msg.title": "${prefix} <grey>Players of</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>'$0'</hover></click></white><grey>:</grey>"
-    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>'$0'</hover></click> (Team: $1)"
+    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>$0</hover></click> (Team: $1)"
 
     # ... join
     "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
