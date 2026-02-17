@@ -85,4 +85,4 @@ command.api:
     "revive.failure.invalid_player": "${not-connected}"
     "revive.failure.no_game": "${not-in-game}"
     "revive.failure.already": "${sorry} But this player is not eliminated yet!"
-    "revive.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
+    "revive.success": "${prefix} <white>$0</white><green> has been revived successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
