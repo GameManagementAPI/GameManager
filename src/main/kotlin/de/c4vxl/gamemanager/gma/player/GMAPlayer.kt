@@ -92,6 +92,7 @@ class GMAPlayer(
             it.exp = 0F
             it.totalExperience = 0
             it.level = 0
+            it.saturation = 20f
             it.inventory.clear()
             it.enderChest.clear()
             it.activePotionEffects.forEach { effect -> it.removePotionEffect(effect.type) }
