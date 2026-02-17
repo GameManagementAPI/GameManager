@@ -2,7 +2,6 @@ package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.APICommand
-import de.c4vxl.gamemanager.utils.ResourceUtils
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
