@@ -152,3 +152,8 @@ command.language:
 
   "failure.invalid_language": "${sorry} But this language does not seem to be supported!"
   "success": "${prefix} <green>Successfully updated your language preference to </green><gray>'$0'</gray>"
+
+
+# Queue
+"queue.countdown.title": "Game starting in: $0 Seconds"
+"queue.countdown.cancelled": "<red>Start has been cancelled!</red>"

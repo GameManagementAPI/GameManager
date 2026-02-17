@@ -2,6 +2,7 @@ package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.*
+import de.c4vxl.gamemanager.plugin.handler.QueueHandler
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
@@ -39,6 +40,9 @@ class Main : JavaPlugin() {
         StartCommand
         ForcemapCommand
         LanguageCommand
+
+        // Register handlers
+        QueueHandler()
 
         // Load config
         saveResource("config.yml", false)
