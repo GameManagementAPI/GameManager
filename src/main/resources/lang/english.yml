@@ -53,7 +53,7 @@ command.api:
     # ... game
     "game.failure.invalid_player": "${not-connected}"
     "game.failure.no_game": "${not-in-game}"
-    "game.msg": "<gray>${prefix}</gray> $0 is currently playing in <gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></gray>"
+    "game.msg": "${prefix} <gray>$0</gray> is currently playing in <gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></gray>"
 
     # ... quit
     "quit.failure.invalid_player": "${not-connected}"
@@ -87,3 +87,41 @@ command.api:
     "revive.failure.no_game": "${not-in-game}"
     "revive.failure.already": "${sorry} But this player is not eliminated yet!"
     "revive.success": "${prefix} <white>$0</white><green> has been revived successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
+
+    # ... team
+    team:
+      "get.failure.invalid_player": "${not-connected}"
+      "get.failure.no_game": "${not-in-game}"
+      "get.failure.no_team": "${sorry} But this player isn't part of any team!"
+      "get.msg": "${prefix} <gray>$0</gray> is currently in team <gray>#<click:copy_to_clipboard:t$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray> ($2)"
+
+      # team join
+      "join.failure.no_game": "${sorry} But you can only run this command when you are in a game!"
+      "join.failure.invalid_team": "${sorry} But this team couldn't be found: <gray>'$0'</gray>!"
+      "join.failure.already_running": "${sorry} But you can't do this while the game is already running!"
+      "join.failure.general": "${general-failure}"
+      "join.success": "${prefix} <green>Made player successfully join Team</green> <white>$0</white>"
+
+      # team quit
+      "quit.failure.no_game": "${sorry} But you can only run this command when you are in a game!"
+      "quit.failure.invalid_team": "${sorry} But this player isn't part of any team!"
+      "quit.failure.already_running": "${sorry} But you can't do this while the game is already running!"
+      "quit.failure.general": "${general-failure}"
+      "quit.success": "${prefix} <green>Player has left Team</green> <white>$0</white> <green>successfully!</green>"
+
+# /join command
+command.join:
+  desc: "Join into a game of specific size."
+
+  "failure.invalid_size": "${sorry} But this game size is not available."
+  "failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+  "failure.already": "${sorry} But you are already in a game!"
+  "failure.general": "${general-failure}"
+  "success": "${prefix} <green>You successfully joined a game!</green>"
+
+# /quit command
+command.quit:
+  desc: "Leave the current game"
+
+  "failure.no_game": "${sorry} But you are not connected to a game!"
+  "success": "${prefix} <green>Successfully disconnected you from the game!</green>"
