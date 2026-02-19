@@ -128,6 +128,7 @@ class WorldManager(
             it.setGameRule(GameRules.MOB_DROPS, false)
             it.setGameRule(GameRules.SPAWN_MOBS, false)
             it.setGameRule(GameRules.SPAWN_WANDERING_TRADERS, false)
+            it.setGameRule(GameRules.KEEP_INVENTORY, false)
             it.setGameRule(GameRules.IMMEDIATE_RESPAWN, true)
         }
 

@@ -2,10 +2,7 @@ package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.*
-import de.c4vxl.gamemanager.plugin.handler.ConnectionHandler
-import de.c4vxl.gamemanager.plugin.handler.GameEndHandler
-import de.c4vxl.gamemanager.plugin.handler.QueueHandler
-import de.c4vxl.gamemanager.plugin.handler.VisibilityHandler
+import de.c4vxl.gamemanager.plugin.handler.*
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
@@ -49,6 +46,7 @@ class Main : JavaPlugin() {
         ConnectionHandler()
         GameEndHandler()
         VisibilityHandler()
+        RespawnHandler()
 
         // Load config
         saveResource("config.yml", false)
