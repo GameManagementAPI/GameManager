@@ -44,11 +44,22 @@ class VisibilityHandler : Listener {
                 return@forEach
             }
 
-            // TODO: Handle custom visibility for spectators
+            fun handleSpectator(a: Player, b: Player) =
+                // A is spectating
+                // Hide a
+                if (a.gma.isSpectating)
+                    b.hidePlayer(Main.instance, a)
+
+                // Self is not spectating
+                // Show a
+                else
+                    b.showPlayer(Main.instance, a)
+
+
 
             // Same game
-            other.showPlayer(Main.instance, self)
-            self.showPlayer(Main.instance, other)
+            handleSpectator(self, other)
+            handleSpectator(other, self)
         }
     }
 
@@ -70,6 +81,9 @@ class VisibilityHandler : Listener {
         // Get the channel the message was sent in
         val allTags = Main.instance.config.getStringList("visibility.public")
         val channel = if (game == null) "no-game" // No game
+
+                        // Player is spectator
+                        else if (player.isSpectating) "spectator"
 
                         // Game is queuing
                         else if (game.isQueuing) "queue"
@@ -95,6 +109,7 @@ class VisibilityHandler : Listener {
         Bukkit.getScheduler().callSyncMethod(Main.instance) {
             when (channel) {
                 "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }.forEach { it.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
+                "spectator"       -> game?.playerManager?.spectators?.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
                 "queue", "public" -> game?.broadcastMessage(translationKey, *translationArgs)
                 "team"            -> player.team?.broadcastMessage(translationKey, *translationArgs)
                 else              -> Main.logger.warning("Tried to send message in invalid channel") // should never be reached

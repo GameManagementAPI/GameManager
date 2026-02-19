@@ -174,10 +174,12 @@ command.spectate:
 "queue.countdown.cancelled": "<red>Start has been cancelled!</red>"
 
 # Chat
-"chat.message.no-game": "<gray>$0:</gray> $2"
-"chat.message.queue": "<gray>[Queue] $0:</gray> $2"
-"chat.message.public": "<gray>[@all:</gray>$1<gray>] $0:</gray> $2"
-"chat.message.team": "<gray>[@team] $0:</gray> $2"
+chat:
+  "message.no-game": "<gray>$0:</gray> $2"
+  "message.spectator": "<gray>[Spectators] $0:</gray> $2"
+  "message.queue": "<gray>[Queue] $0:</gray> $2"
+  "message.public": "<gray>[@all:</gray>$1<gray>] $0:</gray> $2"
+  "message.team": "<gray>[@team] $0:</gray> $2"
 
 # Game end
 "end.countdown": "${prefix} <gray>This server will stop in <b><white>$0</white></b> seconds!</gray>"
