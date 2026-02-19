@@ -129,7 +129,7 @@ class Game(
      * @return Returns {@code true} upon success
      */
     fun stop(): Boolean {
-        if (!isRunning) return false
+        if (!isRunning && !isQueuing && state != GameState.STOPPING) return false
 
         // Call game stop event
         val stopEvent = GameStopEvent(this).also {
@@ -140,7 +140,7 @@ class Game(
         this.state = GameState.STOPPING
 
         // Remove all players from game
-        this.players.toList().forEach { it.quit() }
+        this.players.distinct().forEach { this.quit(it) }
 
         // Kick players to unload world properly
         // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
@@ -208,7 +208,7 @@ class Game(
         this.teamManager.quit(player)
 
         // Remove player from game
-        players.remove(player)
+        players.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
         player.game = null
 
         return true
@@ -220,5 +220,9 @@ class Game(
 
     override fun hashCode(): Int {
         return this.id.hashCode()
+    }
+
+    override fun toString(): String {
+        return "Game { id=${this.id}, state=${this.state} }"
     }
 }
