@@ -90,6 +90,8 @@ class GMAPlayer(
      */
     val isInTeam: Boolean get() = this.team != null
 
+    val isEliminated: Boolean get() = this.game?.eliminatedPlayers?.contains(this) == true
+
     /**
      * Make a player join this game
      * @param game The game to join

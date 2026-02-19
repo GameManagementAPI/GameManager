@@ -4,8 +4,10 @@ import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerEliminateEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
@@ -51,6 +53,11 @@ class Game(
      * Holds a list of all players in the game
      */
     val players: MutableList<GMAPlayer> = mutableListOf()
+
+    /**
+     * Holds a list of all players that have been eliminated
+     */
+    val eliminatedPlayers: MutableList<GMAPlayer> = mutableListOf()
 
     /**
      * Returns {@code true} when the game is in a queuing state
@@ -154,6 +161,40 @@ class Game(
 
         this.state = GameState.STOPPED
         return true
+    }
+
+    /**
+     * Eliminates a player from the game
+     * @param player The player to eliminate
+     */
+    fun eliminate(player: GMAPlayer) {
+        if (player.game != this) return
+        if (player.isEliminated) return
+
+        // Call event
+        GamePlayerEliminateEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) return
+        }
+
+        eliminatedPlayers.add(player)
+    }
+
+    /**
+     * Revives an eliminated player
+     * @param player The player to revive
+     */
+    fun revive(player: GMAPlayer) {
+        if (player.game != this) return
+        if (!player.isEliminated) return
+
+        // Call event
+        GamePlayerReviveEvent(player, this).let {
+            it.callEvent()
+            if (it.isCancelled) return
+        }
+
+        eliminatedPlayers.remove(player)
     }
 
     /**

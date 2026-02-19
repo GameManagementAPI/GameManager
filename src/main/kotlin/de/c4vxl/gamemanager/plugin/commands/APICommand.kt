@@ -485,14 +485,13 @@ object APICommand {
                         }
 
                         // Player already eliminated
-                        // TODO: Implement check if player is eliminated
-                        if (false) {
+                        if (player.gma.isEliminated) {
                             sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.failure.already"))
                             return@anyExecutor
                         }
 
-                        // TODO: implement elimination logic
-
+                        // Eliminate player
+                        game.eliminate(player.gma)
                         sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.success", player.name, game.id.asString))
                     }
                 }
@@ -516,14 +515,13 @@ object APICommand {
                         }
 
                         // Player not eliminated
-                        // TODO: Implement check if player actually eliminated
-                        if (false) {
+                        if (!player.gma.isEliminated) {
                             sender.sendMessage(sender.language.getCmp("command.api.player.revive.failure.already"))
                             return@anyExecutor
                         }
 
-                        // TODO: implement revive logic
-
+                        // Revive player
+                        game.revive(player.gma)
                         sender.sendMessage(sender.language.getCmp("command.api.player.revive.success", player.name, game.id.asString))
                     }
                 }
