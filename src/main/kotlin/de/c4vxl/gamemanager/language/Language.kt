@@ -119,6 +119,22 @@ class Language(
             config.set(player.uniqueId.toString(), language)
             config.save(langsDB)
         }
+
+        /**
+         * Provide a language extension for sub-plugins using Language#child
+         * @param namespace The namespace used to load this extension
+         * @param language The language this extension is made for
+         * @param languageFileContent A yml-formatted string of the translations
+         */
+        fun provideLanguageExtension(namespace: String, language: String, languageFileContent: String) {
+            val file = translationsDirectory.resolve("extensions/${namespace}/${language}.yml")
+
+            // Create parent folder
+            file.parent.toFile().mkdirs()
+
+            // Save language
+            file.toFile().writeText(languageFileContent)
+        }
     }
 
     /**
@@ -168,4 +184,13 @@ class Language(
      */
     fun getCmp(key: String, vararg args: String): Component =
         MiniMessage.miniMessage().deserialize(get(key, *args))
+
+    /**
+     * Returns a language extension
+     * This should be used by other plugins to load their own translations
+     *
+     * @param namespace The name of the other plugin
+     */
+    fun child(namespace: String): Language =
+        fromFile(translationsDirectory.resolve("extensions/${namespace}/${this.name}.yml").toString())!!
 }
