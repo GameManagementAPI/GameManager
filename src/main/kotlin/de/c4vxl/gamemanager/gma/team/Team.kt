@@ -1,6 +1,9 @@
 package de.c4vxl.gamemanager.gma.team
 
+import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
+import de.c4vxl.gamemanager.gma.event.team.GameTeamMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
+import net.kyori.adventure.text.Component
 
 /**
  * Object that holds information about one team of a game
@@ -28,6 +31,23 @@ data class Team(
      */
     // TODO: Implement custom team labels
     val label: String get() = "#${id + 1}"
+
+    /**
+     * Broadcasts a message to the entire team
+     * @param message The message to send
+     */
+    fun broadcastMessage(message: Component) {
+        val audience = this.players.distinct()
+
+        // Call event
+        GameTeamMessageBroadcastEvent(this, this.manager.game, message, audience).let {
+            it.callEvent()
+            if (it.isCancelled) return
+        }
+
+        // Send message
+        audience.forEach { it.bukkitPlayer.sendMessage(message) }
+    }
 
     override fun toString(): String {
         return "Team { label=${this.label} }"
