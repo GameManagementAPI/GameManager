@@ -12,7 +12,21 @@ import de.c4vxl.gamemanager.gma.player.GMAPlayer
 class TeamManager(
     val game: Game
 ) {
+    /**
+     * Holds a list of all teams registered in this manager
+     */
     val teams: MutableMap<Int, Team> = mutableMapOf()
+
+    /**
+     * Returns a list of all teams that still have at least one player alive
+     */
+    val aliveTeams: List<Team>
+        get() = teams.values.filter {
+            it.players.any { player ->
+                // Using contains to properly handle players that joined another game in the meantime
+                this.game.playerManager.alivePlayers.contains(player)
+            }
+        }
 
     init {
         for (id in 0..<game.size.teamAmount)

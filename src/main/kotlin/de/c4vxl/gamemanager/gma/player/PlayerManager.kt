@@ -23,10 +23,16 @@ class PlayerManager(
         get() = internalPlayers.distinct().toList()
 
     /**
-     * Holds a list of all players that have been eliminated
+     * Returns a list of all players that have been eliminated
      */
     val eliminatedPlayers: List<GMAPlayer>
         get() = internalEliminatedPlayers.distinct().toList()
+
+    /**
+     * Returns a list of all players that are still alive
+     */
+    val alivePlayers: List<GMAPlayer>
+        get() = players.filterNot { !it.isEliminated && it.game == this.game }
 
     /**
      * Returns {@code true} if join conditions for a certain player are met
@@ -85,6 +91,9 @@ class PlayerManager(
             if (it.isCancelled) return false
         }
 
+        // Eliminate player
+        player.eliminate()
+
         // Quit team
         this.game.teamManager.quit(player)
 
@@ -103,13 +112,13 @@ class PlayerManager(
         if (player.game != this.game) return
         if (player.isEliminated) return
 
+        internalEliminatedPlayers.add(player)
+
         // Call event
         GamePlayerEliminateEvent(player, this.game).let {
             it.callEvent()
-            if (it.isCancelled) return
+            if (it.isCancelled) internalEliminatedPlayers.remove(player)
         }
-
-        internalEliminatedPlayers.add(player)
     }
 
     /**
@@ -120,13 +129,13 @@ class PlayerManager(
         if (player.game != this.game) return
         if (!player.isEliminated) return
 
+        internalEliminatedPlayers.remove(player)
+
         // Call event
         GamePlayerReviveEvent(player, this.game).let {
             it.callEvent()
-            if (it.isCancelled) return
+            if (it.isCancelled) internalEliminatedPlayers.add(player)
         }
-
-        internalEliminatedPlayers.remove(player)
     }
 
     /**
@@ -134,5 +143,5 @@ class PlayerManager(
      * @param player The player to check
      */
     fun isEliminated(player: GMAPlayer): Boolean =
-        this.eliminatedPlayers.contains(player)
+        this.internalEliminatedPlayers.contains(player)
 }

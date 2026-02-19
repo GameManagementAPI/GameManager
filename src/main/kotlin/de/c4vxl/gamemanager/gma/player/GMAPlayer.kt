@@ -155,6 +155,6 @@ class GMAPlayer(
     }
 
     override fun toString(): String {
-        return "GMAPlayer { name=${this.bukkitPlayer.name}, uuid=${this.bukkitPlayer.uniqueId}, game=${this.game}, team=${this.team} }"
+        return "GMAPlayer { name=${this.bukkitPlayer.name}, uuid=${this.bukkitPlayer.uniqueId}, game=${this.game}, team=${this.team}, isEliminated=${this.isEliminated} }"
     }
 }
