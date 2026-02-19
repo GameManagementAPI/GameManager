@@ -159,7 +159,7 @@ command.language:
 "queue.countdown.cancelled": "<red>Start has been cancelled!</red>"
 
 # Chat
-"chat.message.no-game": "$0"
+"chat.message.no-game": "<gray>$0:</gray> "
 "chat.message.queue": "<gray>[Queue] $0:</gray> "
-"chat.message.public": "<gray>[@all:$1] $0:</gray> "
+"chat.message.public": "<gray>[@all:</gray>$1<gray>] $0:</gray> "
 "chat.message.team": "<gray>[@team] $0:</gray> "
