@@ -164,3 +164,7 @@ command.language:
 "chat.message.queue": "<gray>[Queue] $0:</gray> $2"
 "chat.message.public": "<gray>[@all:</gray>$1<gray>] $0:</gray> $2"
 "chat.message.team": "<gray>[@team] $0:</gray> $2"
+
+# Game end
+"end.countdown": "${prefix} <gray>This server will stop in <b><white>$0</white></b> seconds!</gray>"
+"end.kick.message": "Map reloading."

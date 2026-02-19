@@ -11,7 +11,7 @@ import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.player.PlayerManager
 import de.c4vxl.gamemanager.gma.team.TeamManager
 import de.c4vxl.gamemanager.gma.world.WorldManager
-import net.kyori.adventure.text.Component
+import de.c4vxl.gamemanager.language.Language.Companion.language
 
 /**
  * Core game object
@@ -145,7 +145,7 @@ class Game(
         // Kick players to unload world properly
         // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
         if (stopEvent.kickPlayers)
-            this.worldManager.map?.world?.players?.forEach { it.kick() }
+            this.worldManager.map?.world?.players?.forEach { it.kick(it.language.getCmp("end.kick.message")) }
 
         // Delete world
         this.worldManager.map?.unload()
