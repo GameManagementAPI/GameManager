@@ -45,14 +45,15 @@ class GameManager : JavaPlugin() {
         Language.load()
 
         // Register commands
-        if (isEnabled("commands.api"))       APICommand
-        if (isEnabled("commands.join"))      JoinCommand
-        if (isEnabled("commands.quit"))      QuitCommand
-        if (isEnabled("commands.start"))     StartCommand
-        if (isEnabled("commands.forcemap"))  ForcemapCommand
-        if (isEnabled("commands.language"))  LanguageCommand
-        if (isEnabled("commands.spectate"))  SpectateCommand
-        if (isEnabled("commands.map"))       MapCommand
+        if (isEnabled("commands.api"))          APICommand
+        if (isEnabled("commands.join"))         JoinCommand
+        if (isEnabled("commands.quit"))         QuitCommand
+        if (isEnabled("commands.start"))        StartCommand
+        if (isEnabled("commands.forcemap"))     ForcemapCommand
+        if (isEnabled("commands.language"))     LanguageCommand
+        if (isEnabled("commands.spectate"))     SpectateCommand
+        if (isEnabled("commands.map"))          MapCommand
+        if (isEnabled("commands.privategame"))  PrivateGameCommand
 
         // Register handlers
         if (isEnabled("handlers.queue"))       QueueHandler()

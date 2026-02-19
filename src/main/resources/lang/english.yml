@@ -37,6 +37,7 @@ command.api:
     "info.l4": "${prefix-followup} <grey>Size:</grey> <white>$0</white>"
     "info.l5": "${prefix-followup} <white>$0</white>/<white>$1</white> Players"
     "info.l6": "${prefix-followup} <white>Map:</white> $0"
+    "info.l7": "${prefix-followup} <white>Private:</white> $0 ($1)"
 
     # ... list-players
     "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
@@ -179,6 +180,33 @@ command.map:
   "msg.l1": "${prefix} Map information:"
   "msg.l2": "${prefix-followup} <gray>Name:</gray> $0"
   "msg.l3": "${prefix-followup} <gray>Builder(s):</gray> $0"
+
+# /privategame command
+command.privategame:
+  desc: "Create your own private game and choose who joins"
+
+  "create.failure.invalid_size": "${sorry} But this game size is not available."
+  "create.failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+  "create.failure.already": "${sorry} But you are already in a game!"
+  "create.failure.general": "${general-failure}"
+  "create.success": "${prefix} <green>Successfully created a private game!</green>"
+
+  "invite.failure.invalid_player": "${not-connected}"
+  "invite.failure.no_game": "${sorry} But you are currently not hosting a private game!"
+  "invite.failure.player_in_game": "${sorry} But this player is already connected to another game!"
+  "invite.failure.already": "${sorry} You already invited that player!"
+  "invite.success": "${prefix} <green>Successfully invited <white>$0</white>!</green>"
+  "invite.msg.l1": "${prefix} Private game invitation:"
+  "invite.msg.l2": "${prefix-followup} <gray>$0</gray> invited you to a private game!"
+  "invite.msg.l3": "${prefix-followup} <b><green><click:run_command:'/privategame join $0'>Click here to join</click></green></b>"
+
+
+  "join.failure.invalid_player": "${not-connected}"
+  "join.failure.no_invite": "${sorry} But <gray>$0</gray> hasn't invited you to any private games!"
+  "join.failure.already": "${sorry} But you are already in a game!"
+  "join.failure.already_joined": "${sorry} But you are already in the private game!"
+  "join.failure.general": "${general-failure}"
+  "join.success": "${prefix} <green>Successfully joined <white>$0</white>s private game!</green>"
 
 # Queue
 "queue.countdown.title": "Game starting in $0 seconds"

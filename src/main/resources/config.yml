@@ -59,6 +59,7 @@ features:
     language: true
     spectate: true
     map: true
+    privategame: true
 
   handlers:
     queue: true

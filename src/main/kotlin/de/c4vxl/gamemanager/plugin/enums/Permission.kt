@@ -4,8 +4,7 @@ enum class Permission(val string: String) {
     PREFIX("de.c4vxl.gamemanager.perms"),
     COMMAND_PREFIX("${PREFIX.string}.command"),
     COMMAND_API("${COMMAND_PREFIX.string}.api"),
-
     COMMAND_START("${COMMAND_PREFIX.string}.start"),
-
     COMMAND_SPECTATE("${COMMAND_PREFIX.string}.spectate"),
+    COMMAND_PRIVATE_GAME("${COMMAND_PREFIX.string}.private_game"),
 }

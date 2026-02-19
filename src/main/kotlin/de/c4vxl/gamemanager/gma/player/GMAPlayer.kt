@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.gma.player
 
+import de.c4vxl.gamemanager.gma.GMA
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
@@ -99,6 +100,11 @@ class GMAPlayer(
      * Returns {@code true} if the player is currently in spectator mode
      */
     val isSpectating: Boolean get() = this.game?.playerManager?.isSpectating(this) == true
+
+    /**
+     * Returns the private game this player started
+     */
+    val privateGame: Game? get() = GMA.privateGames.find { it.owner == this }
 
     /**
      * Make a player join this game

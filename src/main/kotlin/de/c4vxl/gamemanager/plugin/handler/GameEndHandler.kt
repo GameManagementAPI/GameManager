@@ -10,6 +10,7 @@ import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerWinEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameState
+import de.c4vxl.gamemanager.plugin.commands.PrivateGameCommand
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -50,6 +51,10 @@ class GameEndHandler : Listener {
     @EventHandler
     fun onStop(event: GameStopEvent) {
         GMA.unregisterGame(event.game, false)
+
+        // Unregister private game
+        if (event.game.isPrivate)
+            PrivateGameCommand.invites.remove(event.game.owner)
     }
 
     @EventHandler

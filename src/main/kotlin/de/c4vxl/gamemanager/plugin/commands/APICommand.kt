@@ -144,6 +144,8 @@ object APICommand {
                                 .append(sender.language.getCmp("command.api.games.info.l5", game.players.size.toString(), game.size.maxPlayers.toString()))
                                 .appendNewline()
                                 .append(sender.language.getCmp("command.api.games.info.l6", game.worldManager.map?.name ?: "/"))
+                                .appendNewline()
+                                .append(sender.language.getCmp("command.api.games.info.l7", game.isPrivate.toString(), game.owner?.bukkitPlayer?.name ?: "/"))
                         )
                     }
                 }

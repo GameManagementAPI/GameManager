@@ -4,6 +4,7 @@ import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
+import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.world.WorldManager
 
 /**
@@ -17,6 +18,12 @@ object GMA {
      */
     val registeredGames
         get() = gameRegistry.values.toList()
+
+    /**
+     * A list of all registered private games
+     */
+    val privateGames
+        get() = registeredGames.filter { it.isPrivate }
 
     /**
      * Returns a list for possible game sizes
@@ -38,7 +45,7 @@ object GMA {
      * @param state The state of the game (Default: Queuing)
      */
     fun getGames(teamAmount: Int, teamSize: Int, state: GameState = GameState.QUEUING) =
-        gameRegistry.values.filter { it.state == state && it.size.equals(teamAmount, teamSize) }
+        gameRegistry.values.filter { it.state == state && it.size.equals(teamAmount, teamSize) && !it.isPrivate }
 
     /**
      * Returns a list of all games in registry of a certain size
@@ -54,7 +61,7 @@ object GMA {
      * @param teamSize The size of a team
      */
     fun getOrCreate(teamAmount: Int, teamSize: Int): Game =
-        gameRegistry.values.firstOrNull { it.isQueuing && it.size.equals(teamAmount, teamSize) }
+        gameRegistry.values.firstOrNull { it.isQueuing && it.size.equals(teamAmount, teamSize) && !it.isPrivate }
             ?: createGame(teamAmount, teamSize)
 
     /**
@@ -69,16 +76,18 @@ object GMA {
      * Creates a game and registers it
      * @param teamAmount The amount of teams
      * @param teamSize The size of a team
+     * @param owner If set the game will be registered as a private game under this player
      */
-    fun createGame(teamAmount: Int, teamSize: Int) =
-        createGame(GameSize(teamAmount, teamSize))
+    fun createGame(teamAmount: Int, teamSize: Int, owner: GMAPlayer? = null) =
+        createGame(GameSize(teamAmount, teamSize), owner)
 
     /**
      * Creates a game and registers it
      * @param size The size of the game
+     * @param owner If set the game will be registered as a private game under this player
      */
-    fun createGame(size: GameSize): Game {
-        return Game(size).also {
+    fun createGame(size: GameSize, owner: GMAPlayer? = null): Game {
+        return Game(size, owner = owner).also {
             // Register game
             registerGame(it)
         }

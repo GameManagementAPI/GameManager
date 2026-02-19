@@ -22,7 +22,8 @@ import org.bukkit.scoreboard.Scoreboard
  */
 class Game(
     val size: GameSize,
-    val id: GameID = GameID.random()
+    val id: GameID = GameID.random(),
+    val owner: GMAPlayer? = null
 ) {
     /**
      * Holds the information about the teams in this game
@@ -87,10 +88,10 @@ class Game(
      */
     val isFull: Boolean get() = this.players.size >= size.maxPlayers
 
-    // TODO: Implement player elimination
-    // TODO: Implement player revive
-
-    // TODO: Handle player loose / win
+    /**
+     * Returns {@code true} if the game has an owner
+     */
+    val isPrivate: Boolean get() = this.owner != null
 
     /**
      * Starts the game
