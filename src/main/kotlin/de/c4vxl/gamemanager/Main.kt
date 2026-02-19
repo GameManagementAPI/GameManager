@@ -40,6 +40,7 @@ class Main : JavaPlugin() {
         StartCommand
         ForcemapCommand
         LanguageCommand
+        SpectateCommand
 
         // Register handlers
         QueueHandler()

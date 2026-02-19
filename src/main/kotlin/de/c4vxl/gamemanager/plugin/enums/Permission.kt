@@ -5,5 +5,7 @@ enum class Permission(val string: String) {
     COMMAND_PREFIX("${PREFIX.string}.command"),
     COMMAND_API("${COMMAND_PREFIX.string}.api"),
 
-    COMMAND_START("${COMMAND_PREFIX.string}.start")
+    COMMAND_START("${COMMAND_PREFIX.string}.start"),
+
+    COMMAND_SPECTATE("${COMMAND_PREFIX.string}.spectate"),
 }

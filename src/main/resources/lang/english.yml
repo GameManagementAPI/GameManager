@@ -154,6 +154,20 @@ command.language:
   "failure.invalid_language": "${sorry} But this language does not seem to be supported!"
   "success": "${prefix} <green>Successfully updated your language preference to </green><gray>'$0'</gray>"
 
+# /spectate command
+command.spectate:
+  desc: "Allows players to spectate a game"
+
+  "player.failure.invalid_player": "${not-connected}"
+  "player.failure.no_game": "${not-in-game}"
+  "player.failure.not_running": "${sorry} But this game isn't running!"
+  "player.failure.playing": "${sorry} But you cannot run this command while in a game!"
+  "player.success": "${prefix} Now spectating <gray>$0</gray>"
+
+  "game.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+  "game.failure.not_running": "${sorry} But this game isn't running!"
+  "game.failure.playing": "${sorry} But you cannot run this command while in a game!"
+  "game.success": "${prefix} Now spectating <gray>$0</gray>"
 
 # Queue
 "queue.countdown.title": "Game starting in $0 seconds"

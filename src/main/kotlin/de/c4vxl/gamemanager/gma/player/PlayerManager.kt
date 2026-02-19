@@ -151,6 +151,7 @@ class PlayerManager(
 
         // Set game-mode to spectator
         player.bukkitPlayer.gameMode = GameMode.SPECTATOR
+        this.game.worldManager.map?.world?.spawnLocation?.let { player.bukkitPlayer.teleport(it) }
 
         // Call event
         GamePlayerSpectateStartEvent(player, this.game).callEvent()
