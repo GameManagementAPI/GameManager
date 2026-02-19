@@ -109,7 +109,7 @@ class Game(
 
         // Prepare players
         this.teamManager.teams.values.forEach { team ->
-            this.worldManager.map.getSpawnLocation(team.id)?.let { spawn ->
+            this.worldManager.map?.getSpawnLocation(team.id)?.let { spawn ->
                 team.players.forEach {
                     // Teleport players
                     it.bukkitPlayer.teleport(spawn)
@@ -145,10 +145,10 @@ class Game(
         // Kick players to unload world properly
         // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
         if (stopEvent.kickPlayers)
-            this.worldManager.map.world?.players?.forEach { it.kick() }
+            this.worldManager.map?.world?.players?.forEach { it.kick() }
 
         // Delete world
-        this.worldManager.map.unload()
+        this.worldManager.map?.unload()
 
         this.state = GameState.STOPPED
         return true

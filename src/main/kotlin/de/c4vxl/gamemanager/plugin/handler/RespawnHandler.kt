@@ -39,8 +39,8 @@ class RespawnHandler : Listener {
         val game = player.game ?: return
 
         // Get respawn location
-        val spawn = player.team?.let { game.worldManager.map.getSpawnLocation(it.id) } ?:
-            game.worldManager.map.world?.spawnLocation
+        val spawn = player.team?.let { game.worldManager.map?.getSpawnLocation(it.id) } ?:
+            game.worldManager.map?.world?.spawnLocation
             ?: return
 
         // Trigger event

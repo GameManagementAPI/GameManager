@@ -143,7 +143,7 @@ object APICommand {
                                 .appendNewline()
                                 .append(sender.language.getCmp("command.api.games.info.l5", game.players.size.toString(), game.size.maxPlayers.toString()))
                                 .appendNewline()
-                                .append(sender.language.getCmp("command.api.games.info.l6", game.worldManager.mapName ?: "/"))
+                                .append(sender.language.getCmp("command.api.games.info.l6", game.worldManager.map?.name ?: "/"))
                         )
                     }
                 }

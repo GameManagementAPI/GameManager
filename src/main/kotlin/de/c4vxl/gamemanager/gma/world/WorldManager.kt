@@ -59,14 +59,7 @@ class WorldManager(
     /**
      * Holds the map of the game
      */
-    lateinit var map: Map
-
-    /**
-     * Returns the name of the current map
-     */
-    val mapName: String?
-        get() = if (::map.isInitialized) map.name
-                else null
+    var map: Map? = null
 
     /**
      * If set to the name of a map that map will be loaded
@@ -104,7 +97,7 @@ class WorldManager(
 
         // Exit early
         if ((!game.isQueuing && game.state != GameState.STARTING) // Game running or over
-            || ::map.isInitialized                                // Map already initialized
+            || map != null                                        // Map already initialized
         )
             return false
 
@@ -143,7 +136,7 @@ class WorldManager(
         this.map = Map(this, name, dest)
 
         // Call loaded event
-        GameWorldLoadedEvent(this.game, this.map)
+        GameWorldLoadedEvent(this.game, this.map!!)
             .callEvent()
 
         return true

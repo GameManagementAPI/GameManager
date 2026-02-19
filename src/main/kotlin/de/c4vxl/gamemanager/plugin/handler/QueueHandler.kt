@@ -1,10 +1,11 @@
 package de.c4vxl.gamemanager.plugin.handler
 
 import de.c4vxl.gamemanager.Main
-import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
+import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
+import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import org.bukkit.Bukkit
@@ -151,7 +152,12 @@ class QueueHandler : Listener {
     }
 
     @EventHandler
-    fun onStop(event: GameStopEvent) {
+    fun onStopped(event: GameStateChangeEvent) {
+        // Listen on game "STOPPED" not game "STOPPING"
+        // We do this so that QueueHandler#onQuit has a chance to unregister boss bars properly
+        if (event.newState != GameState.STOPPED)
+            return
+
         // Clear game bars
         bars.remove(event.game)
         runningCountdowns.remove(event.game)
