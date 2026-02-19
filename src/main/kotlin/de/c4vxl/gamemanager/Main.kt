@@ -2,6 +2,8 @@ package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.*
+import de.c4vxl.gamemanager.plugin.handler.ConnectionHandler
+import de.c4vxl.gamemanager.plugin.handler.GameEndHandler
 import de.c4vxl.gamemanager.plugin.handler.QueueHandler
 import dev.jorel.commandapi.CommandAPI
 import dev.jorel.commandapi.CommandAPIPaperConfig
@@ -43,6 +45,8 @@ class Main : JavaPlugin() {
 
         // Register handlers
         QueueHandler()
+        ConnectionHandler()
+        GameEndHandler()
 
         // Load config
         saveResource("config.yml", false)
