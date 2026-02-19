@@ -47,3 +47,23 @@ team:
   # The format in which prefixes will be rendered
   # Use "$label" as a placeholder for the team name
   prefix-format: "$label <gray>|</gray> "
+
+# Enable / Disable different features of the plugin
+features:
+  commands:
+    api: true
+    join: true
+    quit: true
+    start: true
+    forcemap: true
+    language: true
+    spectate: true
+    map: true
+
+  handlers:
+    queue: true
+    connection: true
+    gameEnd: true
+    visibility: true
+    respawn: true
+    scoreboard: true
