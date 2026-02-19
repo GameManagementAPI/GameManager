@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.language.Language.Companion.language
 import io.papermc.paper.event.player.AsyncChatEvent
@@ -21,14 +21,14 @@ class VisibilityHandler : Listener {
     init {
         // Initialize visibility task
         if (!isInitialized) {
-            Bukkit.getScheduler().runTaskTimer(Main.instance, Runnable {
+            Bukkit.getScheduler().runTaskTimer(GameManager.instance, Runnable {
                 Bukkit.getOnlinePlayers().forEach { handle(it) }
             }, 0, 10)
 
             isInitialized = true
         }
 
-        Bukkit.getPluginManager().registerEvents(this, Main.instance)
+        Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
     /**
@@ -39,8 +39,8 @@ class VisibilityHandler : Listener {
             // Different game
             // always hide both ways
             if (other.gma.game != self.gma.game) {
-                other.hidePlayer(Main.instance, self)
-                self.hidePlayer(Main.instance, other)
+                other.hidePlayer(GameManager.instance, self)
+                self.hidePlayer(GameManager.instance, other)
                 return@forEach
             }
 
@@ -48,12 +48,12 @@ class VisibilityHandler : Listener {
                 // A is spectating
                 // Hide a
                 if (a.gma.isSpectating)
-                    b.hidePlayer(Main.instance, a)
+                    b.hidePlayer(GameManager.instance, a)
 
                 // Self is not spectating
                 // Show a
                 else
-                    b.showPlayer(Main.instance, a)
+                    b.showPlayer(GameManager.instance, a)
 
 
 
@@ -79,7 +79,7 @@ class VisibilityHandler : Listener {
         val plain = PlainTextComponentSerializer.plainText().serialize(message)
 
         // Get the channel the message was sent in
-        val allTags = Main.instance.config.getStringList("visibility.public")
+        val allTags = GameManager.instance.config.getStringList("visibility.public")
         val channel = if (game == null) "no-game" // No game
 
                         // Player is spectator
@@ -92,7 +92,7 @@ class VisibilityHandler : Listener {
                         else if (allTags.any { plain.contains(it) } || game.size.teamSize == 1) "public"
 
                         // Config allows team chat
-                        else if (Main.instance.config.getBoolean("visibility.allow-team-chat", true)) "team"
+                        else if (GameManager.instance.config.getBoolean("visibility.allow-team-chat", true)) "team"
 
                         // Fallback to public chat if config prohibits team chat
                         else "public"
@@ -106,13 +106,13 @@ class VisibilityHandler : Listener {
         )
 
         // Send message
-        Bukkit.getScheduler().callSyncMethod(Main.instance) {
+        Bukkit.getScheduler().callSyncMethod(GameManager.instance) {
             when (channel) {
                 "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }.forEach { it.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
                 "spectator"       -> game?.playerManager?.spectators?.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
                 "queue", "public" -> game?.broadcastMessage(translationKey, *translationArgs)
                 "team"            -> player.team?.broadcastMessage(translationKey, *translationArgs)
-                else              -> Main.logger.warning("Tried to send message in invalid channel") // should never be reached
+                else              -> GameManager.logger.warning("Tried to send message in invalid channel") // should never be reached
             }
         }
     }

@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerDeathEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerRespawnEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerRespawnEvent
  */
 class RespawnHandler : Listener {
     init {
-        Bukkit.getPluginManager().registerEvents(this, Main.instance)
+        Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
     @EventHandler

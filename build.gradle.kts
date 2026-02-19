@@ -36,7 +36,7 @@ paperweight {
 bukkit {
     name = "GameManager"
     description = "GameManager provides an API for easily managing multiple games on one server"
-    main = "$group.gamemanager.Main"
+    main = "$group.gamemanager.GameManager"
     version = "1.0.0"
     apiVersion = "1.14" // 1.14+
 

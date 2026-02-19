@@ -4,7 +4,6 @@ import de.c4vxl.gamemanager.gma.event.type.GameTeamEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.team.Team
-import net.kyori.adventure.text.Component
 
 /**
  * Triggered when a message gets broadcast to a team

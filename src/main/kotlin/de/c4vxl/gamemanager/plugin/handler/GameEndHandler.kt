@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.GMA
 import de.c4vxl.gamemanager.gma.event.game.GameEndEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
@@ -19,7 +19,7 @@ import org.bukkit.event.Listener
  */
 class GameEndHandler : Listener {
     init {
-        Bukkit.getPluginManager().registerEvents(this, Main.instance)
+        Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
     /**
@@ -29,17 +29,17 @@ class GameEndHandler : Listener {
     private fun stopCountdown(game: Game) {
         game.broadcastMessage("end.countdown", "10")
 
-        Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+        Bukkit.getScheduler().runTaskLater(GameManager.instance, Runnable {
             game.broadcastMessage("end.countdown", "3")
 
-            Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+            Bukkit.getScheduler().runTaskLater(GameManager.instance, Runnable {
                 game.broadcastMessage("end.countdown", "2")
 
-                Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
+                Bukkit.getScheduler().runTaskLater(GameManager.instance, Runnable {
                     game.broadcastMessage("end.countdown", "1")
 
-                    Bukkit.getScheduler().runTaskLater(Main.instance, Runnable {
-                        Main.instance.logger.info("Stopped game ${game.id}")
+                    Bukkit.getScheduler().runTaskLater(GameManager.instance, Runnable {
+                        GameManager.instance.logger.info("Stopped game ${game.id}")
                         game.stop()
                     }, 20)
                 }, 20)
@@ -68,7 +68,7 @@ class GameEndHandler : Listener {
         // Get winner team
         val winnerTeam = event.game.teamManager.aliveTeams.getOrNull(0)
 
-        Main.instance.logger.info("Game finished: ${event.game.id}")
+        GameManager.instance.logger.info("Game finished: ${event.game.id}")
 
         // Trigger event
         GameEndEvent(
@@ -78,7 +78,7 @@ class GameEndHandler : Listener {
         ).let {
             it.callEvent()
             if (it.isCancelled) {
-                Main.instance.logger.info("Game end cancelled by listener (${event.game.id})")
+                GameManager.instance.logger.info("Game end cancelled by listener (${event.game.id})")
                 return
             }
         }
@@ -86,7 +86,7 @@ class GameEndHandler : Listener {
         // No winner
         // Panic and exit
         if (winnerTeam == null) {
-            Main.instance.logger.warning("Game finished but no winner found (${event.game.id}). Stopping game...")
+            GameManager.instance.logger.warning("Game finished but no winner found (${event.game.id}). Stopping game...")
             event.game.stop()
             return
         }

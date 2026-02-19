@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
@@ -21,7 +21,7 @@ import org.bukkit.event.Listener
  */
 class QueueHandler : Listener {
     init {
-        Bukkit.getPluginManager().registerEvents(this, Main.instance)
+        Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
     /**
@@ -39,7 +39,7 @@ class QueueHandler : Listener {
      * @param player The player
      */
     private fun initCountdown(player: GMAPlayer) {
-        if (!Main.instance.config.getBoolean("queue.display-countdowns", true))
+        if (!GameManager.instance.config.getBoolean("queue.display-countdowns", true))
             return
 
         val game = player.game ?: return
@@ -76,7 +76,7 @@ class QueueHandler : Listener {
         game.players.forEach { initCountdown(it) }
 
         var ticks = 0
-        Bukkit.getScheduler().runTaskTimer(Main.instance, { task ->
+        Bukkit.getScheduler().runTaskTimer(GameManager.instance, { task ->
             val time = seconds - ticks
             var cancel = false
 
@@ -131,12 +131,12 @@ class QueueHandler : Listener {
         // Game is full
         // Start a five-second countdown
         if (event.game.isFull)
-            startCountdown(event.game, Main.instance.config.getInt("queue.full-wait-time", 5))
+            startCountdown(event.game, GameManager.instance.config.getInt("queue.full-wait-time", 5))
 
         // Enough to fill two teams
         // Start a countdown
         else if (event.game.players.size >= event.game.size.teamSize * 2)
-            startCountdown(event.game, (waitingFactor(event.game) * Main.instance.config.getInt("queue.wait-time", 60)).toInt())
+            startCountdown(event.game, (waitingFactor(event.game) * GameManager.instance.config.getInt("queue.wait-time", 60)).toInt())
 
         // Initialize countdown for players that joined late
         if (bars.containsKey(event.game) && bars[event.game]?.containsKey(event.player.bukkitPlayer) != true)

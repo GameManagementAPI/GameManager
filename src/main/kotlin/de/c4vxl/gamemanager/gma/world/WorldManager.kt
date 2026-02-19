@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.gma.world
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.game.GameWorldForcemapEvent
 import de.c4vxl.gamemanager.gma.event.game.GameWorldLoadEvent
 import de.c4vxl.gamemanager.gma.event.game.GameWorldLoadedEvent
@@ -27,7 +27,7 @@ class WorldManager(
         val mapsDirectory: File
             get() =
                 File(
-                    Main.instance.config.getString("maps.db")
+                    GameManager.instance.config.getString("maps.db")
                         ?: "./gma-maps/"
                 ).also { it.mkdirs() }
 
@@ -44,7 +44,7 @@ class WorldManager(
          * Returns a prefix for game worlds
          */
         val worldPrefix: String
-            get() = Main.instance.config.getString("maps.world-prefix") ?: "gma-"
+            get() = GameManager.instance.config.getString("maps.world-prefix") ?: "gma-"
     }
 
     /**
@@ -90,7 +90,7 @@ class WorldManager(
     fun load(name: String): Boolean {
         // No available maps
         if (availableMaps.isEmpty()) {
-            Main.logger.warning("GameManager cannot find any maps for ${game.size}! Stopping game. Check your maps folder!")
+            GameManager.logger.warning("GameManager cannot find any maps for ${game.size}! Stopping game. Check your maps folder!")
             game.stop()
             return false
         }

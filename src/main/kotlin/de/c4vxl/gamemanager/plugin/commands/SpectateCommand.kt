@@ -3,7 +3,6 @@ package de.c4vxl.gamemanager.plugin.commands
 import de.c4vxl.gamemanager.gma.GMA
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameID
-import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.language.Language.Companion.language

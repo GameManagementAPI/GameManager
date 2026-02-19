@@ -1,6 +1,6 @@
 package de.c4vxl.gamemanager.language
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.utils.ResourceUtils
 import net.kyori.adventure.text.Component
@@ -66,16 +66,16 @@ class Language(
          * Path to directory where translation files will be stored in
          */
         val translationsDirectory: Path
-            get() = Path.of(Main.instance.config.getString("language.translations-dir") ?: "./")
+            get() = Path.of(GameManager.instance.config.getString("language.translations-dir") ?: "./")
 
         val langsDB
-            get() = File(Main.instance.config.getString("language.db") ?: "languages.yml")
+            get() = File(GameManager.instance.config.getString("language.db") ?: "languages.yml")
 
         /**
          * Default fallback-language
          */
         val default: Language
-            get() = get(Main.instance.config.getString("language.default") ?: "english")!!
+            get() = get(GameManager.instance.config.getString("language.default") ?: "english")!!
 
         /**
          * Loads pre-packed translations onto disk

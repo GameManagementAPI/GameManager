@@ -1,7 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
-import de.c4vxl.gamemanager.Main
-import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
+import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
@@ -18,7 +17,7 @@ import org.bukkit.scoreboard.Team
  */
 class ScoreboardHandler : Listener {
     init {
-        Bukkit.getPluginManager().registerEvents(this, Main.instance)
+        Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
     /**
@@ -42,18 +41,18 @@ class ScoreboardHandler : Listener {
         )
 
         // Set friendly fire
-        team.setAllowFriendlyFire(Main.instance.config.getBoolean("team.friendly-fire", false))
+        team.setAllowFriendlyFire(GameManager.instance.config.getBoolean("team.friendly-fire", false))
 
         // Set collisions
-        if (Main.instance.config.getBoolean("team.team-collision", false))
+        if (GameManager.instance.config.getBoolean("team.team-collision", false))
             team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.ALWAYS)
         else
             team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS)
 
         // Set prefix
-        if (Main.instance.config.getBoolean("team.display-prefix", true))
+        if (GameManager.instance.config.getBoolean("team.display-prefix", true))
             team.prefix(MiniMessage.miniMessage().deserialize((
-                    Main.instance.config.getString("team.prefix-format")
+                    GameManager.instance.config.getString("team.prefix-format")
                         ?: "<b>\$label<b> <gray>|</gray> "
                     )
                 .replace("\$label", gameTeam.label)))

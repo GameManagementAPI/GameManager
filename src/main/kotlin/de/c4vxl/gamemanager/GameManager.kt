@@ -8,15 +8,18 @@ import dev.jorel.commandapi.CommandAPIPaperConfig
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.logging.Logger
 
-class Main : JavaPlugin() {
+/**
+ * Plugin entry point
+ */
+class GameManager : JavaPlugin() {
     companion object {
-        lateinit var instance: Main
+        lateinit var instance: GameManager
         lateinit var logger: Logger
     }
 
     override fun onLoad() {
         instance = this
-        Main.logger = this.logger
+        GameManager.logger = this.logger
 
         // Load CommandAPI
         CommandAPI.onLoad(

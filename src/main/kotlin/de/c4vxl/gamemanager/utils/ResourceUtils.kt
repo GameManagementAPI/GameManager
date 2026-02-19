@@ -1,9 +1,8 @@
 package de.c4vxl.gamemanager.utils
 
-import de.c4vxl.gamemanager.Main
+import de.c4vxl.gamemanager.GameManager
 import java.nio.file.Files
 import java.nio.file.Path
-import kotlin.io.path.deleteIfExists
 import kotlin.io.path.exists
 import kotlin.io.path.name
 
@@ -20,7 +19,7 @@ object ResourceUtils {
      * @param path The path on disk
      */
     fun saveResource(path: String, destination: String? = null, replace: Boolean = false) {
-        val destPath = Path.of(destination ?: Main.instance.dataPath.resolve(Path.of(path).name).toString())
+        val destPath = Path.of(destination ?: GameManager.instance.dataPath.resolve(Path.of(path).name).toString())
 
         destPath.parent?.toFile()?.mkdirs()
 
