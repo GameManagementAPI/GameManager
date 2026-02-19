@@ -84,8 +84,8 @@ class VisibilityHandler : Listener {
         // Build the final message
         val finalMessage = player.language.getCmp(
             "chat.message.$channel",
-            player.team?.label ?: "/",
-            player.bukkitPlayer.name
+            player.bukkitPlayer.name,
+            player.team?.label ?: "/"
         ).append(message)
 
         // Send message

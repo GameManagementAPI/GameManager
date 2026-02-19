@@ -161,5 +161,5 @@ command.language:
 # Chat
 "chat.message.no-game": "$0"
 "chat.message.queue": "<gray>[Queue] $0:</gray> "
-"chat.message.public": "<gray>[@all:$0] $1:</gray> "
+"chat.message.public": "<gray>[@all:$1] $0:</gray> "
 "chat.message.team": "<gray>[@team] $0:</gray> "
