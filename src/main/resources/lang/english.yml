@@ -169,6 +169,17 @@ command.spectate:
   "game.failure.playing": "${sorry} But you cannot run this command while in a game!"
   "game.success": "${prefix} Now spectating <gray>$0</gray>"
 
+# /map command
+command.map:
+  desc: "Displays the current map's name"
+
+  "failure.no_game": "${sorry} But you are not connected to a game!"
+  "failure.not_running": "${sorry} But this game isn't running!"
+  "failure.no_map": "${sorry} The map isn't loaded yet!"
+  "msg.l1": "${prefix} Map information:"
+  "msg.l2": "${prefix-followup} <gray>Name:</gray> $0"
+  "msg.l3": "${prefix-followup} <gray>Builder(s):</gray> $0"
+
 # Queue
 "queue.countdown.title": "Game starting in $0 seconds"
 "queue.countdown.cancelled": "<red>Start has been cancelled!</red>"

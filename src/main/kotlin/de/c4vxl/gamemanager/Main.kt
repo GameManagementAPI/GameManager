@@ -41,6 +41,7 @@ class Main : JavaPlugin() {
         ForcemapCommand
         LanguageCommand
         SpectateCommand
+        MapCommand
 
         // Register handlers
         QueueHandler()
