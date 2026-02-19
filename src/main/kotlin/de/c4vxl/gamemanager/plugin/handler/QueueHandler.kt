@@ -2,7 +2,7 @@ package de.c4vxl.gamemanager.plugin.handler
 
 import de.c4vxl.gamemanager.Main
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
@@ -94,7 +94,7 @@ class QueueHandler : Listener {
     }
 
     @EventHandler
-    fun onJoin(event: GamePlayerJoinEvent) {
+    fun onJoin(event: GamePlayerJoinedEvent) {
         // Game is full
         // Start a five-second countdown
         if (event.game.isFull)

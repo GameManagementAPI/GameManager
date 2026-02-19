@@ -3,7 +3,7 @@ package de.c4vxl.gamemanager.gma.game
 import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
@@ -176,7 +176,7 @@ class Game(
         player.game = this
 
         // Call join event
-        GamePlayerJoinEvent(player, this).let {
+        GamePlayerJoinedEvent(player, this).let {
             it.callEvent()
             if (it.isCancelled) {
                 players.remove(player)
