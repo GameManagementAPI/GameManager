@@ -28,4 +28,8 @@ data class Team(
      */
     // TODO: Implement custom team labels
     val label: String get() = "#${id + 1}"
+
+    override fun toString(): String {
+        return "Team { label=${this.label} }"
+    }
 }

@@ -3,8 +3,10 @@ package de.c4vxl.gamemanager.gma.player
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
+import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
+import java.util.*
 
 /**
  * A Wrapper around the Player object.
@@ -12,10 +14,12 @@ import org.bukkit.entity.Player
  *
  * For constructing please use GMAPlayer.get or Player.gma!
  *
- * @param bukkitPlayer The bukkit player to wrap
+ * @param player The bukkit player to wrap
+ * @param uuid The uuid of the bukkit player to wrap
  */
 class GMAPlayer(
-    val bukkitPlayer: Player
+    private val player: Player,
+    private val uuid: UUID = player.uniqueId
 ) {
     companion object {
         // We want to cache the GMAPlayer instances
@@ -43,6 +47,12 @@ class GMAPlayer(
         val Player.gma
             get() = get(this)
     }
+
+    /**
+     * Returns the bukkit player wrapped by this GMAPlayer
+     */
+    val bukkitPlayer: Player
+        get() = Bukkit.getPlayer(this.uuid) ?: player
 
     /**
      * Holds the preferred language of the player
