@@ -5,6 +5,7 @@ import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.game.Game
+import org.bukkit.Bukkit
 
 /**
  * Object responsible for managing players of a game
@@ -100,6 +101,9 @@ class PlayerManager(
         // Remove player from game
         internalPlayers.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
         player.game = null
+
+        // Reset scoreboard
+        player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
 
         return true
     }

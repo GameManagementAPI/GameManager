@@ -47,6 +47,7 @@ class Main : JavaPlugin() {
         GameEndHandler()
         VisibilityHandler()
         RespawnHandler()
+        ScoreboardHandler()
 
         // Load config
         saveResource("config.yml", false)

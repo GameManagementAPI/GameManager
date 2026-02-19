@@ -33,3 +33,17 @@ visibility:
 
   # Determines if a team channel exists
   allow-team-chat: true
+
+team:
+  # Determines if friendly fire is enabled
+  friendly-fire: false
+
+  # Determines if player collisions count for teams
+  team-collision: false
+
+  # If set to false team prefixes won't be visible in front of player names
+  display-prefix: true
+
+  # The format in which prefixes will be rendered
+  # Use "$label" as a placeholder for the team name
+  prefix-format: "$label <gray>|</gray> "

@@ -12,6 +12,8 @@ import de.c4vxl.gamemanager.gma.player.PlayerManager
 import de.c4vxl.gamemanager.gma.team.TeamManager
 import de.c4vxl.gamemanager.gma.world.WorldManager
 import de.c4vxl.gamemanager.language.Language.Companion.language
+import org.bukkit.Bukkit
+import org.bukkit.scoreboard.Scoreboard
 
 /**
  * Core game object
@@ -36,6 +38,11 @@ class Game(
      * Holds the player manager
      */
     val playerManager: PlayerManager = PlayerManager(this)
+
+    /**
+     * Holds a game-specific scoreboard
+     */
+    val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
 
     /**
      * Holds the current state of the game
@@ -116,6 +123,9 @@ class Game(
 
                     // Reset players
                     it.reset()
+
+                    // Set scoreboard
+                    it.bukkitPlayer.scoreboard = this.scoreboard
                 }
             }
         }
