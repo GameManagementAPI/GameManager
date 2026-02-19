@@ -90,7 +90,15 @@ class GMAPlayer(
      */
     val isInTeam: Boolean get() = this.team != null
 
+    /**
+     * Returns {@code true} if the player is currently eliminated
+     */
     val isEliminated: Boolean get() = this.game?.playerManager?.isEliminated(this) == true
+
+    /**
+     * Returns {@code true} if the player is currently in spectator mode
+     */
+    val isSpectating: Boolean get() = this.game?.playerManager?.isSpectating(this) == true
 
     /**
      * Make a player join this game
@@ -121,6 +129,15 @@ class GMAPlayer(
      */
     fun revive() =
         this.game?.playerManager?.revive(this) ?: false
+
+    /**
+     * Make a player spectate a specific game
+     * @param game The game to spectate
+     * @param force If set to {@code true} the player will quit his old game to spectate
+     * @return {@code true} upon success
+     */
+    fun spectate(game: Game, force: Boolean = false) =
+        game.playerManager.spectate(this, force)
 
     /**
      * Resets common player data such as experience, inventory, health, etc

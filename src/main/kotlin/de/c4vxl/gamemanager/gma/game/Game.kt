@@ -62,7 +62,10 @@ class Game(
      * Holds a list of all players in the game
      */
     val players: List<GMAPlayer>
-        get() = this.playerManager.players
+        get() = buildList {
+            addAll(this@Game.playerManager.players)
+            addAll(this@Game.playerManager.spectators)
+        }
 
     /**
      * Returns {@code true} when the game is in a queuing state

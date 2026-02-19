@@ -1,11 +1,9 @@
 package de.c4vxl.gamemanager.gma.player
 
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerEliminateEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
+import de.c4vxl.gamemanager.gma.event.player.*
 import de.c4vxl.gamemanager.gma.game.Game
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 
 /**
  * Object responsible for managing players of a game
@@ -16,6 +14,7 @@ class PlayerManager(
 ) {
     private val internalPlayers: MutableList<GMAPlayer> = mutableListOf()
     private val internalEliminatedPlayers: MutableList<GMAPlayer> = mutableListOf()
+    private val internalSpectators: MutableList<GMAPlayer> = mutableListOf()
 
     /**
      * Returns a list of the players connected to this game
@@ -34,6 +33,12 @@ class PlayerManager(
      */
     val alivePlayers: List<GMAPlayer>
         get() = players.filterNot { !it.isEliminated && it.game == this.game }
+
+    /**
+     * Returns a list of the players currently spectating this game
+     */
+    val spectators: List<GMAPlayer>
+        get() = internalSpectators.distinct().toList()
 
     /**
      * Returns {@code true} if join conditions for a certain player are met
@@ -82,31 +87,84 @@ class PlayerManager(
      * @return {@code true} upon success
      */
     fun quit(player: GMAPlayer): Boolean {
-        // Player not in this game
-        if (!this.internalPlayers.contains(player))
-            return false
+        var success = false
 
-        // Call quit event
-        GamePlayerQuitEvent(player, this.game).let {
-            it.callEvent()
-            if (it.isCancelled) return false
+        // Player is spectator
+        if (spectators.contains(player)) {
+            // Remove from spectator
+            internalSpectators.remove(player)
+            player.game = null
+
+            // Call event
+            GamePlayerSpectateEndEvent(player, this.game).callEvent()
+
+            success = true
         }
 
-        // Eliminate player
-        player.eliminate()
+        // Player is game player
+        if (this.players.contains(player)) {
+            // Call quit event
+            GamePlayerQuitEvent(player, this.game).let {
+                it.callEvent()
+                if (it.isCancelled) return false
+            }
 
-        // Quit team
-        this.game.teamManager.quit(player)
+            // Eliminate player
+            player.eliminate()
 
-        // Remove player from game
-        internalPlayers.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
-        player.game = null
+            // Quit team
+            this.game.teamManager.quit(player)
 
-        // Reset scoreboard
-        player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+            // Remove player from game
+            internalPlayers.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
+            player.game = null
+
+            // Reset scoreboard
+            player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+
+            success = true
+        }
+
+        return success
+    }
+
+    /**
+     * Make a player spectate this game
+     * @param player The player to put in spectator mode
+     * @param force If set to {@code true} the player will quit his old game to spectate
+     * @return {@code true} upon success
+     */
+    fun spectate(player: GMAPlayer, force: Boolean = false): Boolean {
+        // Player is already in a game that isn't this one
+        if (player.isInGame && player.game != this.game && !force)
+            return false
+
+        // Return if player is already spectating
+        if (isSpectating(player)) return false
+
+        // Make player quit his game
+        player.quit()
+
+        // Add player to spectators
+        internalSpectators.add(player)
+        player.game = this.game
+
+        // Set game-mode to spectator
+        player.bukkitPlayer.gameMode = GameMode.SPECTATOR
+
+        // Call event
+        GamePlayerSpectateStartEvent(player, this.game).callEvent()
 
         return true
     }
+
+    /**
+     * Returns {@code true} if a player is spectating this game
+     * @param player The player to check
+     */
+    fun isSpectating(player: GMAPlayer): Boolean =
+        this.internalSpectators.contains(player)
+
 
     /**
      * Eliminates a player from the game
@@ -123,6 +181,9 @@ class PlayerManager(
             it.callEvent()
             if (it.isCancelled) internalEliminatedPlayers.remove(player)
         }
+
+        // Set to spectator
+        this.spectate(player)
     }
 
     /**
