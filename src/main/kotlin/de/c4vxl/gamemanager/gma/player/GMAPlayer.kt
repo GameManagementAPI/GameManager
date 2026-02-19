@@ -90,7 +90,7 @@ class GMAPlayer(
      */
     val isInTeam: Boolean get() = this.team != null
 
-    val isEliminated: Boolean get() = this.game?.eliminatedPlayers?.contains(this) == true
+    val isEliminated: Boolean get() = this.game?.playerManager?.isEliminated(this) == true
 
     /**
      * Make a player join this game
@@ -99,14 +99,28 @@ class GMAPlayer(
      * @return {@code true} upon success
      */
     fun join(game: Game, force: Boolean = false) =
-        game.join(this, force)
+        game.playerManager.join(this, force)
 
     /**
      * Make player quit his game
      * @return {@code true} upon success
      */
     fun quit() =
-        this.game?.quit(this) ?: false
+        this.game?.playerManager?.quit(this) ?: false
+
+    /**
+     * Eliminate this player from the game he is in
+     * @return {@code true} upon success
+     */
+    fun eliminate() =
+        this.game?.playerManager?.eliminate(this) ?: false
+
+    /**
+     * Revive this player in the game he is in
+     * @return {@code true} upon success
+     */
+    fun revive() =
+        this.game?.playerManager?.revive(this) ?: false
 
     /**
      * Resets common player data such as experience, inventory, health, etc

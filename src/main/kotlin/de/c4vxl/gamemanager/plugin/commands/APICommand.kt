@@ -491,7 +491,7 @@ object APICommand {
                         }
 
                         // Eliminate player
-                        game.eliminate(player.gma)
+                        player.gma.eliminate()
                         sender.sendMessage(sender.language.getCmp("command.api.player.eliminate.success", player.name, game.id.asString))
                     }
                 }
@@ -521,7 +521,7 @@ object APICommand {
                         }
 
                         // Revive player
-                        game.revive(player.gma)
+                        player.gma.revive()
                         sender.sendMessage(sender.language.getCmp("command.api.player.revive.success", player.name, game.id.asString))
                     }
                 }

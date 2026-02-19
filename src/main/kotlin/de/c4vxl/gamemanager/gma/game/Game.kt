@@ -4,14 +4,11 @@ import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerEliminateEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
+import de.c4vxl.gamemanager.gma.player.PlayerManager
 import de.c4vxl.gamemanager.gma.team.TeamManager
 import de.c4vxl.gamemanager.gma.world.WorldManager
 import net.kyori.adventure.text.Component
@@ -36,6 +33,11 @@ class Game(
     val worldManager: WorldManager = WorldManager(this)
 
     /**
+     * Holds the player manager
+     */
+    val playerManager: PlayerManager = PlayerManager(this)
+
+    /**
      * Holds the current state of the game
      */
     var state: GameState = GameState.QUEUING
@@ -52,12 +54,8 @@ class Game(
     /**
      * Holds a list of all players in the game
      */
-    val players: MutableList<GMAPlayer> = mutableListOf()
-
-    /**
-     * Holds a list of all players that have been eliminated
-     */
-    val eliminatedPlayers: MutableList<GMAPlayer> = mutableListOf()
+    val players: List<GMAPlayer>
+        get() = this.playerManager.players
 
     /**
      * Returns {@code true} when the game is in a queuing state
@@ -78,13 +76,6 @@ class Game(
      * Returns {@code true} if the game has reached maximum players
      */
     val isFull: Boolean get() = this.players.size >= size.maxPlayers
-
-    /**
-     * Returns {@code true} if join conditions for a certain player are met
-     * @param player The player
-     */
-    fun canJoin(player: GMAPlayer): Boolean =
-        !isFull && isQueuing && !players.contains(player) && !player.isInGame
 
     // TODO: Implement player elimination
     // TODO: Implement player revive
@@ -149,7 +140,7 @@ class Game(
         this.state = GameState.STOPPING
 
         // Remove all players from game
-        this.players.distinct().forEach { this.quit(it) }
+        this.playerManager.players.forEach { this.playerManager.quit(it) }
 
         // Kick players to unload world properly
         // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
@@ -164,105 +155,11 @@ class Game(
     }
 
     /**
-     * Eliminates a player from the game
-     * @param player The player to eliminate
-     */
-    fun eliminate(player: GMAPlayer) {
-        if (player.game != this) return
-        if (player.isEliminated) return
-
-        // Call event
-        GamePlayerEliminateEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) return
-        }
-
-        eliminatedPlayers.add(player)
-    }
-
-    /**
-     * Revives an eliminated player
-     * @param player The player to revive
-     */
-    fun revive(player: GMAPlayer) {
-        if (player.game != this) return
-        if (!player.isEliminated) return
-
-        // Call event
-        GamePlayerReviveEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) return
-        }
-
-        eliminatedPlayers.remove(player)
-    }
-
-    /**
-     * Make a player join this game
-     * @param player The player to make join
-     * @param force If set to {@code true} player will be forced to quit his old game in order to join this one
-     * @return {@code true} upon success
-     */
-    fun join(player: GMAPlayer, force: Boolean = false): Boolean {
-        if (!canJoin(player)) return false
-
-        val pastGame = player.game
-
-        // Player is already in a game
-        // Quit if force-flag is passed, otherwise exit
-        if (player.isInGame)
-            if (force) player.quit()
-            else return false
-
-        // Add player to this game
-        players.add(player)
-        player.game = this
-
-        // Call join event
-        GamePlayerJoinedEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) {
-                players.remove(player)
-                player.game = pastGame
-                return false
-            }
-        }
-
-        return true
-    }
-
-    /**
-     * Make a player quit this game
-     * @param player The player
-     * @return {@code true} upon success
-     */
-    fun quit(player: GMAPlayer): Boolean {
-        // Player not in this game
-        if (!this.players.contains(player))
-            return false
-
-        // Call quit event
-        GamePlayerQuitEvent(player, this).let {
-            it.callEvent()
-            if (it.isCancelled) return false
-        }
-
-        // Quit team
-        this.teamManager.quit(player)
-
-        // Remove player from game
-        players.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
-        player.game = null
-
-        return true
-    }
-
-    /**
      * Broadcasts a message to the entire game
      * @param message The message to send
      */
     fun broadcastMessage(message: Component) {
-        val audience = this.players.distinct()
+        val audience = this.players
 
         // Call event
         GameMessageBroadcastEvent(this, message, audience).let {
