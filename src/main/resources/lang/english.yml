@@ -36,6 +36,7 @@ command.api:
     "info.l3": "${prefix-followup} <grey>Game State:</grey> $0"
     "info.l4": "${prefix-followup} <grey>Size:</grey> <white>$0</white>"
     "info.l5": "${prefix-followup} <white>$0</white>/<white>$1</white> Players"
+    "info.l6": "${prefix-followup} <white>Map:</white> $0"
 
     # ... list-players
     "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"

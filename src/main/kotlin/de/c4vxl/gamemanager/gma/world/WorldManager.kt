@@ -62,6 +62,13 @@ class WorldManager(
     lateinit var map: Map
 
     /**
+     * Returns the name of the current map
+     */
+    val mapName: String?
+        get() = if (::map.isInitialized) map.name
+                else null
+
+    /**
      * If set to the name of a map that map will be loaded
      */
     var forcemap: String? = null
