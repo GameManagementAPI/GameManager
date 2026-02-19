@@ -2,6 +2,7 @@ package de.c4vxl.gamemanager.gma.team
 
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.team.GamePlayerTeamJoinEvent
+import de.c4vxl.gamemanager.gma.event.team.GamePlayerTeamQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 
@@ -109,7 +110,7 @@ class TeamManager(
         val team = player.team ?: return false
 
         // Call quit event
-        GamePlayerQuitEvent(player, this.game).let {
+        GamePlayerTeamQuitEvent(team, player, this.game).let {
             it.callEvent()
             if (it.isCancelled) return false
         }
