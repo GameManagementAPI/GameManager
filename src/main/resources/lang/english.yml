@@ -155,5 +155,5 @@ command.language:
 
 
 # Queue
-"queue.countdown.title": "Game starting in: $0 Seconds"
+"queue.countdown.title": "Game starting in $0 seconds"
 "queue.countdown.cancelled": "<red>Start has been cancelled!</red>"

@@ -6,10 +6,12 @@ import de.c4vxl.gamemanager.gma.event.player.GamePlayerJoinedEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
+import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import org.bukkit.Bukkit
 import org.bukkit.boss.BarColor
 import org.bukkit.boss.BarStyle
 import org.bukkit.boss.BossBar
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
@@ -18,22 +20,36 @@ class QueueHandler : Listener {
         Bukkit.getPluginManager().registerEvents(this, Main.instance)
     }
 
-    val bars: MutableMap<Game, MutableMap<GMAPlayer, BossBar>> = mutableMapOf()
+    /**
+     * Holds the currently displayed boss bars
+     */
+    private val bars: MutableMap<Game, MutableMap<Player, BossBar>> = mutableMapOf()
+
+    /**
+     * Holds the games that currently have a countdown running
+     */
+    private val runningCountdowns: MutableList<Game> = mutableListOf()
 
     /**
      * Initializes the countdown boss bar for a player
      * @param player The player
      */
     private fun initCountdown(player: GMAPlayer) {
-        if (player.game == null)
+        val game = player.game ?: return
+        val gameBars = bars.getOrPut(game) { mutableMapOf() }
+
+        // Player already has a bar
+        if (gameBars.containsKey(player.bukkitPlayer))
             return
 
-        bars[player.game!!] =
-            bars.getOrDefault(player.game, mutableMapOf())
-                .apply {
-                    this[player] = Bukkit.createBossBar(player.language.get("queue.countdown.title", "-1"), BarColor.GREEN, BarStyle.SOLID)
-                    this[player]!!.addPlayer(player.bukkitPlayer)
-                }
+        val bar = Bukkit.createBossBar(
+            player.language.get("queue.countdown.title", "-1"),
+            BarColor.GREEN,
+            BarStyle.SOLID
+        )
+
+        bar.addPlayer(player.bukkitPlayer)
+        gameBars[player.bukkitPlayer] = bar
     }
 
     /**
@@ -42,7 +58,15 @@ class QueueHandler : Listener {
      * @param seconds The time of the countdown
      */
     private fun startCountdown(game: Game, seconds: Int) {
-        game.players.forEach { initCountdown(it)}
+        // Countdown already running
+        if (this.runningCountdowns.contains(game))
+            return
+
+        // Add to running
+        runningCountdowns.add(game)
+
+        // Initialize countdowns
+        game.players.forEach { initCountdown(it) }
 
         var ticks = 0
         Bukkit.getScheduler().runTaskTimer(Main.instance, { task ->
@@ -64,13 +88,15 @@ class QueueHandler : Listener {
             }
 
             // Cancel bar
-            if (cancel) {
+            if (cancel || game.isStopped) {
                 bars.getOrDefault(game, mutableMapOf()).forEach { it.value.removeAll() }
+                runningCountdowns.remove(game)
                 task.cancel()
             }
 
             // Update bar
-            bars[game]?.forEach { (player, bar) ->
+            bars[game]?.forEach { (bukkitPlayer, bar) ->
+                val player = bukkitPlayer.gma
                 bar.setTitle(player.language.get("queue.countdown.title", time.toString()))
                 bar.progress = (time.toDouble() / seconds).coerceIn(0.0, 1.0)
             }
@@ -106,19 +132,22 @@ class QueueHandler : Listener {
             startCountdown(event.game, (waitingFactor(event.game) * 60).toInt())
 
         // Initialize countdown for players that joined late
-        if (bars.containsKey(event.game) && bars[event.game]?.containsKey(event.player) != true)
+        if (bars.containsKey(event.game) && bars[event.game]?.containsKey(event.player.bukkitPlayer) != true)
             initCountdown(event.player)
     }
 
     @EventHandler
     fun onQuit(event: GamePlayerQuitEvent) {
         // Clear bar
-        bars[event.game]?.get(event.player)?.removeAll()
+        bars[event.game]
+            ?.remove(event.player.bukkitPlayer) // Remove bar from list
+            ?.removeAll()                                // Remove all players from bar
     }
 
     @EventHandler
     fun onStop(event: GameStopEvent) {
         // Clear game bars
         bars.remove(event.game)
+        runningCountdowns.remove(event.game)
     }
 }
