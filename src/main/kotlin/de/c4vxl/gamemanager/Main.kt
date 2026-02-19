@@ -48,7 +48,7 @@ class Main : JavaPlugin() {
         QueueHandler()
         ConnectionHandler()
         GameEndHandler()
-        VisibilityHandler
+        VisibilityHandler()
 
         // Load config
         saveResource("config.yml", false)

@@ -25,3 +25,11 @@ queue:
   # If set to true: countdowns will be displayed in a boss bar to all players
   # If set to false: countdowns will still apply, but they won't be visible
   display-countdowns: true
+
+visibility:
+  # Tags to add to messages to send them in "public" game channel
+  # Otherwise default chat will be just team chat
+  public: [ "@a", "@all", "@e", "@everyone" ]
+
+  # Determines if a team channel exists
+  allow-team-chat: true
