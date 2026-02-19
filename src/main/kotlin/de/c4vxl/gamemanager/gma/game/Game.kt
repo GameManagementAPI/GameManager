@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.gma.game
 
+import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
@@ -11,6 +12,7 @@ import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.team.TeamManager
 import de.c4vxl.gamemanager.gma.world.WorldManager
+import net.kyori.adventure.text.Component
 
 /**
  * Core game object
@@ -212,6 +214,23 @@ class Game(
         player.game = null
 
         return true
+    }
+
+    /**
+     * Broadcasts a message to the entire game
+     * @param message The message to send
+     */
+    fun broadcastMessage(message: Component) {
+        val audience = this.players.distinct()
+
+        // Call event
+        GameMessageBroadcastEvent(this, message, audience).let {
+            it.callEvent()
+            if (it.isCancelled) return
+        }
+
+        // Send message
+        audience.forEach { it.bukkitPlayer.sendMessage(message) }
     }
 
     override fun equals(other: Any?): Boolean {
