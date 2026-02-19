@@ -1,9 +1,7 @@
 package de.c4vxl.gamemanager.gma.team
 
-import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.event.team.GameTeamMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
-import net.kyori.adventure.text.Component
 
 /**
  * Object that holds information about one team of a game
@@ -34,22 +32,23 @@ data class Team(
 
     /**
      * Broadcasts a message to the entire team
-     * @param message The message to send
+     * @param key The language key of the message
+     * @param args The arguments of the translation
      */
-    fun broadcastMessage(message: Component) {
+    fun broadcastMessage(key: String, vararg args: String) {
         val audience = this.players.distinct()
 
         // Call event
-        GameTeamMessageBroadcastEvent(this, this.manager.game, message, audience).let {
+        GameTeamMessageBroadcastEvent(this, this.manager.game, key, args.toList(), audience).let {
             it.callEvent()
             if (it.isCancelled) return
         }
 
         // Send message
-        audience.forEach { it.bukkitPlayer.sendMessage(message) }
+        audience.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(key, *args)) }
     }
 
-    override fun toString(): String {
-        return "Team { label=${this.label} }"
-    }
+    override fun toString(): String { return "Team { label=${this.label} }" }
+    override fun hashCode(): Int { return this.id.hashCode() }
+    override fun equals(other: Any?): Boolean { return this.id == (other as? Team)?.id && this.manager.game == other.manager.game }
 }

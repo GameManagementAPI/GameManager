@@ -2,7 +2,9 @@ package de.c4vxl.gamemanager.plugin.handler
 
 import de.c4vxl.gamemanager.Main
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
+import de.c4vxl.gamemanager.language.Language.Companion.language
 import io.papermc.paper.event.player.AsyncChatEvent
+import net.kyori.adventure.text.minimessage.MiniMessage
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -82,18 +84,19 @@ class VisibilityHandler : Listener {
                         else "public"
 
         // Build the final message
-        val finalMessage = player.language.getCmp(
-            "chat.message.$channel",
+        val translationKey = "chat.message.$channel"
+        val translationArgs = arrayOf(
             player.bukkitPlayer.name,
-            player.team?.label ?: "/"
-        ).append(message)
+            player.team?.label ?: "/",
+            MiniMessage.miniMessage().serialize(message)
+        )
 
         // Send message
         Bukkit.getScheduler().callSyncMethod(Main.instance) {
             when (channel) {
-                "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }.forEach { it.sendMessage(finalMessage) }
-                "queue", "public" -> game?.broadcastMessage(finalMessage)
-                "team"            -> player.team?.broadcastMessage(finalMessage)
+                "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }.forEach { it.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
+                "queue", "public" -> game?.broadcastMessage(translationKey, *translationArgs)
+                "team"            -> player.team?.broadcastMessage(translationKey, *translationArgs)
                 else              -> Main.logger.warning("Tried to send message in invalid channel") // should never be reached
             }
         }

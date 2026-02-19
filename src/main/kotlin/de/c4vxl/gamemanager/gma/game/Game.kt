@@ -156,19 +156,20 @@ class Game(
 
     /**
      * Broadcasts a message to the entire game
-     * @param message The message to send
+     * @param key The language key of the message
+     * @param args The arguments of the translation
      */
-    fun broadcastMessage(message: Component) {
+    fun broadcastMessage(key: String, vararg args: String) {
         val audience = this.players
 
         // Call event
-        GameMessageBroadcastEvent(this, message, audience).let {
+        GameMessageBroadcastEvent(this, key, args.toList(), audience).let {
             it.callEvent()
             if (it.isCancelled) return
         }
 
         // Send message
-        audience.forEach { it.bukkitPlayer.sendMessage(message) }
+        audience.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(key, *args)) }
     }
 
     override fun equals(other: Any?): Boolean {
