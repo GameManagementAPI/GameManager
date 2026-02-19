@@ -5,7 +5,6 @@ import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
-import java.util.UUID
 
 /**
  * A Wrapper around the Player object.
@@ -22,15 +21,21 @@ class GMAPlayer(
         // We want to cache the GMAPlayer instances
         // If there are multiple instances of one bukkitPlayer they might get confused and metadata will get mixed up
         // Therefore this lookup-table is used to tie one GMAPlayer-instance to the uuid of a player
-        private val instances: MutableMap<UUID, GMAPlayer> = mutableMapOf()
+        private val instances: MutableMap<Player, GMAPlayer> = mutableMapOf()
 
         /**
          * Returns an instance of GMAPlayer for a bukkit player
          */
         fun get(bukkitPlayer: Player) =
-            instances.getOrPut(bukkitPlayer.uniqueId) {
+            instances.getOrPut(bukkitPlayer) {
                 GMAPlayer(bukkitPlayer)
             }
+
+        /**
+         * Removes a player from the cache
+         */
+        fun unregister(bukkitPlayer: Player) =
+            instances.remove(bukkitPlayer)
 
         /**
          * Returns an instance of GMAPlayer for a bukkit player
@@ -111,5 +116,19 @@ class GMAPlayer(
             it.gameMode = GameMode.SURVIVAL
             it.fallDistance = 0F
         }
+    }
+
+
+    override fun equals(other: Any?): Boolean {
+        val gma = (other as? GMAPlayer) ?: return false
+        return gma.bukkitPlayer.uniqueId == this.bukkitPlayer.uniqueId
+    }
+
+    override fun hashCode(): Int {
+        return this.bukkitPlayer.uniqueId.hashCode()
+    }
+
+    override fun toString(): String {
+        return "GMAPlayer { name=${this.bukkitPlayer.name}, uuid=${this.bukkitPlayer.uniqueId}, game=${this.game}, team=${this.team} }"
     }
 }
