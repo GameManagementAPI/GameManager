@@ -14,3 +14,14 @@ maps:
 
   # Path to the directory containing the available maps
   db: "./maps/"
+
+queue:
+  # Default waiting time in seconds
+  wait-time: 60
+
+  # Time to wait if a game is completely full
+  full-wait-time: 5
+
+  # If set to true: countdowns will be displayed in a boss bar to all players
+  # If set to false: countdowns will still apply, but they won't be visible
+  display-countdowns: true

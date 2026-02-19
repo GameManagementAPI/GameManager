@@ -15,6 +15,9 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 
+/**
+ * Responsible for automatically starting games
+ */
 class QueueHandler : Listener {
     init {
         Bukkit.getPluginManager().registerEvents(this, Main.instance)
@@ -35,6 +38,9 @@ class QueueHandler : Listener {
      * @param player The player
      */
     private fun initCountdown(player: GMAPlayer) {
+        if (!Main.instance.config.getBoolean("queue.display-countdowns", true))
+            return
+
         val game = player.game ?: return
         val gameBars = bars.getOrPut(game) { mutableMapOf() }
 
@@ -124,12 +130,12 @@ class QueueHandler : Listener {
         // Game is full
         // Start a five-second countdown
         if (event.game.isFull)
-            startCountdown(event.game, 5)
+            startCountdown(event.game, Main.instance.config.getInt("queue.full-wait-time", 5))
 
         // Enough to fill two teams
         // Start a countdown
         else if (event.game.players.size >= event.game.size.teamSize * 2)
-            startCountdown(event.game, (waitingFactor(event.game) * 60).toInt())
+            startCountdown(event.game, (waitingFactor(event.game) * Main.instance.config.getInt("queue.wait-time", 60)).toInt())
 
         // Initialize countdown for players that joined late
         if (bars.containsKey(event.game) && bars[event.game]?.containsKey(event.player.bukkitPlayer) != true)
