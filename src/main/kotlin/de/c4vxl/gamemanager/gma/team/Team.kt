@@ -27,8 +27,7 @@ data class Team(
     /**
      * Returns the label of this team
      */
-    // TODO: Implement custom team labels
-    val label: String get() = "#${id + 1}"
+    val label: String get() = this.manager.game.worldManager.map?.metadata?.getString("team.$id.prefix") ?: "#${id + 1}"
 
     /**
      * Broadcasts a message to the entire team

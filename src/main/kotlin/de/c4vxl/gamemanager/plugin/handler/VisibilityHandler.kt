@@ -65,8 +65,6 @@ class VisibilityHandler : Listener {
 
     @EventHandler
     fun onChat(event: AsyncChatEvent) {
-        // TODO: Custom spectator chat
-
         // Stop from sending message
         event.isCancelled = true
 
