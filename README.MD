@@ -182,7 +182,7 @@ To compile **GMA** youself, simply follow these steps:
 <br>
 
 # Resources
-- [Docs](https://gma.c4vxl.de/docs/)
+- [Docs](http://gma.c4vxl.de/docs/)
 - [Plugin template](https://github.com/GameManagementAPI/GMA-template/)
 
 <br>
