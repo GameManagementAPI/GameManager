@@ -50,7 +50,7 @@ class QueueHandler : Listener {
             return
 
         val bar = Bukkit.createBossBar(
-            player.language.get("queue.countdown.title", "-1"),
+            player.language.get("queue.countdown.title", "0"),
             BarColor.GREEN,
             BarStyle.SOLID
         )
@@ -122,7 +122,7 @@ class QueueHandler : Listener {
             (max * 0.25).toInt() -> 0.75
             (max * 0.5).toInt() -> 0.5
             (max * 0.75).toInt() -> 0.25
-            else -> 0.0
+            else -> 1.0
         }
     }
 
