@@ -63,7 +63,7 @@ class Game(
         get() = buildList {
             addAll(this@Game.playerManager.players)
             addAll(this@Game.playerManager.spectators)
-        }
+        }.distinct()
 
     /**
      * Returns {@code true} when the game is in a queuing state
