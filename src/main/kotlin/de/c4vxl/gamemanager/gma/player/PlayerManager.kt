@@ -142,9 +142,6 @@ class PlayerManager(
         // Return if player is already spectating
         if (isSpectating(player)) return false
 
-        // Make player quit his game
-        player.quit()
-
         // Add player to spectators
         internalSpectators.add(player)
         player.game = this.game
