@@ -1,9 +1,6 @@
 package de.c4vxl.gamemanager.gma.game
 
-import de.c4vxl.gamemanager.gma.event.game.GameMessageBroadcastEvent
-import de.c4vxl.gamemanager.gma.event.game.GameStartEvent
-import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
-import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
+import de.c4vxl.gamemanager.gma.event.game.*
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
@@ -133,6 +130,9 @@ class Game(
                 }
             }
         }
+
+        // Call started event
+        GameStartedEvent(this).callEvent()
 
         this.state = GameState.RUNNING
         return true
