@@ -75,12 +75,12 @@ data class Map(
      * @param team The id of the team to look for
      */
     fun getSpawnLocation(team: Int): Location? =
-        metadata.getIntegerList("team.$team.spawn").let {
+        metadata.getDoubleList("team.$team.spawn").let {
             return Location(
                 world,
-                (it.getOrNull(0) ?: return@let null) + 0.5,
-                (it.getOrNull(1) ?: return@let null).toDouble(),
-                (it.getOrNull(2) ?: return@let null) + 0.5,
+                it.getOrNull(0) ?: return@let null,
+                it.getOrNull(1) ?: return@let null,
+                it.getOrNull(2) ?: return@let null,
                 it.getOrNull(3)?.toFloat() ?: 90F,
                 it.getOrNull(4)?.toFloat() ?: 0F
             )
