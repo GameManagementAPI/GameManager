@@ -35,6 +35,10 @@ java {
     withJavadocJar()
 }
 
+tasks.assemble {
+    dependsOn(tasks.reobfJar)
+}
+
 // Publishing
 publishing {
     publications {
