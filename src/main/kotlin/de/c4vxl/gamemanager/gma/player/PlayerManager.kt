@@ -32,7 +32,7 @@ class PlayerManager(
      * Returns a list of all players that are still alive
      */
     val alivePlayers: List<GMAPlayer>
-        get() = players.filterNot { !it.isEliminated && it.game == this.game }
+        get() = players.filter { !it.isEliminated && it.game == this.game }
 
     /**
      * Returns a list of the players currently spectating this game
