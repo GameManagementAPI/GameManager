@@ -91,4 +91,9 @@ data class Map(
      */
     val builders: List<String>
         get() = metadata.getStringList("builders")
+
+
+    override fun toString(): String {
+        return "Map { name=$name, dir=$dir }"
+    }
 }
