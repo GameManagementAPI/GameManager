@@ -50,10 +50,11 @@ class WorldManager(
     /**
      * Returns a list of all maps available for this game
      */
-    val availableMaps: List<String>
+    val availableMaps: List<Map>
         get() = mapsDirectory.resolve(game.size.toString()).listFiles()
             ?.filter { it.isDirectory }
-            ?.map { it.name }
+            ?.map { Map(this, it.name, it) }
+            ?.toList()
             ?: listOf()
 
     /**
@@ -80,7 +81,7 @@ class WorldManager(
      * @return Returns {@code true} upon success
      */
     fun loadRandom(): Boolean =
-        availableMaps.randomOrNull()?.let { load(it) } ?: false
+        availableMaps.randomOrNull()?.let { load(it.name) } ?: false
 
     /**
      * Loads a specific map
@@ -109,7 +110,7 @@ class WorldManager(
 
         // Map not found
         // -> Load random one
-        if (!availableMaps.contains(name))
+        if (!availableMaps.map { it.name }.contains(name))
             return loadRandom()
 
         // Copy map

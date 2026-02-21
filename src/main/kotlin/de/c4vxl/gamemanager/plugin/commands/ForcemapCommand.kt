@@ -23,7 +23,7 @@ object ForcemapCommand  {
         withFullDescription(Language.default.get("command.forcemap.desc"))
 
         argument(StringArgument("map").replaceSuggestions(ArgumentSuggestions.strings {
-            (it.sender as? Player)?.gma?.game?.worldManager?.availableMaps?.toTypedArray() ?: arrayOf()
+            (it.sender as? Player)?.gma?.game?.worldManager?.availableMaps?.map { it.name }?.toTypedArray() ?: arrayOf()
         })) {
             playerExecutor { player, args ->
                 val game: Game? = player.gma.game
@@ -42,7 +42,7 @@ object ForcemapCommand  {
                 }
 
                 // Invalid map
-                if (!game.worldManager.availableMaps.contains(map)) {
+                if (!game.worldManager.availableMaps.map { it.name }.contains(map)) {
                     player.sendMessage(player.language.getCmp("command.forcemap.failure.invalid_map"))
                     return@playerExecutor
                 }
