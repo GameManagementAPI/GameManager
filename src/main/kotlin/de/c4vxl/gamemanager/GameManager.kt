@@ -1,9 +1,6 @@
 package de.c4vxl.gamemanager
 
 import de.c4vxl.gamemanager.gma.GMA
-import de.c4vxl.gamemanager.gma.game.Game
-import de.c4vxl.gamemanager.gma.game.type.GameSize
-import de.c4vxl.gamemanager.gma.world.WorldManager
 import de.c4vxl.gamemanager.language.Language
 import de.c4vxl.gamemanager.plugin.commands.*
 import de.c4vxl.gamemanager.plugin.handler.*
