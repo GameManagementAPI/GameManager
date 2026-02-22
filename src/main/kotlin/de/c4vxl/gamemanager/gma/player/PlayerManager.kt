@@ -84,9 +84,10 @@ class PlayerManager(
     /**
      * Make a player quit this game
      * @param player The player
+     * @param callEvent If set to {@code false} no events will be triggered
      * @return {@code true} upon success
      */
-    fun quit(player: GMAPlayer): Boolean {
+    fun quit(player: GMAPlayer, callEvent: Boolean = true): Boolean {
         var success = false
 
         // Player is spectator
@@ -99,7 +100,8 @@ class PlayerManager(
             player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
 
             // Call event
-            GamePlayerSpectateEndEvent(player, this.game).callEvent()
+            if (callEvent)
+                GamePlayerSpectateEndEvent(player, this.game).callEvent()
 
             success = true
         }
@@ -107,10 +109,11 @@ class PlayerManager(
         // Player is game player
         if (this.players.contains(player)) {
             // Call quit event
-            GamePlayerQuitEvent(player, this.game).let {
-                it.callEvent()
-                if (it.isCancelled) return false
-            }
+            if (callEvent)
+                GamePlayerQuitEvent(player, this.game).let {
+                    it.callEvent()
+                    if (it.isCancelled) return false
+                }
 
             // Eliminate player
             eliminate(player, false)
@@ -143,7 +146,9 @@ class PlayerManager(
             return false
 
         // Quit past game
-        player.quit()
+        // Don't call events here to prevent misconception of player intending to "quit" his game
+        // just because he started spectating
+        this.quit(player, false)
 
         // Return if player is already spectating
         if (isSpectating(player)) return false
