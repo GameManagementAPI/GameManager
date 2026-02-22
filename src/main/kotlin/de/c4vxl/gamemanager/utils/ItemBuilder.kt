@@ -7,6 +7,7 @@ import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.*
+import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.player.*
 import org.bukkit.inventory.ItemStack
@@ -36,12 +37,13 @@ class ItemBuilder(
         @EventHandler
         fun onEvent(event: Event) {
             val item: ItemStack = when (event) {
-                is InventoryClickEvent -> event.currentItem
-                is PlayerInteractEvent -> event.item
-                is PlayerDropItemEvent -> event.itemDrop.itemStack
-                is PlayerItemBreakEvent -> event.brokenItem
-                is PlayerItemDamageEvent -> event.item
+                is InventoryClickEvent    -> event.currentItem
+                is PlayerInteractEvent    -> event.item
+                is PlayerDropItemEvent    -> event.itemDrop.itemStack
+                is PlayerItemBreakEvent   -> event.brokenItem
+                is PlayerItemDamageEvent  -> event.item
                 is PlayerItemConsumeEvent -> event.item
+                is BlockPlaceEvent        -> event.itemInHand
                 else -> null
             } ?: return
 
