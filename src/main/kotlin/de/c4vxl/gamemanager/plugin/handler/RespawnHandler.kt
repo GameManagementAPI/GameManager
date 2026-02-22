@@ -3,6 +3,7 @@ package de.c4vxl.gamemanager.plugin.handler
 import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerDeathEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerRespawnEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import org.bukkit.Bukkit
 import org.bukkit.event.EventHandler
@@ -48,5 +49,11 @@ class RespawnHandler : Listener {
             it.callEvent()
             event.respawnLocation = it.spawnLocation
         }
+    }
+
+    @EventHandler
+    fun onRevive(event: GamePlayerReviveEvent) {
+        event.player.bukkitPlayer.health = 0.0
+        event.player.reset()
     }
 }
