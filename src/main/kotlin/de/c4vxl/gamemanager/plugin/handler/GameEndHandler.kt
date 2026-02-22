@@ -103,6 +103,8 @@ class GameEndHandler : Listener {
         event.game.playerManager.eliminatedPlayers.filter { it.team != winnerTeam }
             .forEach { GamePlayerLooseEvent(it, event.game).callEvent() }
 
+        event.game.players.forEach { it.spectate(event.game) }
+
         // Stop game
         stopCountdown(event.game)
     }

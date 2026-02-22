@@ -180,7 +180,9 @@ object APICommand {
                                 .append(sender.language.getCmp(
                                     "command.api.games.list-players.msg.entry",
                                     it.bukkitPlayer.name,
-                                    it.team?.label ?: "/"
+                                    it.team?.label ?:
+                                    (if (it.isSpectating) "spectator"
+                                    else "/")
                                 ))
                         }
 

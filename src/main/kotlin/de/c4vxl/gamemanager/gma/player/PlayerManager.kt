@@ -139,6 +139,9 @@ class PlayerManager(
         if (player.isInGame && player.game != this.game && !force)
             return false
 
+        // Quit past game
+        player.quit()
+
         // Return if player is already spectating
         if (isSpectating(player)) return false
 
@@ -148,6 +151,7 @@ class PlayerManager(
 
         // Set game-mode to spectator
         player.bukkitPlayer.gameMode = GameMode.SPECTATOR
+        player.bukkitPlayer.scoreboard = game.scoreboard
         this.game.worldManager.map?.world?.spawnLocation?.let { player.bukkitPlayer.teleport(it) }
 
         // Call event
