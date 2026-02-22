@@ -80,6 +80,13 @@ class QueueHandler : Listener {
             val time = seconds - ticks
             var cancel = false
 
+            // Update bar
+            bars[game]?.forEach { (bukkitPlayer, bar) ->
+                val player = bukkitPlayer.gma
+                bar.setTitle(player.language.get("queue.countdown.title", time.toString()))
+                bar.progress = (time.toDouble() / seconds).coerceIn(0.0, 1.0)
+            }
+
             // Too little players
             // Can't fill two teams
             if (game.players.size < game.size.teamSize * 2) {
@@ -89,7 +96,7 @@ class QueueHandler : Listener {
 
             // Time has run out
             // Start game
-            if ((time <= 1 || game.isRunning) && !cancel) {
+            if ((ticks >= seconds || game.isRunning) && !cancel) {
                 game.start()
                 cancel = true
             }
@@ -99,13 +106,6 @@ class QueueHandler : Listener {
                 bars.getOrDefault(game, mutableMapOf()).forEach { it.value.removeAll() }
                 runningCountdowns.remove(game)
                 task.cancel()
-            }
-
-            // Update bar
-            bars[game]?.forEach { (bukkitPlayer, bar) ->
-                val player = bukkitPlayer.gma
-                bar.setTitle(player.language.get("queue.countdown.title", time.toString()))
-                bar.progress = (time.toDouble() / seconds).coerceIn(0.0, 1.0)
             }
 
             ticks++
