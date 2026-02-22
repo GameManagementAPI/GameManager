@@ -95,6 +95,9 @@ class PlayerManager(
             internalSpectators.remove(player)
             player.game = null
 
+            // Reset scoreboard
+            player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+
             // Call event
             GamePlayerSpectateEndEvent(player, this.game).callEvent()
 

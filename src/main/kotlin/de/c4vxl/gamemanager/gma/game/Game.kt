@@ -154,7 +154,7 @@ class Game(
         this.state = GameState.STOPPING
 
         // Remove all players from game
-        this.playerManager.players.forEach { this.playerManager.quit(it) }
+        this.players.forEach { this.playerManager.quit(it) }
 
         // Kick players to unload world properly
         // If kickPlayers was set to false we assume another plugin takes care of removing the players from the world
