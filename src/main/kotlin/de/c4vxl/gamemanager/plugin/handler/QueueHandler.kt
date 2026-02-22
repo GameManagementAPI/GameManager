@@ -147,7 +147,7 @@ class QueueHandler : Listener {
     fun onQuit(event: GamePlayerQuitEvent) {
         // Clear bar
         bars[event.game]
-            ?.remove(event.player.bukkitPlayer) // Remove bar from list
+            ?.remove(event.player.bukkitPlayer)          // Remove bar from list
             ?.removeAll()                                // Remove all players from bar
     }
 

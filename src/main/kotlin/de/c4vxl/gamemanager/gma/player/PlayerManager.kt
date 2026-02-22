@@ -110,7 +110,7 @@ class PlayerManager(
             }
 
             // Eliminate player
-            player.eliminate()
+            eliminate(player, false)
 
             // Quit team
             this.game.teamManager.quit(player)
@@ -167,8 +167,9 @@ class PlayerManager(
     /**
      * Eliminates a player from the game
      * @param player The player to eliminate
+     * @param spectate If set to {@code true} player will be put in spectator
      */
-    fun eliminate(player: GMAPlayer) {
+    fun eliminate(player: GMAPlayer, spectate: Boolean = true) {
         if (player.game != this.game) return
         if (player.isEliminated) return
 
@@ -181,7 +182,8 @@ class PlayerManager(
         }
 
         // Set to spectator
-        this.spectate(player)
+        if (spectate)
+            this.spectate(player)
     }
 
     /**
