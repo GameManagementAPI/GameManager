@@ -119,6 +119,6 @@ class GameEndHandler : Listener {
             return
 
         // Stop game immediately
-        event.game.stop()
+        GMA.unregisterGame(event.game, true)
     }
 }
