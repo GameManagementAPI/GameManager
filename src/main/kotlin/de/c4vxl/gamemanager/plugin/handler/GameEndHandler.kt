@@ -115,10 +115,10 @@ class GameEndHandler : Listener {
             return
 
         // Game is not empty
-        if (event.game.players.isNotEmpty())
+        if (event.game.players.size > 1)
             return
 
         // Stop game immediately
-        GMA.unregisterGame(event.game, true)
+        event.game.stop()
     }
 }
