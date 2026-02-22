@@ -89,7 +89,7 @@ class QueueHandler : Listener {
 
             // Time has run out
             // Start game
-            if (time <= 0 || game.isRunning) {
+            if ((time <= 1 || game.isRunning) && !cancel) {
                 game.start()
                 cancel = true
             }
