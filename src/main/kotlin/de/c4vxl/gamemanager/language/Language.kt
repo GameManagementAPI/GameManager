@@ -53,7 +53,7 @@ class Language(
          * Returns a list of all available languages
          */
         val availableLanguages: List<String>
-            get() = translationsDirectory.toFile().listFiles()?.map { it.nameWithoutExtension } ?: listOf()
+            get() = translationsDirectory.toFile().listFiles()?.filter { it.isFile }?.map { it.nameWithoutExtension } ?: listOf()
 
         /**
          * Get a language from its name
