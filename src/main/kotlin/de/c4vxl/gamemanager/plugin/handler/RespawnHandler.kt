@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.plugin.handler
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerDeathEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerRespawnEvent
@@ -44,11 +45,17 @@ class RespawnHandler : Listener {
             game.worldManager.map?.world?.spawnLocation
             ?: return
 
+        event.respawnLocation = spawn
+    }
+
+    @EventHandler
+    fun onRespawned(event: PlayerPostRespawnEvent) {
+        val player = event.player.gma
+        val game = player.game ?: return
+
         // Trigger event
-        GamePlayerRespawnEvent(player, game, spawn, event).let {
-            it.callEvent()
-            event.respawnLocation = it.spawnLocation
-        }
+        GamePlayerRespawnEvent(player, game, event.respawnLocation, event)
+            .callEvent()
     }
 
     @EventHandler

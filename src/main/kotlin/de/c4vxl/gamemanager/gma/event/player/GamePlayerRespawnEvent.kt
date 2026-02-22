@@ -1,10 +1,10 @@
 package de.c4vxl.gamemanager.gma.event.player
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.c4vxl.gamemanager.gma.event.type.GamePlayerEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import org.bukkit.Location
-import org.bukkit.event.player.PlayerRespawnEvent
 
 /**
  * Triggered when a player respawns in a game
@@ -15,4 +15,4 @@ import org.bukkit.event.player.PlayerRespawnEvent
  * @param spawnLocation The respawn location of the player
  * @param respawnEvent The parent bukkit-event
  */
-data class GamePlayerRespawnEvent(override val player: GMAPlayer, val game: Game, var spawnLocation: Location, val respawnEvent: PlayerRespawnEvent) : GamePlayerEvent(player)
+data class GamePlayerRespawnEvent(override val player: GMAPlayer, val game: Game, val spawnLocation: Location, val respawnEvent: PlayerPostRespawnEvent) : GamePlayerEvent(player)
