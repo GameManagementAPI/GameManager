@@ -45,17 +45,22 @@ class VisibilityHandler : Listener {
             }
 
             fun handleSpectator(a: Player, b: Player) =
+                // Both are spectators
+                // Show
+                if (a.gma.isSpectating && b.gma.isSpectating) {
+                    b.showPlayer(GameManager.instance, b)
+                    a.showPlayer(GameManager.instance, a)
+                }
+
                 // A is spectating
                 // Hide a
-                if (a.gma.isSpectating)
+                else if (a.gma.isSpectating)
                     b.hidePlayer(GameManager.instance, a)
 
                 // Self is not spectating
                 // Show a
                 else
                     b.showPlayer(GameManager.instance, a)
-
-
 
             // Same game
             handleSpectator(self, other)
