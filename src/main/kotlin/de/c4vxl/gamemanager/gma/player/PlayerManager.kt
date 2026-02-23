@@ -108,22 +108,27 @@ class PlayerManager(
 
         // Player is game player
         if (this.players.contains(player)) {
-            // Call quit event
-            if (callEvent)
-                GamePlayerQuitEvent(player, this.game).let {
-                    it.callEvent()
-                    if (it.isCancelled) return false
-                }
-
             // Eliminate player
             eliminate(player, false)
-
-            // Quit team
-            this.game.teamManager.quit(player)
 
             // Remove player from game
             internalPlayers.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
             player.game = null
+
+            // Call quit event
+            if (callEvent)
+                GamePlayerQuitEvent(player, this.game).let {
+                    it.callEvent()
+                    if (it.isCancelled) {
+                        internalPlayers.add(player)
+                        player.game = this.game
+                        player.revive()
+                        return false
+                    }
+                }
+
+            // Quit team
+            this.game.teamManager.quit(player)
 
             // Reset scoreboard
             player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
