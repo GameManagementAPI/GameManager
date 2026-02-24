@@ -12,21 +12,21 @@ import org.bukkit.GameMode
 class PlayerManager(
     val game: Game
 ) {
-    private val internalPlayers: MutableList<GMAPlayer> = mutableListOf()
-    private val internalEliminatedPlayers: MutableList<GMAPlayer> = mutableListOf()
-    private val internalSpectators: MutableList<GMAPlayer> = mutableListOf()
+    private val internalPlayers: MutableSet<GMAPlayer> = mutableSetOf()
+    private val internalEliminatedPlayers: MutableSet<GMAPlayer> = mutableSetOf()
+    private val internalSpectators: MutableSet<GMAPlayer> = mutableSetOf()
 
     /**
      * Returns a list of the players connected to this game
      */
     val players: List<GMAPlayer>
-        get() = internalPlayers.distinct().toList()
+        get() = internalPlayers.distinct().filter { it.game == this.game }.toList()
 
     /**
      * Returns a list of all players that have been eliminated
      */
     val eliminatedPlayers: List<GMAPlayer>
-        get() = internalEliminatedPlayers.distinct().toList()
+        get() = internalEliminatedPlayers.distinct().filter { it.game == this.game }.toList()
 
     /**
      * Returns a list of all players that are still alive
@@ -38,7 +38,7 @@ class PlayerManager(
      * Returns a list of the players currently spectating this game
      */
     val spectators: List<GMAPlayer>
-        get() = internalSpectators.distinct().toList()
+        get() = internalSpectators.distinct().filter { it.game == this.game }.toList()
 
     /**
      * Returns {@code true} if join conditions for a certain player are met
@@ -90,29 +90,16 @@ class PlayerManager(
     fun quit(player: GMAPlayer, callEvent: Boolean = true): Boolean {
         var success = false
 
-        // Player is spectator
-        if (spectators.contains(player)) {
-            // Remove from spectator
-            internalSpectators.remove(player)
-            player.game = null
+        // Quit spectator
+        quitSpectator(player, callEvent)
 
-            // Reset scoreboard
-            player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
-
-            // Call event
-            if (callEvent)
-                GamePlayerSpectateEndEvent(player, this.game).callEvent()
-
-            success = true
-        }
-
-        // Player is game player
+        // Quit players
         if (this.players.contains(player)) {
             // Eliminate player
             eliminate(player, false)
 
             // Remove player from game
-            internalPlayers.removeAll { it.bukkitPlayer.uniqueId == player.bukkitPlayer.uniqueId }
+            internalPlayers.remove(player)
             player.game = null
 
             // Call quit event
@@ -123,9 +110,11 @@ class PlayerManager(
                         internalPlayers.add(player)
                         player.game = this.game
                         player.revive()
-                        return false
                     }
                 }
+
+            // Stop spectating
+            quitSpectator(player, false)
 
             // Quit team
             this.game.teamManager.quit(player)
@@ -137,6 +126,30 @@ class PlayerManager(
         }
 
         return success
+    }
+
+    /**
+     * Make a player quit spectating this game
+     * @param player The player
+     * @param callEvent If set to {@code false} no events will be triggered
+     * @return {@code true} upon success
+     */
+    private fun quitSpectator(player: GMAPlayer, callEvent: Boolean): Boolean {
+        if (!spectators.contains(player))
+            return false
+
+        // Remove from spectator
+        internalSpectators.remove(player)
+        player.game = null
+
+        // Reset scoreboard
+        player.bukkitPlayer.scoreboard = Bukkit.getScoreboardManager().mainScoreboard
+
+        // Call event
+        if (callEvent)
+            GamePlayerSpectateEndEvent(player, this.game).callEvent()
+
+        return true
     }
 
     /**
