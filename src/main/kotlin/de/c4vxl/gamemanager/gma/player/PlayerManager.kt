@@ -94,7 +94,7 @@ class PlayerManager(
         quitSpectator(player, callEvent)
 
         // Quit players
-        if (this.players.contains(player)) {
+        if (this.internalPlayers.contains(player)) {
             // Eliminate player
             eliminate(player, false)
 
@@ -136,7 +136,7 @@ class PlayerManager(
      * @return {@code true} upon success
      */
     private fun quitSpectator(player: GMAPlayer, callEvent: Boolean): Boolean {
-        if (!spectators.contains(player))
+        if (!internalPlayers.contains(player))
             return false
 
         // Remove from spectator
