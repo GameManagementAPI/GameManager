@@ -110,11 +110,12 @@ class PlayerManager(
                         internalPlayers.add(player)
                         player.game = this.game
                         player.revive()
+                        return false
                     }
                 }
 
             // Stop spectating
-            quitSpectator(player, false)
+            quitSpectator(player, true)
 
             // Quit team
             this.game.teamManager.quit(player)
