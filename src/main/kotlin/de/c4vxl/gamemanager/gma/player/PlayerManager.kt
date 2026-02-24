@@ -136,7 +136,7 @@ class PlayerManager(
      * @return {@code true} upon success
      */
     private fun quitSpectator(player: GMAPlayer, callEvent: Boolean): Boolean {
-        if (!internalPlayers.contains(player))
+        if (!internalSpectators.contains(player))
             return false
 
         // Remove from spectator
