@@ -78,6 +78,8 @@ class PlayerManager(
             }
         }
 
+        revive(player, false)
+
         return true
     }
 
@@ -91,15 +93,15 @@ class PlayerManager(
         var success = false
 
         // Quit spectator
-        quitSpectator(player, callEvent)
+        success = quitSpectator(player, callEvent)
 
         // Quit players
         if (this.internalPlayers.contains(player)) {
-            // Eliminate player
-            eliminate(player, false)
-
             // Remove player from game
             internalPlayers.remove(player)
+
+            // Eliminate player
+            eliminate(player, false)
             player.game = null
 
             // Call quit event
@@ -115,7 +117,7 @@ class PlayerManager(
                 }
 
             // Stop spectating
-            quitSpectator(player, true)
+            quitSpectator(player, callEvent)
 
             // Quit team
             this.game.teamManager.quit(player)
@@ -220,18 +222,20 @@ class PlayerManager(
     /**
      * Revives an eliminated player
      * @param player The player to revive
+     * @param callEvent If set to {@code false} no events will be triggered
      */
-    fun revive(player: GMAPlayer) {
+    fun revive(player: GMAPlayer, callEvent: Boolean = true) {
         if (player.game != this.game) return
         if (!player.isEliminated) return
 
         internalEliminatedPlayers.remove(player)
 
         // Call event
-        GamePlayerReviveEvent(player, this.game).let {
-            it.callEvent()
-            if (it.isCancelled) internalEliminatedPlayers.add(player)
-        }
+        if (callEvent)
+            GamePlayerReviveEvent(player, this.game).let {
+                it.callEvent()
+                if (it.isCancelled) internalEliminatedPlayers.add(player)
+            }
     }
 
     /**
