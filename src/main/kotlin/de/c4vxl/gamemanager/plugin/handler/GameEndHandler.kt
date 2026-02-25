@@ -117,7 +117,7 @@ class GameEndHandler : Listener {
             return
 
         // Game is not empty
-        if (event.game.players.size > 1)
+        if (event.game.players.isNotEmpty())
             return
 
         // Stop game immediately
