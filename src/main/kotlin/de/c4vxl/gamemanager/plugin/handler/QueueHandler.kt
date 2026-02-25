@@ -46,8 +46,10 @@ class QueueHandler : Listener {
         val gameBars = bars.getOrPut(game) { mutableMapOf() }
 
         // Player already has a bar
-        if (gameBars.containsKey(player.bukkitPlayer))
+        if (gameBars.containsKey(player.bukkitPlayer)) {
+            gameBars[player.bukkitPlayer]?.addPlayer(player.bukkitPlayer)
             return
+        }
 
         val bar = Bukkit.createBossBar(
             player.language.get("queue.countdown.title", "0"),
