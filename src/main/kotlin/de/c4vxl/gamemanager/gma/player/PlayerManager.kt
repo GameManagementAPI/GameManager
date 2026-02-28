@@ -230,6 +230,9 @@ class PlayerManager(
 
         internalEliminatedPlayers.remove(player)
 
+        // Quit spectator
+        quitSpectator(player, false)
+
         // Call event
         if (callEvent)
             GamePlayerReviveEvent(player, this.game).let {
