@@ -160,12 +160,14 @@ command.spectate:
   desc: "Allows players to spectate a game"
 
   "player.failure.invalid_player": "${not-connected}"
+  "player.failure.self": "${sorry} But you cannot spectate yourself!"
   "player.failure.no_game": "${not-in-game}"
   "player.failure.not_running": "${sorry} But this game isn't running!"
   "player.failure.playing": "${sorry} But you cannot run this command while in a game!"
   "player.success": "${prefix} Now spectating <gray>$0</gray>"
 
   "game.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+  "game.failure.self": "${sorry} But you cannot spectate yourself!"
   "game.failure.not_running": "${sorry} But this game isn't running!"
   "game.failure.playing": "${sorry} But you cannot run this command while in a game!"
   "game.success": "${prefix} Now spectating <gray>$0</gray>"

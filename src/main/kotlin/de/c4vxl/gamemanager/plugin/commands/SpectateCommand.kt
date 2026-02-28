@@ -28,8 +28,8 @@ object SpectateCommand {
 
         // spectate player <player>
         literalArgument("player") {
-            argument(StringArgument("player").replaceSuggestions(ArgumentSuggestions.strings {
-                Bukkit.getOnlinePlayers().filter { it.gma.isInGame }.map { it.name }.toTypedArray()
+            argument(StringArgument("player").replaceSuggestions(ArgumentSuggestions.strings { sender ->
+                Bukkit.getOnlinePlayers().filter { it.gma.isInGame && it.uniqueId != (sender.sender as? Player)?.uniqueId }.map { it.name }.toTypedArray()
             })) {
                 playerExecutor { sender, args ->
                     val player: Player? = Bukkit.getPlayer(args.get("player").toString())
@@ -42,6 +42,11 @@ object SpectateCommand {
 
                     if (game == null) {
                         sender.sendMessage(sender.language.getCmp("command.spectate.player.failure.no_game"))
+                        return@playerExecutor
+                    }
+
+                    if (player.uniqueId == sender.uniqueId) {
+                        sender.sendMessage(sender.language.getCmp("command.spectate.player.failure.self"))
                         return@playerExecutor
                     }
 
@@ -77,6 +82,11 @@ object SpectateCommand {
 
                     if (!game.isRunning) {
                         sender.sendMessage(sender.language.getCmp("command.spectate.game.failure.not_running"))
+                        return@playerExecutor
+                    }
+
+                    if (sender.gma.game == game) {
+                        sender.sendMessage(sender.language.getCmp("command.spectate.game.failure.self"))
                         return@playerExecutor
                     }
 
