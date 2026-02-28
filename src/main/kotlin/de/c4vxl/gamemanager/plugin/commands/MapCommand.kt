@@ -28,12 +28,12 @@ object MapCommand {
             }
 
             // Game not running
-            if (!game.isRunning) {
+            if (game.isQueuing) {
                 player.sendMessage(player.language.getCmp("command.map.failure.not_running"))
                 return@playerExecutor
             }
 
-            // Map null (somehow)
+            // Map null
             if (map == null) {
                 player.sendMessage(player.language.getCmp("command.map.failure.no_map"))
                 return@playerExecutor
