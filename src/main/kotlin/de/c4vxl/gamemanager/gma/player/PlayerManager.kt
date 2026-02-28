@@ -205,6 +205,7 @@ class PlayerManager(
     fun eliminate(player: GMAPlayer, spectate: Boolean = true) {
         if (player.game != this.game) return
         if (player.isEliminated) return
+        if (player.bukkitPlayer.isDead) return
 
         internalEliminatedPlayers.add(player)
 
