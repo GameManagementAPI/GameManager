@@ -8,7 +8,7 @@
 
 # /gamemanagementapi command
 command.api:
-  "desc": ""
+  "desc": "This command allows admins to control the internals of the GameManagementAPI directly in-game."
 
   games:
     # ... list
