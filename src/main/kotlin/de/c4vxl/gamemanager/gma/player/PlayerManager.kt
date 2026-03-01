@@ -101,7 +101,7 @@ class PlayerManager(
             internalPlayers.remove(player)
 
             // Eliminate player
-            eliminate(player, false)
+            eliminate(player, spectate = false)
             player.game = null
 
             // Call quit event
@@ -200,9 +200,10 @@ class PlayerManager(
     /**
      * Eliminates a player from the game
      * @param player The player to eliminate
+     * @param killer The player that caused the elimination
      * @param spectate If set to {@code true} player will be put in spectator
      */
-    fun eliminate(player: GMAPlayer, spectate: Boolean = true) {
+    fun eliminate(player: GMAPlayer, killer: GMAPlayer? = null, spectate: Boolean = true) {
         if (player.game != this.game) return
         if (player.isEliminated) return
         if (player.bukkitPlayer.isDead) return
@@ -210,7 +211,7 @@ class PlayerManager(
         internalEliminatedPlayers.add(player)
 
         // Call event
-        GamePlayerEliminateEvent(player, this.game).let {
+        GamePlayerEliminateEvent(player, this.game, killer).let {
             it.callEvent()
             if (it.isCancelled) internalEliminatedPlayers.remove(player)
         }

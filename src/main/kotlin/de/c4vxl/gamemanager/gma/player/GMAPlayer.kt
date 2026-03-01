@@ -124,10 +124,12 @@ class GMAPlayer(
 
     /**
      * Eliminate this player from the game he is in
+     * @param killer The player that caused the elimination
+     * @param spectate If set to {@code true} player will be put in spectator
      * @return {@code true} upon success
      */
-    fun eliminate() =
-        this.game?.playerManager?.eliminate(this) ?: false
+    fun eliminate(killer: GMAPlayer? = null, spectate: Boolean = true) =
+        this.game?.playerManager?.eliminate(this, killer, spectate) ?: false
 
     /**
      * Revive this player in the game he is in

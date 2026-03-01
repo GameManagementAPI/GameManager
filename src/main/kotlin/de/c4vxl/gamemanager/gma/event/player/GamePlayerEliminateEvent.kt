@@ -11,4 +11,4 @@ import de.c4vxl.gamemanager.gma.player.GMAPlayer
  * @param player The player that triggered the event
  * @param game The game the player is currently in
  */
-data class GamePlayerEliminateEvent(override val player: GMAPlayer, val game: Game) : GamePlayerEvent(player)
+data class GamePlayerEliminateEvent(override val player: GMAPlayer, val game: Game, val killer: GMAPlayer? = null) : GamePlayerEvent(player)
