@@ -29,9 +29,6 @@ class RespawnHandler : Listener {
         val player = event.player.gma
         val game = player.game ?: return
 
-        if (!player.isInGame)
-            return
-
         // Cache killer
         lastKillers[event.entity.uniqueId] = event.entity.killer?.uniqueId
 

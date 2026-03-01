@@ -3,6 +3,7 @@ package de.c4vxl.gamemanager.plugin.handler
 import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameState
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -33,7 +34,7 @@ class ScoreboardHandler : Listener {
      * @param game The game
      * @param gameTeam The game team to enforce the rules for
      */
-    private fun initTeam(game: Game, gameTeam: de.c4vxl.gamemanager.gma.team.Team) {
+    fun initTeam(game: Game, gameTeam: de.c4vxl.gamemanager.gma.team.Team) {
         // Get team
         val team = getOrCreateTeam(
             game.scoreboard,
@@ -74,5 +75,10 @@ class ScoreboardHandler : Listener {
     fun onQuit(event: GamePlayerQuitEvent) {
         // Remove player from all scoreboard teams
         event.game.scoreboard.teams.forEach { it.removePlayer(event.player.bukkitPlayer) }
+    }
+
+    @EventHandler
+    fun onRevive(event: GamePlayerReviveEvent) {
+        initTeam(event.game, event.player.team ?: return)
     }
 }
