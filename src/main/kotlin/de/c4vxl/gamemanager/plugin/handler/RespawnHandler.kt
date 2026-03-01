@@ -29,6 +29,9 @@ class RespawnHandler : Listener {
         val player = event.player.gma
         val game = player.game ?: return
 
+        if (!player.isInGame)
+            return
+
         // Cache killer
         lastKillers[event.entity.uniqueId] = event.entity.killer?.uniqueId
 
@@ -47,6 +50,9 @@ class RespawnHandler : Listener {
         val player = event.player.gma
         val game = player.game ?: return
 
+        if (!player.isInGame)
+            return
+
         // Get respawn location
         val spawn = player.team?.let { game.worldManager.map?.getSpawnLocation(it.id) } ?:
             game.worldManager.map?.world?.spawnLocation
@@ -59,6 +65,9 @@ class RespawnHandler : Listener {
     fun onRespawned(event: PlayerPostRespawnEvent) {
         val player = event.player.gma
         val game = player.game ?: return
+
+        if (!player.isInGame)
+            return
 
         // Get killer from cache
         val killer = lastKillers.remove(event.player.uniqueId)?.let { Bukkit.getPlayer(it) }?.gma
