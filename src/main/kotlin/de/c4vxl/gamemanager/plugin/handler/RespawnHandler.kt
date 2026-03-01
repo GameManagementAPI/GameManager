@@ -79,6 +79,13 @@ class RespawnHandler : Listener {
 
     @EventHandler
     fun onRevive(event: GamePlayerReviveEvent) {
+        // Reset player
         event.player.reset()
+
+        // Teleport to spawn
+        event.player.team?.let {
+            val spawn = event.game.worldManager.map?.getSpawnLocation(it.id) ?: return@let
+            event.player.bukkitPlayer.teleport(spawn)
+        }
     }
 }

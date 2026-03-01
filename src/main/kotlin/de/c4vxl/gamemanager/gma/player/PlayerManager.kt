@@ -239,6 +239,7 @@ class PlayerManager(
         internalPlayers.add(player)
         player.game = this.game
         player.lastTeam?.let { this.game.teamManager.join(player, it.id, false) }
+        player.bukkitPlayer.scoreboard = this.game.scoreboard
 
         // Call event
         if (callEvent)
