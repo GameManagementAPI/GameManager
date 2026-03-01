@@ -1,6 +1,5 @@
 package de.c4vxl.gamemanager.gma.team
 
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.team.GamePlayerTeamJoinEvent
 import de.c4vxl.gamemanager.gma.event.team.GamePlayerTeamQuitEvent
 import de.c4vxl.gamemanager.gma.game.Game
@@ -114,6 +113,9 @@ class TeamManager(
             it.callEvent()
             if (it.isCancelled) return false
         }
+
+        // Add to left players
+        team.playersLeft.add(player)
 
         // Remove player from team
         return team.players.remove(player)

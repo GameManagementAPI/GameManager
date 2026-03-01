@@ -233,7 +233,12 @@ class PlayerManager(
         internalEliminatedPlayers.remove(player)
 
         // Quit spectator
-        quitSpectator(player, false)
+        quitSpectator(player, true)
+
+        // Rejoin game
+        internalPlayers.add(player)
+        player.game = this.game
+        player.lastTeam?.let { this.game.teamManager.join(player, it.id, false) }
 
         // Call event
         if (callEvent)

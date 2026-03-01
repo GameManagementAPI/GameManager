@@ -30,6 +30,11 @@ data class Team(
     val label: String get() = this.manager.game.worldManager.map?.metadata?.getString("team.$id.prefix") ?: "#${id + 1}"
 
     /**
+     * List of players that have left the team
+     */
+    val playersLeft = mutableSetOf<GMAPlayer>()
+
+    /**
      * Broadcasts a message to the entire team
      * @param key The language key of the message
      * @param args The arguments of the translation

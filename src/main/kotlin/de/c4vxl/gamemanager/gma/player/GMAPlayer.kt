@@ -107,6 +107,12 @@ class GMAPlayer(
     val privateGame: Game? get() = GMA.privateGames.find { it.owner == this }
 
     /**
+     * Returns the last team the player was in
+     */
+    val lastTeam: Team?
+        get() = game?.teamManager?.teams?.values?.find { it.playersLeft.contains(this) }
+
+    /**
      * Make a player join this game
      * @param game The game to join
      * @param force If set to {@code true} player will be forced to quit his old game in order to join this one
