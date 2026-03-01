@@ -11,6 +11,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerRespawnEvent
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Handles proper respawning on death of players
@@ -20,10 +22,15 @@ class RespawnHandler : Listener {
         Bukkit.getPluginManager().registerEvents(this, GameManager.instance)
     }
 
+    private val lastKillers = ConcurrentHashMap<UUID, UUID?>()
+
     @EventHandler
     fun onDeath(event: PlayerDeathEvent) {
         val player = event.player.gma
         val game = player.game ?: return
+
+        // Cache killer
+        lastKillers[event.entity.uniqueId] = event.entity.killer?.uniqueId
 
         // Trigger event
         GamePlayerDeathEvent(player, game, event).let {
@@ -53,14 +60,16 @@ class RespawnHandler : Listener {
         val player = event.player.gma
         val game = player.game ?: return
 
+        // Get killer from cache
+        val killer = lastKillers.remove(event.player.uniqueId)?.let { Bukkit.getPlayer(it) }?.gma
+
         // Trigger event
-        GamePlayerRespawnEvent(player, game, event.respawnLocation, event)
+        GamePlayerRespawnEvent(player, game, killer, event.respawnLocation, event)
             .callEvent()
     }
 
     @EventHandler
     fun onRevive(event: GamePlayerReviveEvent) {
-        event.player.bukkitPlayer.health = 0.0
         event.player.reset()
     }
 }
