@@ -48,7 +48,7 @@ class ScoreboardHandler : Listener {
         if (GameManager.instance.config.getBoolean("team.team-collision", false))
             team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.ALWAYS)
         else
-            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OTHER_TEAMS)
+            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM)
 
         // Set prefix
         if (GameManager.instance.config.getBoolean("team.display-prefix", true))
