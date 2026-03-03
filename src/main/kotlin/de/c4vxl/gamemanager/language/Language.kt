@@ -125,12 +125,17 @@ class Language(
          * @param namespace The namespace used to load this extension
          * @param language The language this extension is made for
          * @param languageFileContent A yml-formatted string of the translations
+         * @param overwrite If set to 'true' old extension will be overwritten
          */
-        fun provideLanguageExtension(namespace: String, language: String, languageFileContent: String) {
+        fun provideLanguageExtension(namespace: String, language: String, languageFileContent: String, overwrite: Boolean = false) {
             val file = translationsDirectory.resolve("extensions/${namespace}/${language}.yml")
 
             // Create parent folder
             file.parent.toFile().mkdirs()
+
+            // File exists
+            if (!overwrite && file.toFile().exists())
+                return
 
             // Save language
             file.toFile().writeText(languageFileContent)
