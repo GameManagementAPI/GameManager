@@ -241,6 +241,9 @@ class PlayerManager(
         player.lastTeam?.let { this.game.teamManager.join(player, it.id, false) }
         player.bukkitPlayer.scoreboard = this.game.scoreboard
 
+        // Equip
+        GamePlayerEquipEvent(player, this.game, GamePlayerEquipEvent.Reason.REVIVE).callEvent()
+
         // Call event
         if (callEvent)
             GamePlayerReviveEvent(player, this.game).let {

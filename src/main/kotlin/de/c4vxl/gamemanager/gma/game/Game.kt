@@ -1,6 +1,7 @@
 package de.c4vxl.gamemanager.gma.game
 
 import de.c4vxl.gamemanager.gma.event.game.*
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerEquipEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
 import de.c4vxl.gamemanager.gma.game.type.GameSize
 import de.c4vxl.gamemanager.gma.game.type.GameState
@@ -124,6 +125,9 @@ class Game(
 
                     // Reset players
                     it.reset()
+
+                    // Equip
+                    GamePlayerEquipEvent(it, this, GamePlayerEquipEvent.Reason.GAME_START).callEvent()
 
                     // Set scoreboard
                     it.bukkitPlayer.scoreboard = this.scoreboard
