@@ -16,7 +16,9 @@ object ResourceUtils {
 
     /**
      * Saves a jar-packed resource to disk
-     * @param path The path on disk
+     * @param path The path of the resource
+     * @param destination The directory to put the resource on disk
+     * @param replace If {@code true}, existing files will be replaced
      */
     fun saveResource(path: String, destination: String? = null, replace: Boolean = false, clazz: Class<*> = ResourceUtils.javaClass) {
         val destPath = Path.of(destination ?: GameManager.instance.dataPath.resolve(Path.of(path).name).toString())
