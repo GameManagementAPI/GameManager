@@ -38,18 +38,22 @@ data class Team(
      * Broadcasts a message to the entire team
      * @param key The language key of the message
      * @param args The arguments of the translation
+     * @param child The language-child the message comes from
      */
-    fun broadcastMessage(key: String, vararg args: String) {
+    fun broadcastMessage(key: String, vararg args: String, child: String? = null) {
         val audience = this.players.distinct()
 
         // Call event
-        GameTeamMessageBroadcastEvent(this, this.manager.game, key, args.toList(), audience).let {
+        GameTeamMessageBroadcastEvent(this, this.manager.game, child, key, args.toList(), audience).let {
             it.callEvent()
             if (it.isCancelled) return
         }
 
         // Send message
-        audience.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(key, *args)) }
+        audience.forEach { player -> player.bukkitPlayer.sendMessage(
+            (child?.let { player.language.child(child) } ?: player.language)
+                .getCmp(key, *args)
+        ) }
     }
 
     override fun toString(): String { return "Team { label=${this.label} }" }

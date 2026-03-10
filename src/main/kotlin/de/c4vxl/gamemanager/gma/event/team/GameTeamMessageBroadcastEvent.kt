@@ -11,8 +11,9 @@ import de.c4vxl.gamemanager.gma.team.Team
  *
  * @param team The team the message got sent to
  * @param game The game the team belongs to
+ * @param languageChild The namespace of the language extension the message came from
  * @param translationKey The translation key of the message that was sent
  * @param translationArgs The arguments to the translation
  * @param audience The audience that received the message
  */
-data class GameTeamMessageBroadcastEvent(override val team: Team, val game: Game, val translationKey: String, val translationArgs: List<String>, val audience: List<GMAPlayer>) : GameTeamEvent(team)
+data class GameTeamMessageBroadcastEvent(override val team: Team, val game: Game, val languageChild: String?, val translationKey: String, val translationArgs: List<String>, val audience: List<GMAPlayer>) : GameTeamEvent(team)
