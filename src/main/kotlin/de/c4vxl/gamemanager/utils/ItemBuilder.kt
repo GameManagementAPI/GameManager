@@ -122,10 +122,6 @@ class ItemBuilder(
         if (lore.isNotEmpty())
             itemMeta.lore(lore)
 
-        // Set enchantments
-        if (enchantments.isNotEmpty())
-            itemStack.addUnsafeEnchantments(enchantments)
-
         // Store id
         itemMeta.persistentDataContainer.set(
             NamespacedKey("gma", "itembuilder"),
@@ -135,6 +131,11 @@ class ItemBuilder(
 
         // Set item meta
         itemStack.itemMeta = itemMeta
+
+        // Set enchantments
+        enchantments.forEach {
+            itemStack.addUnsafeEnchantment(it.key, it.value)
+        }
 
         return itemStack
     }
