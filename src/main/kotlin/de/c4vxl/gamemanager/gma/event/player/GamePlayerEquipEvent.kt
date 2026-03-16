@@ -15,6 +15,7 @@ import de.c4vxl.gamemanager.gma.player.GMAPlayer
 data class GamePlayerEquipEvent(override val player: GMAPlayer, val game: Game, val reason: Reason) : GamePlayerEvent(player) {
     enum class Reason {
         GAME_START,
-        REVIVE
+        REVIVE,
+        RESPAWN
     }
 }

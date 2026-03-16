@@ -3,6 +3,7 @@ package de.c4vxl.gamemanager.plugin.handler
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent
 import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerDeathEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerEquipEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerRespawnEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
@@ -70,6 +71,10 @@ class RespawnHandler : Listener {
 
         // Trigger event
         GamePlayerRespawnEvent(player, game, killer, event.respawnLocation, event)
+            .callEvent()
+
+        // Equip player
+        GamePlayerEquipEvent(player, game, GamePlayerEquipEvent.Reason.RESPAWN)
             .callEvent()
     }
 
