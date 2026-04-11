@@ -5,7 +5,7 @@ import de.c4vxl.gamemanager.gma.GMA
 import de.c4vxl.gamemanager.gma.event.game.GameEndEvent
 import de.c4vxl.gamemanager.gma.event.game.GameStopEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerEliminateEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerLooseEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerLoseEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerWinEvent
 import de.c4vxl.gamemanager.gma.game.Game
@@ -101,7 +101,7 @@ class GameEndHandler : Listener {
 
         // Trigger loose event
         event.game.playerManager.eliminatedPlayers.filter { it.team != winnerTeam }
-            .forEach { GamePlayerLooseEvent(it, event.game).callEvent() }
+            .forEach { GamePlayerLoseEvent(it, event.game).callEvent() }
 
         event.game.players.forEach { it.spectate(event.game) }
 
