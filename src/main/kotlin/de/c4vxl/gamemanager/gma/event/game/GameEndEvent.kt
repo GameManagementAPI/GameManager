@@ -10,4 +10,4 @@ import de.c4vxl.gamemanager.gma.team.Team
  *
  * @param game The game that triggered the event
  */
-data class GameEndEvent(override val game: Game, val winnerTeam: Team?, val teamsLost: List<Team>) : GameEvent(game)
+data class GameEndEvent(override val game: Game, val winnerTeams: List<Team>, val teamsLost: List<Team>) : GameEvent(game)

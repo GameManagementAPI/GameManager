@@ -78,7 +78,7 @@ class GameEndHandler : Listener {
         // Trigger event
         GameEndEvent(
             event.game,
-            winnerTeam,
+            buildList { winnerTeam?.let { add(it) } },
             event.game.teamManager.teams.values.filter { it != winnerTeam }
         ).let {
             it.callEvent()
