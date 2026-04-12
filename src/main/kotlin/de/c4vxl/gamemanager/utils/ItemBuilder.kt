@@ -2,7 +2,6 @@ package de.c4vxl.gamemanager.utils
 
 import de.c4vxl.gamemanager.GameManager
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextComponent
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.enchantments.Enchantment
@@ -23,7 +22,7 @@ class ItemBuilder(
     var material: Material,
     var name: Component? = null,
     var amount: Int = 1,
-    var lore: MutableList<TextComponent> = mutableListOf(),
+    var lore: List<Component> = mutableListOf(),
     var unbreakable: Boolean = false,
     var enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
     var itemMeta: ItemMeta? = null
@@ -37,13 +36,13 @@ class ItemBuilder(
         @EventHandler
         fun onEvent(event: Event) {
             val items: List<ItemStack> = when (event) {
-                is InventoryClickEvent    -> listOf(event.currentItem, event.cursor)
-                is PlayerInteractEvent    -> listOf(event.item)
-                is PlayerDropItemEvent    -> listOf(event.itemDrop.itemStack)
-                is PlayerItemBreakEvent   -> listOf(event.brokenItem)
-                is PlayerItemDamageEvent  -> listOf(event.item)
+                is InventoryClickEvent -> listOf(event.currentItem, event.cursor)
+                is PlayerInteractEvent -> listOf(event.item)
+                is PlayerDropItemEvent -> listOf(event.itemDrop.itemStack)
+                is PlayerItemBreakEvent -> listOf(event.brokenItem)
+                is PlayerItemDamageEvent -> listOf(event.item)
                 is PlayerItemConsumeEvent -> listOf(event.item)
-                is BlockPlaceEvent        -> listOf(event.itemInHand)
+                is BlockPlaceEvent -> listOf(event.itemInHand)
                 else -> null
             }?.mapNotNull { it }?.takeIf { it.isNotEmpty() } ?: run {
                 GameManager.logger.warning("Tried to hook into ${event.javaClass.name} using ItemBuilder#onEvent. This event is not supported!")
@@ -65,6 +64,25 @@ class ItemBuilder(
 
                 return
             }
+        }
+
+        /**
+         * Creates an ItemBuilder instance from an existing item
+         * Warning: calling .build will still return a completely new item, just with equal properties
+         * @param itemStack The item
+         */
+        fun fromItemStack(itemStack: ItemStack): ItemBuilder {
+            val meta = itemStack.takeIf { it.hasItemMeta() }?.itemMeta
+
+            return ItemBuilder(
+                itemStack.type,
+                itemStack.displayName(),
+                itemStack.amount,
+                itemStack.lore() ?: emptyList(),
+                meta?.isUnbreakable ?: false,
+                meta?.enchants ?: mutableMapOf(),
+                meta
+            )
         }
     }
 
