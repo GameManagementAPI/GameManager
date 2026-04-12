@@ -42,4 +42,11 @@ class GameSize(
     fun equals(teamAmount: Int, teamSize: Int) =
         teamAmount == this.teamAmount
             && teamSize == this.teamSize
+
+    override fun equals(other: Any?): Boolean {
+        val otherSize = other as? GameSize ?: return false
+        return equals(otherSize.teamAmount, otherSize.teamSize)
+    }
+
+    override fun hashCode(): Int = javaClass.hashCode()
 }
