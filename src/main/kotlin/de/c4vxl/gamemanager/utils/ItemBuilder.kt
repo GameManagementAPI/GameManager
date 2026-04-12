@@ -36,28 +36,34 @@ class ItemBuilder(
 
         @EventHandler
         fun onEvent(event: Event) {
-            val item: ItemStack = when (event) {
-                is InventoryClickEvent    -> event.currentItem
-                is PlayerInteractEvent    -> event.item
-                is PlayerDropItemEvent    -> event.itemDrop.itemStack
-                is PlayerItemBreakEvent   -> event.brokenItem
-                is PlayerItemDamageEvent  -> event.item
-                is PlayerItemConsumeEvent -> event.item
-                is BlockPlaceEvent        -> event.itemInHand
+            val items: List<ItemStack> = when (event) {
+                is InventoryClickEvent    -> listOf(event.currentItem, event.cursor)
+                is PlayerInteractEvent    -> listOf(event.item)
+                is PlayerDropItemEvent    -> listOf(event.itemDrop.itemStack)
+                is PlayerItemBreakEvent   -> listOf(event.brokenItem)
+                is PlayerItemDamageEvent  -> listOf(event.item)
+                is PlayerItemConsumeEvent -> listOf(event.item)
+                is BlockPlaceEvent        -> listOf(event.itemInHand)
                 else -> null
-            } ?: return
+            }?.mapNotNull { it }?.takeIf { it.isNotEmpty() } ?: run {
+                GameManager.logger.warning("Tried to hook into ${event.javaClass.name} using ItemBuilder#onEvent. This event is not supported!")
+                return
+            }
 
-            val meta = if (item.hasItemMeta()) item.itemMeta
-                       else return
+            for (item in items) {
+                val meta = if (item.hasItemMeta()) item.itemMeta else continue
 
-            val id = meta.persistentDataContainer.get(
-                NamespacedKey("gma", "itembuilder"),
-                PersistentDataType.STRING
-            ) ?: return
+                val id = meta.persistentDataContainer.get(
+                    NamespacedKey("gma", "itembuilder"),
+                    PersistentDataType.STRING
+                ) ?: continue
 
-            eventHandlers[event::class.java]?.get(id)?.let {
-                @Suppress("UNCHECKED_CAST")
-                (it as ItemEventHandler<Event>).handle(event)
+                eventHandlers[event::class.java]?.get(id)?.let {
+                    @Suppress("UNCHECKED_CAST")
+                    (it as ItemEventHandler<Event>).handle(event)
+                }
+
+                return
             }
         }
     }
@@ -71,8 +77,9 @@ class ItemBuilder(
      * Registers an event listener for this exact item
      * @param eventClass The event to listen to
      * @param handler The code to be executed when event is triggered
+     * @param priority The priority of the event
      */
-    fun <T : Event> onEvent(eventClass: Class<T>, handler: ItemEventHandler<T>): ItemBuilder {
+    fun <T : Event> onEvent(eventClass: Class<T>, handler: ItemEventHandler<T>, priority: EventPriority = EventPriority.NORMAL): ItemBuilder {
         // Register handler
         val map = eventHandlers.getOrPut(eventClass) { mutableMapOf() }
         map[this.key] = handler
@@ -92,7 +99,7 @@ class ItemBuilder(
             val listener = RegisteredListener(
                 Companion,
                 { _, event -> Companion.onEvent(event) },
-                EventPriority.NORMAL,
+                priority,
                 GameManager.instance,
                 false
             )
