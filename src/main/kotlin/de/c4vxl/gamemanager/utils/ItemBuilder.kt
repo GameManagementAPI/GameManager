@@ -35,7 +35,7 @@ class ItemBuilder(
 
         @EventHandler
         fun onEvent(event: Event) {
-            val items: List<ItemStack> = when (event) {
+            val items: List<ItemStack?> = when (event) {
                 is InventoryClickEvent -> listOf(event.currentItem, event.cursor)
                 is PlayerInteractEvent -> listOf(event.item)
                 is PlayerDropItemEvent -> listOf(event.itemDrop.itemStack)
@@ -44,12 +44,15 @@ class ItemBuilder(
                 is PlayerItemConsumeEvent -> listOf(event.item)
                 is BlockPlaceEvent -> listOf(event.itemInHand)
                 else -> null
-            }?.mapNotNull { it }?.takeIf { it.isNotEmpty() } ?: run {
+            } ?: run {
                 GameManager.logger.warning("Tried to hook into ${event.javaClass.name} using ItemBuilder#onEvent. This event is not supported!")
                 return
             }
 
             for (item in items) {
+                if (item == null)
+                    continue
+
                 val meta = if (item.hasItemMeta()) item.itemMeta else continue
 
                 val id = meta.persistentDataContainer.get(
