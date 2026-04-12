@@ -4,12 +4,17 @@ import de.c4vxl.gamemanager.GameManager
 import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerSelfDamageEvent
+import de.c4vxl.gamemanager.gma.event.team.GamePlayerFriendlyFireEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.game.type.GameState
+import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.scoreboard.Scoreboard
 import org.bukkit.scoreboard.Team
 
@@ -41,9 +46,6 @@ class ScoreboardHandler : Listener {
             "gma_${game.id}_${gameTeam.id}"
         )
 
-        // Set friendly fire
-        team.setAllowFriendlyFire(GameManager.instance.config.getBoolean("team.friendly-fire", false))
-
         // Set collisions
         if (GameManager.instance.config.getBoolean("team.team-collision", false))
             team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.ALWAYS)
@@ -60,6 +62,49 @@ class ScoreboardHandler : Listener {
 
         // Add players
         gameTeam.players.forEach { team.addPlayer(it.bukkitPlayer) }
+    }
+
+    @EventHandler
+    fun onFriendlyFire(event: EntityDamageByEntityEvent) {
+        val player = event.entity as? Player ?: return
+        val damager = event.damageSource.causingEntity as? Player ?: return
+        val team = player.gma.team ?: return
+        val game = player.gma.game ?: return
+
+        // Return if not the same game
+        if (damager.gma.game != game) return
+
+        // Return if different team
+        if (!team.players.contains(damager.gma))
+            return
+
+        // Handle self damage
+        if (damager == player) {
+            // Call self damage event
+            val allowSelfDamage = GamePlayerSelfDamageEvent(
+                player.gma, game,
+                GameManager.instance.config.getBoolean("team.allow-self-damage", false),
+                event
+            ).apply { callEvent() }.allow
+
+            // Self damage enabled
+            // Exit
+            if (allowSelfDamage)
+                return
+        }
+
+        // Return if friendly fire is allowed
+        val allowFriendlyFire = GamePlayerFriendlyFireEvent(
+            team, damager.gma, player.gma, game,
+            GameManager.instance.config.getBoolean("team.friendly-fire", false),
+            event
+        ).apply { callEvent() }.allow
+
+        if (allowFriendlyFire)
+            return
+
+        // Cancel damage
+        event.isCancelled = true
     }
 
     @EventHandler

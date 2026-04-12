@@ -38,6 +38,9 @@ team:
   # Determines if friendly fire is enabled
   friendly-fire: false
 
+  # If false, players won't be able to inflict damage to themselves
+  allow-self-damage: true
+
   # Determines if player collisions count for teams
   team-collision: false
 
