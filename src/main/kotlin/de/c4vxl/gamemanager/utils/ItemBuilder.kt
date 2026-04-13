@@ -179,6 +179,20 @@ class ItemBuilder(
     }
 
     /**
+     * Holds the meta-modifications
+     */
+    private val metaEditors = mutableSetOf<ItemMeta.() -> Unit>()
+
+    /**
+     * Make custom modifications to the item meta
+     * @param block The modifications to make when the item is build
+     */
+    fun editMeta(block: ItemMeta.() -> Unit): ItemBuilder {
+        metaEditors.add(block)
+        return this
+    }
+
+    /**
      * Builds the final item stack
      */
     fun build(): ItemStack {
@@ -201,6 +215,9 @@ class ItemBuilder(
             PersistentDataType.STRING,
             this.key
         )
+
+        // Apply meta editors
+        metaEditors.forEach { it(itemMeta) }
 
         // Set item meta
         itemStack.itemMeta = itemMeta
