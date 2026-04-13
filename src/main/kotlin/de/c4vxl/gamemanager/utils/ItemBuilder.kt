@@ -33,21 +33,66 @@ class ItemBuilder(
         private val eventHandlers = mutableMapOf<Class<out Event>, MutableMap<String, ItemEventHandler<out Event>>>()
         private val registeredEvents: MutableSet<Class<out Event>> = mutableSetOf()
 
+        // Maps of events to the items they were done with
+        data class RegisteredEvent<T : Event>(
+            val event: Class<T>,
+            var handler: (T) -> List<ItemStack?>
+        )
+        private val supportedEvents = mutableListOf<RegisteredEvent<*>>()
+
+        init {
+            // Register event types
+            registerEvent(InventoryClickEvent::class.java) { event -> listOf(event.currentItem, event.cursor) }
+            registerEvent(PlayerInteractEvent::class.java) { event -> listOf(event.item) }
+            registerEvent(PlayerDropItemEvent::class.java) { event -> listOf(event.itemDrop.itemStack) }
+            registerEvent(PlayerItemBreakEvent::class.java) { event -> listOf(event.brokenItem) }
+            registerEvent(PlayerItemDamageEvent::class.java) { event -> listOf(event.item) }
+            registerEvent(PlayerItemConsumeEvent::class.java) { event -> listOf(event.item) }
+            registerEvent(BlockPlaceEvent::class.java) { event -> listOf(event.itemInHand) }
+        }
+
+        /**
+         * Unregisters an event from the possible events list
+         * @param event The event to unregister
+         */
+        fun <T : Event> unregisterEvent(event: Class<T>): RegisteredEvent<*>? {
+            val index = supportedEvents.indexOfFirst { it.event == event }
+            if (index == -1)
+                return null
+
+            return supportedEvents.removeAt(index)
+        }
+
+        /**
+         * Registers an event as usable with items
+         * @param event The event to register
+         * @param replace Set to true if an existing handler should be replaced
+         */
+        fun <T : Event> registerEvent(event: Class<T>, replace: Boolean = true, handler: (T) -> List<ItemStack?>): Boolean {
+            // Try to unregister event
+            if (supportedEvents.any { it.event == event }) {
+                if (replace)
+                    unregisterEvent(event)
+                else
+                    return false
+            }
+
+            // Register new event
+            supportedEvents.add(RegisteredEvent(event, handler))
+
+            return true
+        }
+
         @EventHandler
         fun onEvent(event: Event) {
-            val items: List<ItemStack?> = when (event) {
-                is InventoryClickEvent -> listOf(event.currentItem, event.cursor)
-                is PlayerInteractEvent -> listOf(event.item)
-                is PlayerDropItemEvent -> listOf(event.itemDrop.itemStack)
-                is PlayerItemBreakEvent -> listOf(event.brokenItem)
-                is PlayerItemDamageEvent -> listOf(event.item)
-                is PlayerItemConsumeEvent -> listOf(event.item)
-                is BlockPlaceEvent -> listOf(event.itemInHand)
-                else -> null
-            } ?: run {
-                GameManager.logger.warning("Tried to hook into ${event.javaClass.name} using ItemBuilder#onEvent. This event is not supported!")
-                return
-            }
+            val items: List<ItemStack?> = supportedEvents.find { it.event.isAssignableFrom(event::class.java) }
+                ?.handler?.let {
+                    @Suppress("UNCHECKED_CAST")
+                    (it as (Event) -> List<ItemStack?>).invoke(event)
+                } ?: run {
+                    GameManager.logger.warning("Tried to hook into ${event.javaClass.name} using ItemBuilder#onEvent. This event is not supported!")
+                    return
+                }
 
             for (item in items) {
                 if (item == null)
