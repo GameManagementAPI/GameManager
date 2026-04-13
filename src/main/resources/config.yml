@@ -71,3 +71,4 @@ features:
     visibility: true
     respawn: true
     scoreboard: true
+    advancements: true

@@ -56,12 +56,13 @@ class GameManager : JavaPlugin() {
         if (isEnabled("commands.privategame"))  PrivateGameCommand
 
         // Register handlers
-        if (isEnabled("handlers.queue"))       QueueHandler()
-        if (isEnabled("handlers.connection"))  ConnectionHandler()
-        if (isEnabled("handlers.gameEnd"))     GameEndHandler()
-        if (isEnabled("handlers.visibility"))  VisibilityHandler()
-        if (isEnabled("handlers.respawn"))     RespawnHandler()
-        if (isEnabled("handlers.scoreboard"))  ScoreboardHandler()
+        if (isEnabled("handlers.queue"))        QueueHandler()
+        if (isEnabled("handlers.connection"))   ConnectionHandler()
+        if (isEnabled("handlers.gameEnd"))      GameEndHandler()
+        if (isEnabled("handlers.visibility"))   VisibilityHandler()
+        if (isEnabled("handlers.respawn"))      RespawnHandler()
+        if (isEnabled("handlers.scoreboard"))   ScoreboardHandler()
+        if (isEnabled("handlers.advancements")) AdvancementHandler()
 
         logger.info("[+] $name has been enabled!")
     }

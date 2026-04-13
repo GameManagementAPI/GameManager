@@ -131,6 +131,7 @@ class WorldManager(
             it.setGameRule(GameRules.SPAWN_WANDERING_TRADERS, false)
             it.setGameRule(GameRules.KEEP_INVENTORY, false)
             it.setGameRule(GameRules.IMMEDIATE_RESPAWN, true)
+            it.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false)
         }
 
         // Initialize map object
