@@ -1,5 +1,6 @@
 package de.c4vxl.gamemanager.gma.game
 
+import de.c4vxl.gamemanager.gma.data.GameDataStore
 import de.c4vxl.gamemanager.gma.event.game.*
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerEquipEvent
 import de.c4vxl.gamemanager.gma.game.type.GameID
@@ -10,8 +11,6 @@ import de.c4vxl.gamemanager.gma.player.PlayerManager
 import de.c4vxl.gamemanager.gma.team.TeamManager
 import de.c4vxl.gamemanager.gma.world.WorldManager
 import de.c4vxl.gamemanager.language.Language.Companion.language
-import org.bukkit.Bukkit
-import org.bukkit.scoreboard.Scoreboard
 
 /**
  * Core game object
@@ -37,6 +36,11 @@ class Game(
      * Holds the player manager
      */
     val playerManager: PlayerManager = PlayerManager(this)
+
+    /**
+     * Allows for storing extra data that persists over the game
+     */
+    val gameData: GameDataStore = GameDataStore(this)
 
     /**
      * Holds the current state of the game
