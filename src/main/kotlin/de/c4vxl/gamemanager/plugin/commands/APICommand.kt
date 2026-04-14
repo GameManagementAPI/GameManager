@@ -288,19 +288,26 @@ object APICommand {
                                 ?.map { team -> "t${team.id}" }
                                 ?.toTypedArray() ?: arrayOf()
                         })) {
-                            playerExecutor { player, args ->
-                                val game: Game? = player.gma.game
+                            anyExecutor { sender, args ->
+                                val player: Player? = Bukkit.getPlayer(args.get("player").toString())
+                                val game: Game? = player?.gma?.game
+
+                                // Player not online
+                                if (player == null) {
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.invalid_player"))
+                                    return@anyExecutor
+                                }
 
                                 // Invalid game id
                                 if (game == null) {
-                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.no_game"))
-                                    return@playerExecutor
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.no_game"))
+                                    return@anyExecutor
                                 }
 
                                 // Game is not in queuing state
                                 if (!game.isQueuing) {
-                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.already_running"))
-                                    return@playerExecutor
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.already_running"))
+                                    return@anyExecutor
                                 }
 
                                 // Get team
@@ -310,8 +317,8 @@ object APICommand {
 
                                 // Team not found
                                 if (team == null) {
-                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.invalid_team", teamName))
-                                    return@playerExecutor
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.invalid_team", teamName))
+                                    return@anyExecutor
                                 }
 
                                 // Join team
@@ -319,9 +326,9 @@ object APICommand {
                                 val success = game.teamManager.join(player.gma, teamId, true)
 
                                 if (success)
-                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.success", team.label))
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.success", team.label))
                                 else
-                                    player.sendMessage(player.language.getCmp("command.api.player.team.join.failure.general"))
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.general"))
                             }
                         }
                     }
