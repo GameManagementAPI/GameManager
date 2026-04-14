@@ -14,6 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
 import org.bukkit.plugin.RegisteredListener
 import java.util.*
+import java.util.function.Consumer
 
 /**
  * A utility class for creating items with specific attributes
@@ -181,13 +182,13 @@ class ItemBuilder(
     /**
      * Holds the meta-modifications
      */
-    private val metaEditors = mutableSetOf<ItemMeta.() -> Unit>()
+    private val metaEditors = mutableSetOf<Consumer<ItemMeta>>()
 
     /**
      * Make custom modifications to the item meta
      * @param block The modifications to make when the item is build
      */
-    fun editMeta(block: ItemMeta.() -> Unit): ItemBuilder {
+    fun editMeta(block: Consumer<ItemMeta>): ItemBuilder {
         metaEditors.add(block)
         return this
     }
@@ -217,7 +218,7 @@ class ItemBuilder(
         )
 
         // Apply meta editors
-        metaEditors.forEach { it(itemMeta) }
+        metaEditors.forEach { it.accept(itemMeta) }
 
         // Set item meta
         itemStack.itemMeta = itemMeta
