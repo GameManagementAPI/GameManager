@@ -28,10 +28,8 @@ class ItemBuilder(
     var enchantments: MutableMap<Enchantment, Int> = mutableMapOf(),
     var itemMeta: ItemMeta? = null
 ) {
-    interface ItemEventHandler<T : Event> { fun handle(event: T) }
-
     companion object : Listener {
-        private val eventHandlers = mutableMapOf<Class<out Event>, MutableMap<String, ItemEventHandler<out Event>>>()
+        private val eventHandlers = mutableMapOf<Class<out Event>, MutableMap<String, Consumer<out Event>>>()
         private val registeredEvents: MutableSet<Class<out Event>> = mutableSetOf()
 
         // Maps of events to the items they were done with
@@ -108,7 +106,7 @@ class ItemBuilder(
 
                 eventHandlers[event::class.java]?.get(id)?.let {
                     @Suppress("UNCHECKED_CAST")
-                    (it as ItemEventHandler<Event>).handle(event)
+                    (it as Consumer<Event>).accept(event)
                 }
 
                 return
@@ -142,20 +140,20 @@ class ItemBuilder(
 
     /**
      * Registers an event listener for this exact item
-     * @param eventClass The event to listen to
+     * @param event The event to listen to
      * @param handler The code to be executed when event is triggered
      * @param priority The priority of the event
      */
-    fun <T : Event> onEvent(eventClass: Class<T>, handler: ItemEventHandler<T>, priority: EventPriority = EventPriority.NORMAL): ItemBuilder {
+    fun <T : Event> onEvent(event: Class<T>, priority: EventPriority = EventPriority.NORMAL, handler: Consumer<T>): ItemBuilder {
         // Register handler
-        val map = eventHandlers.getOrPut(eventClass) { mutableMapOf() }
+        val map = eventHandlers.getOrPut(event) { mutableMapOf() }
         map[this.key] = handler
 
         // Register event listener
-        if (eventClass !in registeredEvents) {
+        if (event !in registeredEvents) {
             // Get handler list
             val handlerList = try {
-                val method = eventClass.getMethod("getHandlerList")
+                val method = event.getMethod("getHandlerList")
                 method.invoke(null) as HandlerList
             } catch (e: Exception) {
                 GameManager.logger.warning("Error registering event handler for item $key: $e")
@@ -165,7 +163,7 @@ class ItemBuilder(
             // Create listener
             val listener = RegisteredListener(
                 Companion,
-                { _, event -> Companion.onEvent(event) },
+                { _, e -> Companion.onEvent(e) },
                 priority,
                 GameManager.instance,
                 false
@@ -173,7 +171,7 @@ class ItemBuilder(
 
             // Register listener
             handlerList.register(listener)
-            registeredEvents += eventClass
+            registeredEvents += event
         }
 
         return this
