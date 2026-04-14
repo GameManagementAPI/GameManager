@@ -180,7 +180,10 @@ class PlayerManager(
 
         // Set game-mode to spectator
         player.bukkitPlayer.gameMode = GameMode.SPECTATOR
-        player.bukkitPlayer.scoreboard = game.scoreboard
+
+        // Request a new scoreboard
+        player.requestNewScoreboard()
+
         this.game.worldManager.map?.world?.spawnLocation?.let { player.bukkitPlayer.teleport(it) }
 
         // Call event
@@ -239,7 +242,7 @@ class PlayerManager(
         internalPlayers.add(player)
         player.game = this.game
         player.lastTeam?.let { this.game.teamManager.join(player, it.id, false) }
-        player.bukkitPlayer.scoreboard = this.game.scoreboard
+        player.requestNewScoreboard()
 
         // Equip
         GamePlayerEquipEvent(player, this.game, GamePlayerEquipEvent.Reason.REVIVE).callEvent()

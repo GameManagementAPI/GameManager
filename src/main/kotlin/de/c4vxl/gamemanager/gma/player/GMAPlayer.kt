@@ -1,12 +1,14 @@
 package de.c4vxl.gamemanager.gma.player
 
 import de.c4vxl.gamemanager.gma.GMA
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerScoreboardChangeEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
+import org.bukkit.scoreboard.Scoreboard
 import java.util.*
 
 /**
@@ -176,6 +178,27 @@ class GMAPlayer(
         }
     }
 
+    /**
+     * Tries to set a new scoreboard for the player
+     * This may only fail if the GamePlayerScoreboardChangeEvent was cancelled
+     *
+     * @return Returns the new scoreboard
+     */
+    fun requestNewScoreboard(): Scoreboard {
+        Bukkit.getScoreboardManager().newScoreboard.let { newBoard ->
+            val isCancelled = GamePlayerScoreboardChangeEvent(this, game, bukkitPlayer.scoreboard, newBoard).let {
+                it.callEvent()
+                it.isCancelled
+            }
+
+            if (isCancelled)
+                return@let
+
+            bukkitPlayer.scoreboard = newBoard
+        }
+
+        return bukkitPlayer.scoreboard
+    }
 
     override fun equals(other: Any?): Boolean {
         val gma = (other as? GMAPlayer) ?: return false

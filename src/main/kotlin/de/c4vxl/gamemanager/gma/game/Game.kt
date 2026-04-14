@@ -39,11 +39,6 @@ class Game(
     val playerManager: PlayerManager = PlayerManager(this)
 
     /**
-     * Holds a game-specific scoreboard
-     */
-    val scoreboard: Scoreboard = Bukkit.getScoreboardManager().newScoreboard
-
-    /**
      * Holds the current state of the game
      */
     var state: GameState = GameState.QUEUING
@@ -130,7 +125,7 @@ class Game(
                     GamePlayerEquipEvent(it, this, GamePlayerEquipEvent.Reason.GAME_START).callEvent()
 
                     // Set scoreboard
-                    it.bukkitPlayer.scoreboard = this.scoreboard
+                    it.requestNewScoreboard()
                 }
             }
         }

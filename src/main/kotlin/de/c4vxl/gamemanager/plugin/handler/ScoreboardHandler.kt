@@ -1,13 +1,9 @@
 package de.c4vxl.gamemanager.plugin.handler
 
 import de.c4vxl.gamemanager.GameManager
-import de.c4vxl.gamemanager.gma.event.game.GameStateChangeEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerQuitEvent
-import de.c4vxl.gamemanager.gma.event.player.GamePlayerReviveEvent
+import de.c4vxl.gamemanager.gma.event.player.GamePlayerScoreboardChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerSelfDamageEvent
 import de.c4vxl.gamemanager.gma.event.team.GamePlayerFriendlyFireEvent
-import de.c4vxl.gamemanager.gma.game.Game
-import de.c4vxl.gamemanager.gma.game.type.GameState
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
@@ -27,32 +23,20 @@ class ScoreboardHandler : Listener {
     }
 
     /**
-     * Retrieves a team by its name or creates it if it doesn't exist
-     * @param scoreboard The scoreboard to look in
-     * @param name The name of the team
+     * Displays a team to a player
+     * @param gameTeam The team to display
+     * @param viewer The player to display the team to
+     * @param scoreboard The scoreboard to use
      */
-    private fun getOrCreateTeam(scoreboard: Scoreboard, name: String) =
-        scoreboard.getTeam(name) ?: scoreboard.registerNewTeam(name)
+    fun display(gameTeam: de.c4vxl.gamemanager.gma.team.Team, viewer: Player, scoreboard: Scoreboard = viewer.scoreboard) {
+        // Wrong game
+        if (viewer.gma.game != gameTeam.manager.game)
+            return
 
-    /**
-     * Initializes a team for enforcing common team rules such as friendly fire or prefixes
-     * @param game The game
-     * @param gameTeam The game team to enforce the rules for
-     */
-    fun initTeam(game: Game, gameTeam: de.c4vxl.gamemanager.gma.team.Team) {
         // Get team
-        val team = getOrCreateTeam(
-            game.scoreboard,
-            "gma_${game.id}_${gameTeam.id}"
-        )
+        val team = "gma_team_${gameTeam.id}".let { scoreboard.getTeam(it) ?: scoreboard.registerNewTeam(it) }
 
-        // Set collisions
-        if (GameManager.instance.config.getBoolean("team.team-collision", false))
-            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.ALWAYS)
-        else
-            team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM)
-
-        // Set prefix
+        // Add prefix
         if (GameManager.instance.config.getBoolean("team.display-prefix", true))
             team.prefix(MiniMessage.miniMessage().deserialize((
                     GameManager.instance.config.getString("team.prefix-format")
@@ -60,8 +44,15 @@ class ScoreboardHandler : Listener {
                     )
                 .replace("\$label", gameTeam.label)))
 
-        // Add players
-        gameTeam.players.forEach { team.addPlayer(it.bukkitPlayer) }
+        // Set team collision
+        team.setOption(
+            Team.Option.COLLISION_RULE,
+            if (GameManager.instance.config.getBoolean("team.team-collision", false)) Team.OptionStatus.ALWAYS
+            else Team.OptionStatus.FOR_OWN_TEAM
+        )
+
+        // Add team members
+        team.addEntries(gameTeam.players.map { it.bukkitPlayer.name })
     }
 
     @EventHandler
@@ -108,22 +99,10 @@ class ScoreboardHandler : Listener {
     }
 
     @EventHandler
-    fun onStarted(event: GameStateChangeEvent) {
-        // Listen to state "RUNNING" since scoreboard isn't enforced for players at the time of "GameStartEvent"
-        if (event.newState != GameState.RUNNING) return
+    fun onScoreboardChange(event: GamePlayerScoreboardChangeEvent) {
+        // Returns if new scoreboard is not a game scoreboard
+        val game = event.game ?: return
 
-        // Initialize team rules for each team of the game
-        event.game.teamManager.teams.values.forEach { initTeam(event.game, it) }
-    }
-
-    @EventHandler
-    fun onQuit(event: GamePlayerQuitEvent) {
-        // Remove player from all scoreboard teams
-        event.game.scoreboard.teams.forEach { it.removePlayer(event.player.bukkitPlayer) }
-    }
-
-    @EventHandler
-    fun onRevive(event: GamePlayerReviveEvent) {
-        initTeam(event.game, event.player.team ?: return)
+        game.teamManager.teams.values.forEach { team -> display(team, event.player.bukkitPlayer, event.to) }
     }
 }
