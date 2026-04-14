@@ -10,6 +10,8 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Path
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.nameWithoutExtension
 
 /**
@@ -56,11 +58,21 @@ class Language(
             get() = translationsDirectory.toFile().listFiles()?.filter { it.isFile }?.map { it.nameWithoutExtension } ?: listOf()
 
         /**
+         * Holds already loaded languages
+         */
+        private val cache = ConcurrentHashMap<String, Language?>()
+
+        /**
+         * Caches player languages
+         */
+        private val playerCache = ConcurrentHashMap<UUID, String>()
+
+        /**
          * Get a language from its name
          * @param name The name of the language
          */
         fun get(name: String): Language? =
-            fromFile(translationsDirectory.resolve("$name.yml").toString())
+            cache.computeIfAbsent(name) { fromFile(translationsDirectory.resolve("$name.yml").toString()) }
 
         /**
          * Path to directory where translation files will be stored in
@@ -97,28 +109,33 @@ class Language(
         /**
          * Returns the language of a command sender
          */
-        val CommandSender.language: Language
-            get() =
-                (this as? Player)?.gma?.language
-                    ?: default
+        var CommandSender.language: Language
+            get() {
+                // If not a player -> use default language
+                val player = this as? Player ?: return default
 
-        /**
-         * Returns the language preference of a player
-         * @param player The player to look for
-         */
-        fun getPlayerLanguage(player: Player) =
-            YamlConfiguration.loadConfiguration(langsDB).getString(player.uniqueId.toString()) ?: default.name
+                // Try to get player language from cache
+                // If that fails -> load from disk
+                // If that fails -> fallback to default language
+                val preference = playerCache.computeIfAbsent(player.uniqueId) {
+                    YamlConfiguration.loadConfiguration(langsDB).getString(player.uniqueId.toString()) ?: default.name
+                }
 
-        /**
-         * Sets the language preference for a player
-         * @param player The player set the preference of
-         * @param language The language to set it to
-         */
-        fun setPlayerLanguage(player: Player, language: String) {
-            val config = YamlConfiguration.loadConfiguration(langsDB)
-            config.set(player.uniqueId.toString(), language)
-            config.save(langsDB)
-        }
+                // Get language
+                return get(preference) ?: error("Failed to load language: ${default.name}")
+            }
+            set(value) {
+                // Return if not a player
+                val player = this as? Player ?: return
+
+                // Update cache
+                playerCache[player.uniqueId] = value.name
+
+                // Update db
+                val config = YamlConfiguration.loadConfiguration(langsDB)
+                config.set(player.uniqueId.toString(), language.name)
+                config.save(langsDB)
+            }
 
         /**
          * Provide a language extension for sub-plugins using Language#child

@@ -5,11 +5,13 @@ import de.c4vxl.gamemanager.gma.event.player.GamePlayerScoreboardChangeEvent
 import de.c4vxl.gamemanager.gma.game.Game
 import de.c4vxl.gamemanager.gma.team.Team
 import de.c4vxl.gamemanager.language.Language
+import de.c4vxl.gamemanager.language.Language.Companion.language
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.scoreboard.Scoreboard
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * A Wrapper around the Player object.
@@ -61,16 +63,8 @@ class GMAPlayer(
      * Holds the preferred language of the player
      */
     var language: Language
-        get() {
-            var language = Language.get(Language.getPlayerLanguage(bukkitPlayer))
-            if (language == null) {
-                this@GMAPlayer.language = Language.default
-                language = Language.default
-            }
-
-            return language
-        }
-        set(value) = Language.setPlayerLanguage(bukkitPlayer, value.name)
+        get() = this.bukkitPlayer.language
+        set(value) { this.bukkitPlayer.language = value }
 
     /**
      * Holds the current game of the player
