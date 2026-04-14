@@ -5,6 +5,7 @@ import de.c4vxl.gamemanager.gma.event.player.GamePlayerScoreboardChangeEvent
 import de.c4vxl.gamemanager.gma.event.player.GamePlayerSelfDamageEvent
 import de.c4vxl.gamemanager.gma.event.team.GamePlayerFriendlyFireEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
+import de.c4vxl.gamemanager.language.Language.Companion.language
 import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
@@ -42,7 +43,7 @@ class ScoreboardHandler : Listener {
                     GameManager.instance.config.getString("team.prefix-format")
                         ?: "<b>\$label<b> <gray>|</gray> "
                     )
-                .replace("\$label", gameTeam.label)))
+                .replace("\$label", gameTeam.labelStr(viewer.language))))
 
         // Set team collision
         team.setOption(

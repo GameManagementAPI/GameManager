@@ -12,6 +12,7 @@ import de.c4vxl.gamemanager.plugin.enums.Permission
 import dev.jorel.commandapi.arguments.ArgumentSuggestions
 import dev.jorel.commandapi.arguments.StringArgument
 import dev.jorel.commandapi.kotlindsl.*
+import net.kyori.adventure.text.minimessage.MiniMessage
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 
@@ -180,7 +181,7 @@ object APICommand {
                                 .append(sender.language.getCmp(
                                     "command.api.games.list-players.msg.entry",
                                     it.bukkitPlayer.name,
-                                    it.team?.label ?:
+                                    it.team?.labelStr(sender.language) ?:
                                     (if (it.isSpectating) "spectator"
                                     else "/")
                                 ))
@@ -274,7 +275,7 @@ object APICommand {
                                 return@anyExecutor
                             }
 
-                            sender.sendMessage(sender.language.getCmp("command.api.player.team.get.msg", player.name, team.id.toString(), team.label))
+                            sender.sendMessage(sender.language.getCmp("command.api.player.team.get.msg", player.name, team.id.toString(), team.labelStr(sender.language)))
                         }
                     }
 
@@ -326,7 +327,7 @@ object APICommand {
                                 val success = game.teamManager.join(player.gma, teamId, true)
 
                                 if (success)
-                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.success", team.label))
+                                    sender.sendMessage(sender.language.getCmp("command.api.player.team.join.success", team.labelStr(sender.language)))
                                 else
                                     sender.sendMessage(sender.language.getCmp("command.api.player.team.join.failure.general"))
                             }
@@ -364,7 +365,7 @@ object APICommand {
                             val success = game.teamManager.quit(player.gma)
 
                             if (success)
-                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.success", team.label))
+                                player.sendMessage(player.language.getCmp("command.api.player.team.quit.success", team.labelStr(player.language)))
                             else
                                 player.sendMessage(player.language.getCmp("command.api.player.team.quit.failure.general"))
                         }

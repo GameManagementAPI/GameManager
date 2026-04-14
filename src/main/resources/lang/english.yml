@@ -226,3 +226,5 @@ chat:
 # Game end
 "end.countdown": "${prefix} <gray>This server will stop in <b><white>$0</white></b> seconds!</gray>"
 "end.kick.message": "Map reloading."
+
+"team.label.default.format": "<gold>#$0</gold>"

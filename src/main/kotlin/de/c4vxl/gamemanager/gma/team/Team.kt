@@ -2,6 +2,8 @@ package de.c4vxl.gamemanager.gma.team
 
 import de.c4vxl.gamemanager.gma.event.team.GameTeamMessageBroadcastEvent
 import de.c4vxl.gamemanager.gma.player.GMAPlayer
+import de.c4vxl.gamemanager.language.Language
+import net.kyori.adventure.text.minimessage.MiniMessage
 
 /**
  * Object that holds information about one team of a game
@@ -14,6 +16,34 @@ data class Team(
     val id: Int,
     val size: Int = manager.game.size.teamSize
 ) {
+    companion object {
+        private val prefixes = mutableMapOf<Int, Map<String, String>>()
+
+        /**
+         * Registers a team label
+         * @param id The id of the team
+         * @param translations The translations of the prefixes in all languages
+         */
+        fun registerLabelTranslation(id: Int, vararg translations: Pair<String, String>) {
+            prefixes[id] = translations.toMap()
+        }
+
+        /**
+         * Returns a label of a specific team in a target language
+         * @param teamId The id of the team
+         * @param language The language to translate in to
+         */
+        fun getLabel(teamId: Int, language: Language): String {
+            val prefixes = prefixes[teamId] ?: emptyMap()
+
+            // Try to get from registry
+            return prefixes[language.name]
+
+                    // Or fallback to default translation
+                    ?: language.get("team.label.default.format", (teamId + 1).toString())
+        }
+    }
+
     /**
      * Holds a list of all players in this team
      */
@@ -25,9 +55,14 @@ data class Team(
     val isFull: Boolean get() = players.size >= this.size
 
     /**
-     * Returns the label of this team
+     * Returns the label of this team in a given language
      */
-    val label: String get() = this.manager.game.worldManager.map?.metadata?.getString("team.$id.prefix") ?: "#${id + 1}"
+    fun label(language: Language) = MiniMessage.miniMessage().deserialize(labelStr(language))
+
+    /**
+     * Returns the label of this team in a given language as a string
+     */
+    fun labelStr(language: Language) = getLabel(this.id, language)
 
     /**
      * List of players that have left the team
@@ -56,7 +91,7 @@ data class Team(
         ) }
     }
 
-    override fun toString(): String { return "Team { label=${this.label} }" }
+    override fun toString(): String { return "Team { label=${this.label(Language.default)} }" }
     override fun hashCode(): Int { return this.id.hashCode() }
     override fun equals(other: Any?): Boolean { return this.id == (other as? Team)?.id && this.manager.game == other.manager.game }
 }

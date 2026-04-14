@@ -1,6 +1,7 @@
 package de.c4vxl.gamemanager.plugin.handler
 
 import de.c4vxl.gamemanager.GameManager
+import de.c4vxl.gamemanager.gma.player.GMAPlayer
 import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.language.Language.Companion.language
 import io.papermc.paper.event.player.AsyncChatEvent
@@ -100,22 +101,29 @@ class VisibilityHandler : Listener {
                         // Fallback to public chat if config prohibits team chat
                         else "public"
 
-        // Build the final message
-        val translationKey = "chat.message.$channel"
-        val translationArgs = arrayOf(
-            player.bukkitPlayer.name,
-            player.team?.label ?: "/",
-            MiniMessage.miniMessage().serialize(message)
-        )
 
         // Send message
         Bukkit.getScheduler().callSyncMethod(GameManager.instance) {
-            when (channel) {
-                "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }.forEach { it.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
-                "spectator"       -> game?.playerManager?.spectators?.forEach { it.bukkitPlayer.sendMessage(it.language.getCmp(translationKey, *translationArgs)) }
-                "queue", "public" -> game?.broadcastMessage(translationKey, *translationArgs)
-                "team"            -> player.team?.broadcastMessage(translationKey, *translationArgs)
-                else              -> GameManager.logger.warning("Tried to send message in invalid channel") // should never be reached
+            // Find audience based on channel
+            val audience: List<Player>? = when (channel) {
+                "no-game"         -> Bukkit.getOnlinePlayers().filter { !it.gma.isInGame }
+                "spectator"       -> game?.playerManager?.spectators?.map { it.bukkitPlayer }
+                "queue", "public" -> game?.players?.map { it.bukkitPlayer }
+                "team"            -> player.team?.players?.map { it.bukkitPlayer }
+                else              -> {
+                    GameManager.logger.warning("Tried to send message in invalid channel") // should never be reached
+                    return@callSyncMethod
+                }
+            }
+
+            // Send message to audience
+            audience?.forEach { receiver ->
+                receiver.sendMessage(receiver.language.getCmp(
+                    "chat.message.$channel",
+                    player.bukkitPlayer.name,
+                    player.team?.labelStr(receiver.language) ?: "/",
+                    MiniMessage.miniMessage().serialize(message)
+                ))
             }
         }
     }
