@@ -31,24 +31,26 @@ class Language(
          * @param path The path to the language file
          */
         fun fromFile(path: String): Language? {
-            // Read language file
-            val file = File(path)
-            if (!file.isFile) return null
+            return cache.computeIfAbsent(path) {
+                // Read language file
+                val file = File(path)
+                if (!file.isFile) return@computeIfAbsent null
 
-            val config = YamlConfiguration.loadConfiguration(file)
+                val config = YamlConfiguration.loadConfiguration(file)
 
-            // Load lookup table
-            val translations = buildMap<String, String> {
-                config.getKeys(true).forEach {
-                    put(it, config.getString(it) ?: it)
+                // Load lookup table
+                val translations = buildMap<String, String> {
+                    config.getKeys(true).forEach {
+                        put(it, config.getString(it) ?: it)
+                    }
                 }
-            }
 
-            // Create language instance
-            return Language(
-                translations,
-                Path.of(path)
-            )
+                // Create language instance
+                Language(
+                    translations,
+                    Path.of(path)
+                )
+            }
         }
 
         /**
@@ -72,7 +74,7 @@ class Language(
          * @param name The name of the language
          */
         fun get(name: String): Language? =
-            cache.computeIfAbsent(name) { fromFile(translationsDirectory.resolve("$name.yml").toString()) }
+            fromFile(translationsDirectory.resolve("$name.yml").toString())
 
         /**
          * Path to directory where translation files will be stored in
