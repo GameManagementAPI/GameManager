@@ -41,6 +41,15 @@ class WorldManager(
                 ?: listOf()
 
         /**
+         * Caches all available maps
+         */
+        val availableMaps: kotlin.collections.Map<String, List<File>> = availableGameSizes.associate { size ->
+            size.toString() to (mapsDirectory.resolve(size.toString()).listFiles()
+                ?.filter { it.isDirectory }
+                ?.toList() ?: emptyList())
+        }
+
+        /**
          * Returns a prefix for game worlds
          */
         val worldPrefix: String
@@ -51,11 +60,9 @@ class WorldManager(
      * Returns a list of all maps available for this game
      */
     val availableMaps: List<Map>
-        get() = mapsDirectory.resolve(game.size.toString()).listFiles()
-            ?.filter { it.isDirectory }
+        get() = WorldManager.availableMaps[game.size.toString()]
             ?.map { Map(this, it.name, it) }
-            ?.toList()
-            ?: listOf()
+            ?: emptyList()
 
     /**
      * Holds the map of the game

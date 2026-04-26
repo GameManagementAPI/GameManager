@@ -60,8 +60,7 @@ data class Map(
     /**
      * The config file holding this maps metadata
      */
-    val metadata: YamlConfiguration
-        get() = YamlConfiguration.loadConfiguration(configPath.toFile())
+    val metadata: YamlConfiguration = YamlConfiguration.loadConfiguration(configPath.toFile())
 
     /**
      * Returns the metadata of a specific scope
