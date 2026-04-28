@@ -17,15 +17,15 @@ data class Team(
     val size: Int = manager.game.size.teamSize
 ) {
     companion object {
-        private val prefixes = mutableMapOf<Int, Map<String, String>>()
+        private val prefixes = mutableMapOf<String, Map<Int, String>>()
 
         /**
          * Registers a team label
-         * @param id The id of the team
-         * @param translations The translations of the prefixes in all languages
+         * @param language The language to register the prefix for
+         * @param translations The translations of team ids to prefixes
          */
-        fun registerLabelTranslation(id: Int, vararg translations: Pair<String, String>) {
-            prefixes[id] = translations.toMap()
+        fun registerLabelTranslation(language: String, translations: Map<Int, String>) {
+            prefixes[language] = translations
         }
 
         /**
@@ -34,10 +34,10 @@ data class Team(
          * @param language The language to translate in to
          */
         fun getLabel(teamId: Int, language: Language): String {
-            val prefixes = prefixes[teamId] ?: emptyMap()
+            val prefixes = prefixes[language.name] ?: emptyMap()
 
             // Try to get from registry
-            return prefixes[language.name]
+            return prefixes[teamId]
 
                     // Or fallback to default translation
                     ?: language.get("team.label.default.format", (teamId + 1).toString())
