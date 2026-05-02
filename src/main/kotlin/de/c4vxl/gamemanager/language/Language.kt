@@ -89,7 +89,7 @@ class Language(
          * Default fallback-language
          */
         val default: Language
-            get() = get(GameManager.instance.config.getString("language.default") ?: "english")!!
+            get() = get(GameManager.instance.config.getString("language.default") ?: "en")!!
 
         /**
          * Loads pre-packed translations onto disk

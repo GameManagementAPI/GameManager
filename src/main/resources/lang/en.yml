@@ -1,0 +1,229 @@
+# Global
+"prefix-followup": "<gray>[</gray><white>+</white><gray>]</gray>"
+"sorry": "${prefix} <red>I am sorry!</red>"
+"general-failure": "${sorry} But something has gone wrong!"
+"not-connected": "${sorry} But this player isn't connected to this server!"
+"not-in-game": "${sorry} But this player isn't connected to any game!"
+
+# /gamemanagementapi command
+command.api:
+  "desc": "This command allows admins to control the internals of the GameManagementAPI directly in-game."
+
+  games:
+    # ... list
+    "list.failure.empty": "${sorry} But there are no games registered as of now."
+    "list.msg.title": "${prefix} Currently registered games <gray>($0)</gray>:"
+    "list.msg.entry": "<grey>-</grey> <click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click> <gray>($1)</gray>"
+
+    # ... register
+    "register.failure.invalid_size": "${sorry} But this game size is not available."
+    "register.failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+    "register.success": "${prefix} <green>Successfully registered new game: </green><white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click></white>"
+
+    # ... start
+    "start.failure.invalid_id": "${sorry} But this game either doesn't exist or is already running!"
+    "start.success": "${prefix} <green>Successfully started </green><white>'$0'</white> <gray>($1)</gray>"
+
+    # ... stop
+    "stop.failure.invalid_id": "${sorry} But this game either doesn't exist or has already been stopped!"
+    "stop.success": "${prefix} <green>Successfully stopped </green><white>'$0'</white><green>.</green>"
+
+    # ... info
+    "info.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "info.l1": "${prefix} <white>Info about game</white> <grey>'$0'</grey><white>:</white>"
+    "info.l2": "${prefix-followup} <grey>Game ID:</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>$0</hover></click></white>"
+    "info.l3": "${prefix-followup} <grey>Game State:</grey> $0"
+    "info.l4": "${prefix-followup} <grey>Size:</grey> <white>$0</white>"
+    "info.l5": "${prefix-followup} <white>$0</white>/<white>$1</white> Players"
+    "info.l6": "${prefix-followup} <white>Map:</white> $0"
+    "info.l7": "${prefix-followup} <white>Private:</white> $0 ($1)"
+
+    # ... list-players
+    "list-players.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+    "list-players.failure.empty": "${sorry} But this game doesn't seem to have any players!"
+    "list-players.msg.title": "${prefix} <grey>Players of</grey> <white><click:copy_to_clipboard:$0><hover:show_text:'Click to copy id to clipboard'>'$0'</hover></click></white><grey>:</grey>"
+    "list-players.msg.entry": "- <click:copy_to_clipboard:$0><hover:show_text:'Click to copy name to clipboard'>$0</hover></click> (<white>Team:</white> <gray>$1</gray>)"
+
+    # ... join
+    "join.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
+    "join.failure.in_game": "${sorry} But you are already member of another game!"
+    "join.failure.general": "${general-failure}"
+    "join.success": "${prefix} <green>Successfully joined into </green><white>'$0'</white><green>.</green>"
+
+  player:
+    # ... game
+    "game.failure.invalid_player": "${not-connected}"
+    "game.failure.no_game": "${not-in-game}"
+    "game.msg": "${prefix} <gray>$0</gray> is currently playing in <gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></gray>"
+
+    # ... quit
+    "quit.failure.invalid_player": "${not-connected}"
+    "quit.failure.no_game": "${not-in-game}"
+    "quit.failure.general": "${general-failure}"
+    "quit.success": "${prefix} <green>Successfully disconnected </green><white>'$0'</white><green> from </green><white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></white>"
+
+    # ... send
+    "send.failure.invalid_id": "${sorry} But this game doesn't seem to exist or has already started!"
+    "send.failure.invalid_player": "${not-connected}"
+    "send.failure.same_game": "${sorry} But this player is already connected to that game!"
+    "send.failure.general": "${general-failure}"
+    "send.success": "${prefix} <green>Successfully connected </green><white>'$0'</white><green> to </green><white><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>'$1'</hover></click></white>"
+    
+    # ... jump
+    "jump.failure.invalid_player": "${not-connected}"
+    "jump.failure.no_game": "${not-in-game}"
+    "jump.failure.same_game": "${sorry} But you are already connected to the same game as <gray>$0</gray>!"
+    "jump.failure.self": "${sorry} But you cannot jump to yourself!"
+    "jump.failure.general": "${general-failure}"
+    "jump.success": "${prefix} <green>You have been connected to </green><white>$0s</white><green> game successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
+
+    # ... eliminate
+    "eliminate.failure.invalid_player": "${not-connected}"
+    "eliminate.failure.no_game": "${not-in-game}"
+    "eliminate.failure.already": "${sorry} But this player is already eliminated!"
+    "eliminate.success": "${prefix} <white>$0</white><green> has been eliminated successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
+
+    # ... revive
+    "revive.failure.invalid_player": "${not-connected}"
+    "revive.failure.no_game": "${not-in-game}"
+    "revive.failure.already": "${sorry} But this player is not eliminated yet!"
+    "revive.success": "${prefix} <white>$0</white><green> has been revived successfully.</green> (<white>Game: </white><gray><click:copy_to_clipboard:$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray>)"
+
+    # ... team
+    team:
+      "get.failure.invalid_player": "${not-connected}"
+      "get.failure.no_game": "${not-in-game}"
+      "get.failure.no_team": "${sorry} But this player isn't part of any team!"
+      "get.msg": "${prefix} <gray>$0</gray> is currently in team <gray>#<click:copy_to_clipboard:t$1><hover:show_text:'Click to copy id to clipboard'>$1</hover></click></gray> ($2)"
+
+      # team join
+      "join.failure.invalid_player": "${not-connected}"
+      "join.failure.no_game": "${sorry} But you can only run this command when you are in a game!"
+      "join.failure.invalid_team": "${sorry} But this team couldn't be found: <gray>'$0'</gray>!"
+      "join.failure.already_running": "${sorry} But you can't do this while the game is already running!"
+      "join.failure.general": "${general-failure}"
+      "join.success": "${prefix} <green>Made player successfully join Team</green> <white>$0</white>"
+
+      # team quit
+      "quit.failure.no_game": "${sorry} But you can only run this command when you are in a game!"
+      "quit.failure.invalid_team": "${sorry} But this player isn't part of any team!"
+      "quit.failure.already_running": "${sorry} But you can't do this while the game is already running!"
+      "quit.failure.general": "${general-failure}"
+      "quit.success": "${prefix} <green>Player has left Team</green> <white>$0</white> <green>successfully!</green>"
+
+# /join command
+command.join:
+  desc: "Join into a game of specific size."
+
+  "failure.invalid_size": "${sorry} But this game size is not available."
+  "failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+  "failure.already": "${sorry} But you are already in a game!"
+  "failure.general": "${general-failure}"
+  "success": "${prefix} <green>You successfully joined a game!</green>"
+
+# /quit command
+command.quit:
+  desc: "Leave the current game"
+
+  "failure.no_game": "${sorry} But you are not connected to a game!"
+  "success": "${prefix} <green>Successfully disconnected you from the game!</green>"
+
+# /start command
+command.start:
+  desc: "Allows you to start a game as soon as enough players are found to fill at least two teams!"
+
+  "failure.no_game": "${sorry} But you must be connected to a game to run that command!"
+  "failure.already": "${sorry} But this game is already running!"
+  "failure.not_enough": "${sorry} But there must at least be <gray>$0</gray> players in this game to start it!"
+  "failure.general": "${general-failure}"
+  "success": "${prefix} <green>Starting game...</green>"
+
+# /forcemap command
+command.forcemap:
+  desc: "Allows you to set the map of the current game"
+
+  "failure.no_game": "${sorry} But you must be connected to a game to run that command!"
+  "failure.already_running": "${sorry} But this game is already running!"
+  "failure.already": "${sorry} It looks like the map has already been forced to <gray>'$0'</gray>!"
+  "failure.invalid_map": "${sorry} But it looks like this map doesn't exist!"
+  "success": "${prefix} <green>Successfully set the map to </green><gray>'$0'</gray>"
+
+# /language command
+command.language:
+  desc: "Allows players to adjust their language preferences"
+
+  "failure.invalid_language": "${sorry} But this language does not seem to be supported!"
+  "success": "${prefix} <green>Successfully updated your language preference to </green><gray>'$0'</gray>"
+
+# /spectate command
+command.spectate:
+  desc: "Allows players to spectate a game"
+
+  "player.failure.invalid_player": "${not-connected}"
+  "player.failure.self": "${sorry} But you cannot spectate yourself!"
+  "player.failure.no_game": "${not-in-game}"
+  "player.failure.not_running": "${sorry} But this game isn't running!"
+  "player.failure.playing": "${sorry} But you cannot run this command while in a game!"
+  "player.success": "${prefix} Now spectating <gray>$0</gray>"
+
+  "game.failure.invalid_id": "${sorry} But this game doesn't seem to exist!"
+  "game.failure.self": "${sorry} But you cannot spectate yourself!"
+  "game.failure.not_running": "${sorry} But this game isn't running!"
+  "game.failure.playing": "${sorry} But you cannot run this command while in a game!"
+  "game.success": "${prefix} Now spectating <gray>$0</gray>"
+
+# /map command
+command.map:
+  desc: "Displays the current map's name"
+
+  "failure.no_game": "${sorry} But you are not connected to a game!"
+  "failure.not_running": "${sorry} But this game isn't running!"
+  "failure.no_map": "${sorry} The map isn't loaded yet!"
+  "msg.l1": "${prefix} Map information:"
+  "msg.l2": "${prefix-followup} <gray>Name:</gray> $0"
+  "msg.l3": "${prefix-followup} <gray>Builder(s):</gray> $0"
+
+# /privategame command
+command.privategame:
+  desc: "Create your own private game and choose who joins"
+
+  "create.failure.invalid_size": "${sorry} But this game size is not available."
+  "create.failure.invalid_format": "${prefix} <red>Invalid team size: \"$0\"</red>"
+  "create.failure.already": "${sorry} But you are already in a game!"
+  "create.failure.general": "${general-failure}"
+  "create.success": "${prefix} <green>Successfully created a private game!</green>"
+
+  "invite.failure.invalid_player": "${not-connected}"
+  "invite.failure.no_game": "${sorry} But you are currently not hosting a private game!"
+  "invite.failure.player_in_game": "${sorry} But this player is already connected to another game!"
+  "invite.failure.already": "${sorry} You already invited that player!"
+  "invite.success": "${prefix} <green>Successfully invited <white>$0</white>!</green>"
+  "invite.msg.l1": "${prefix} Private game invitation:"
+  "invite.msg.l2": "${prefix-followup} <gray>$0</gray> invited you to a private game!"
+  "invite.msg.l3": "${prefix-followup} <b><green><click:run_command:'/privategame join $0'>Click here to join</click></green></b>"
+
+
+  "join.failure.invalid_player": "${not-connected}"
+  "join.failure.no_invite": "${sorry} But <gray>$0</gray> hasn't invited you to any private games!"
+  "join.failure.already": "${sorry} But you are already in a game!"
+  "join.failure.already_joined": "${sorry} But you are already in the private game!"
+  "join.failure.general": "${general-failure}"
+  "join.success": "${prefix} <green>Successfully joined <white>$0</white>s private game!</green>"
+
+# Queue
+"queue.countdown.title": "Game starting in $0 seconds"
+"queue.countdown.cancelled": "<red>Start has been cancelled!</red>"
+
+# Chat
+chat:
+  "message.no-game": "<gray>$0:</gray> $2"
+  "message.spectator": "<gray>[Spectators] $0:</gray> $2"
+  "message.queue": "<gray>[Queue] $0:</gray> $2"
+  "message.public": "<gray>[@all:</gray>$1<gray>] $0:</gray> $2"
+  "message.team": "<gray>[@team] $0:</gray> $2"
+
+# Game end
+"end.countdown": "${prefix} <gray>This server will stop in <b><white>$0</white></b> seconds!</gray>"
+"end.kick.message": "Map reloading."
+
+"team.label.default.format": "<gold>#$0</gold>"

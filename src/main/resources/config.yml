@@ -6,7 +6,7 @@ config:
 language:
   # The default language
   # used for console and players that don't have a specific language specified
-  default: "english"
+  default: "en"
 
   # Path to file that stores player-languages
   db: "./languages.yml"
