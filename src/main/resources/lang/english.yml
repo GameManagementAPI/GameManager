@@ -1,5 +1,4 @@
 # Global
-"prefix": "<gray>[</gray><aqua>GameManager</aqua><gray>]</gray>"
 "prefix-followup": "<gray>[</gray><white>+</white><gray>]</gray>"
 "sorry": "${prefix} <red>I am sorry!</red>"
 "general-failure": "${sorry} But something has gone wrong!"

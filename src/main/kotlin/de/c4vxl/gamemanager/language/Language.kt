@@ -1,7 +1,6 @@
 package de.c4vxl.gamemanager.language
 
 import de.c4vxl.gamemanager.GameManager
-import de.c4vxl.gamemanager.gma.player.GMAPlayer.Companion.gma
 import de.c4vxl.gamemanager.utils.ResourceUtils
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.minimessage.MiniMessage
@@ -10,7 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration
 import org.bukkit.entity.Player
 import java.io.File
 import java.nio.file.Path
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.io.path.nameWithoutExtension
 
@@ -40,6 +39,7 @@ class Language(
 
                 // Load lookup table
                 val translations = buildMap<String, String> {
+                    put("prefix", GameManager.prefix)
                     config.getKeys(true).forEach {
                         put(it, config.getString(it) ?: it)
                     }

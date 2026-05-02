@@ -16,6 +16,7 @@ class GameManager : JavaPlugin() {
     companion object {
         lateinit var instance: GameManager
         lateinit var logger: Logger
+        lateinit var prefix: String
     }
 
     override fun onLoad() {
@@ -40,6 +41,7 @@ class GameManager : JavaPlugin() {
         // Load config
         saveResource("config.yml", false)
         reloadConfig()
+        prefix = config.getString("config.prefix") ?: "<gray>[</gray><aqua>GameManager</aqua><gray>]</gray>"
 
         // Load languages
         Language.load()

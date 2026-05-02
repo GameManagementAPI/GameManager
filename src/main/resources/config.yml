@@ -1,3 +1,8 @@
+config:
+  # The prefix used in chat messages
+  # Uses MiniMessages serialization
+  prefix: "<gray>[</gray><aqua>GameManager</aqua><gray>]</gray>"
+
 language:
   # The default language
   # used for console and players that don't have a specific language specified
